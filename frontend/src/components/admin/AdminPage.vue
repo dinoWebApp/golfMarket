@@ -187,7 +187,38 @@ export default {
 
     function brandChoice(e) {
       document.getElementById('brand').innerText = e.target.innerHTML;
-      brand.value = e.target.innerHTML;
+      switch(e.target.innerHTML) {
+        case '핑':
+          brand.value = 'ping';
+          break;
+        case '테일러메이드':
+          brand.value = 'taylormade';
+          break;
+        case 'PXG':
+          brand.value = 'pxg';
+          break;
+        case '타이틀리스트':
+          brand.value = 'titleist';
+          break;
+        case '혼마':
+          brand.value = 'honma';
+          break;
+        case '젝시오':
+          brand.value = 'xxio';
+          break;
+        case '야마하':
+          brand.value = 'yamaha';
+          break;
+        case '미즈노':
+          brand.value = 'mizuno';
+          break;  
+        case '포틴':
+          brand.value = 'fourteen';
+          break;
+        case '마제스티':
+          brand.value = 'majesty';
+          break;
+      }
       console.log(brand.value);
     }
 

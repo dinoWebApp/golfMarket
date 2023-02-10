@@ -76,11 +76,11 @@
       <div class="collapse navbar-collapse justify-content-center" id="navbarsExample07">
         <ul class="navbar-nav mb-2 mb-lg-0 " style="align-items : center;">
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="/products/driver">드라이버</a>
+            <a class="menu nav-link active" aria-current="page" href="/product/driver">드라이버</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="/products/wu">우드/유틸</a>
+            <a class="menu nav-link active" aria-current="page" href="/product/wu">우드/유틸</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
