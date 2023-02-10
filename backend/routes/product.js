@@ -46,11 +46,24 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
 
 
 router.get('/driver', (req, res)=>{
-  res.send('ok');
+  db.collection('products').find({divide : '드라이버'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
 });
 
 router.get('/driver/ping', (req, res)=>{
   db.collection('products').find({divide : '드라이버', brand : '핑'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+
+router.get('/driver/brand', (req, res)=>{
+  
+  let brandName = req.query.brandName;
+  console.log(brandName);
+  db.collection('products').find({divide : '드라이버', brand : brandName}).toArray((err, result)=>{
     console.log(result);
     res.send(result);
   })
@@ -73,7 +86,9 @@ router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}])
     if (err) console.log(err);
     res.send('upload success');
   });
-})
+});
+
+
 
 
 
