@@ -16,7 +16,7 @@ let storage = multer.diskStorage({
   },
   filename : function(req, file, cb){
     
-    cb(null, file.originalname);
+    cb(null, new Date().toISOString() + file.originalname);
   }
 });
 let upload = multer({storage : storage});
@@ -67,24 +67,43 @@ router.get('/driver/brand', (req, res)=>{
     console.log(result);
     res.send(result);
   })
-})
+});
+
+router.get('/purchase/:id', (req, res)=>{
+  console.log(req.params.id);
+  let productId = parseInt(req.params.id);
+  db.collection('products').findOne({id : productId}, (err, result)=>{
+    if (err) console.log(err);
+    console.log(result);
+    res.send(result);
+  });
+});
 
 
 router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}]), (req, res)=>{
   console.log(req.files);
   let data = JSON.parse(req.body.data);
-  db.collection('products').insertOne({
-    divide : data.divide,
-    brand : data.brand,
-    productName : data.productName,
-    productPrice : data.productPrice,
-    deliverKor : data.deliverKor,
-    deliverOut : data.deliverOut,
-    thumbnail : req.files.thumbnail[0].filename,
-    infoImage : req.files.infoImage[0].filename
-  }, (err, result)=>{
-    if (err) console.log(err);
-    res.send('upload success');
+  db.collection('productNum').findOne({name : 'productId'}, (err, result)=>{
+    let productNum = result.totalProducts;
+    let dataSet = {
+      id : productNum + 1,
+      divide : data.divide,
+      brand : data.brand,
+      productName : data.productName,
+      beforeDiscount : data.beforeDiscount,
+      productPrice : data.productPrice,
+      optionData : data.optionData,
+      deliverKor : data.deliverKor,
+      deliverOut : data.deliverOut,
+      thumbnail : req.files.thumbnail[0].filename,
+      infoImage : req.files.infoImage[0].filename
+    };
+    db.collection('products').insertOne(dataSet, (err, result)=>{
+      if (err) console.log(err);
+      db.collection('productNum').updateOne({name : 'productId'}, {$inc : {totalProducts : 1}}, (err, result)=>{
+        res.send('upload success');
+      });
+    });
   });
 });
 

@@ -39,7 +39,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/customer', require('./routes/customer.js'));
 app.use('/api/product', require('./routes/product.js'));
-app.use(express.static('public/image'));
+app.use('/static',express.static(__dirname + '/public'));
 
 MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
