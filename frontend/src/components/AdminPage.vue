@@ -9,7 +9,7 @@
     </div>
 
     <div class="col-3 col-md-2" id="sidebar" v-if="adminData === true">
-      <img src="../../assets/tgolshop.png" class="img-fluid" alt="">
+      <img src="../assets/tgolshop.png" class="img-fluid" alt="">
       <div class="list-group">
         <a href="#" class="list-group-item list-group-item-action">회원관리</a>
         <a href="#" class="list-group-item list-group-item-action">상품관리</a>
@@ -78,8 +78,29 @@
           <div class="col-9 mt-2">
             상품명
             <input v-bind:value="productName" @input="inputProductName" type="text" class="form-control mb-2" id="productName" placeholder="브랜드와 모델명 모두 입력해주세요.">
-            판매 가격
-            <input v-bind:value="productPrice" @input="inputProductPrice" type="text" class="form-control mb-2" id="productName" placeholder="판매가격">
+            원가
+            <input v-bind:value="beforeDiscount" @input="inputBeforeDiscount" type="text" class="form-control mb-2" placeholder="원가">
+            할인가
+            <input v-bind:value="productPrice" @input="inputProductPrice" type="text" class="form-control mb-2" placeholder="할인가">
+            <div class="d-flex mt-4">
+              옵션 (추가된 옵션은 수정이 불가합니다.)
+              <button @click="addOption" class="btn btn-sm btn-outline-secondary ms-3">추가</button>
+            </div>
+            <div v-for="i in optionNumber" :key="i">
+              <div class="d-flex">
+                <div class="col-10 mt-2">
+                  <input @input="inputOptionText" type="text" class="form-control mb-2" placeholder="옵션 내용">
+                </div>
+                <div class="col-2 mt-2">
+                  <input @input="inputOptionPrice" type="text" class="form-control mb-2" placeholder="가격">
+                </div>
+              </div>
+            </div>
+            
+            
+          </div>
+          <div class="col-9 mt-2">
+            
           </div>
           
           <div class="col-9 mt-2">
@@ -124,6 +145,7 @@
 import axios from 'axios'
 import { ref } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
+import { watch } from '@vue/runtime-core'
 export default {
   name: 'AdminPage',
   setup() {
@@ -131,6 +153,7 @@ export default {
     let brand = ref('');
     let productEnroll = ref(true);
     let productName = ref('');
+    let beforeDiscount = ref('');
     let productPrice = ref('');
     let adminData = ref(true);
     let pw = ref('');
@@ -138,11 +161,17 @@ export default {
     let infoImage = ref();
     let deliverKor = ref(false);
     let deliverOut = ref(false);
+    let optionNumber = ref(1);
+    let optionText = ref('');
+    let optionPrice = ref('');
+    let optionData = ref([]);
     let dataSet = ref({
       divide : divide,
       brand : brand,
       productName : productName,
+      beforeDiscount : beforeDiscount,
       productPrice : productPrice,
+      optionData : optionData.value,
       deliverKor : deliverKor,
       deliverOut : deliverOut
     })
@@ -227,6 +256,11 @@ export default {
       console.log(productName.value);
     }
 
+    function inputBeforeDiscount(e) {
+      beforeDiscount.value = e.target.value;
+      console.log(beforeDiscount.value);
+    }
+
     function inputProductPrice(e) {
       productPrice.value = e.target.value;
       console.log(productPrice.value);
@@ -254,6 +288,28 @@ export default {
       console.log(deliverKor.value, deliverOut.value);
     }
 
+    function inputOptionText(e) {
+      optionText.value = e.target.value;
+      console.log(optionText.value);
+    }
+
+    function inputOptionPrice(e) {
+      optionPrice.value = e.target.value;
+      console.log(optionPrice.value);
+    }
+
+    function addOption() {
+      optionNumber.value += 1;
+      let option = {
+        optionText : optionText.value,
+        optionPrice : optionPrice.value
+      }
+      optionData.value.push(option);
+      optionText.value = '';
+      optionPrice.value = 0;
+      console.log(optionData.value);
+    }
+
     function posting() {
       const formData = new FormData();
       
@@ -274,8 +330,26 @@ export default {
       });
     }
 
+    watch(beforeDiscount, (newValue, oldValue)=>{
+      console.log({newValue, oldValue});
+      let blank_pattern = /[\s]/g;
+      if (isNaN(newValue) || blank_pattern.test(newValue) ) {
+        beforeDiscount.value = oldValue;
+      }
+    });
+
+    watch(productPrice, (newValue, oldValue)=>{
+      console.log({newValue, oldValue});
+      let blank_pattern = /[\s]/g;
+      if (isNaN(newValue) || blank_pattern.test(newValue) ) {
+        productPrice.value = oldValue;
+      }
+    });
+
+
     return {adminData, pw, submit, productEnroll, divide, productDivide, productPrice ,brandChoice, productName, inputProductName, inputProductPrice,
-    selectThum, selectInfo, posting, selectKor, selectOut};
+    selectThum, selectInfo, posting, selectKor, selectOut, optionNumber, addOption, optionText, optionPrice, inputOptionText, inputOptionPrice, beforeDiscount,
+    inputBeforeDiscount};
   }
 }
 </script>

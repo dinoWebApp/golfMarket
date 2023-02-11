@@ -29,7 +29,7 @@
         <div class="col" v-for="item in products" :key="item">
           <div class="card shadow-sm">
             <div id="img-border">
-              <img id="image" :src='`http://localhost:3000/${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+              <img id="image" :src='`http://localhost:3000/static/image/${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
             </div>
             
             <div class="card-body">
@@ -44,7 +44,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-success" style="font-weight:bold;">장바구니</button>
-                  <button type="button" class="btn btn-sm btn-danger" style="font-weight:bold;">구매하기</button>
+                  <button @click="purchase" type="button" :value="item.id" class="btn btn-sm btn-danger" style="font-weight:bold;">구매하기</button>
                 </div>
                 <small style="font-weight:bold; color:red !important;" v-if="item.deliverOut" class="text-muted d-block d-md-none d-lg-block">[해외직구]</small>
                 <small style="font-weight:bold; color:red !important; font-size:12px " v-if="item.deliverOut" class="text-muted d-none d-md-block d-lg-none">[해외직구]</small>
@@ -63,10 +63,12 @@
 <script>
 import axios from 'axios'
 import { ref } from '@vue/reactivity';
+import { useRouter } from 'vue-router';
 export default {
   name:'DriverPage',
   
   setup() {
+    const router = useRouter();
     let products = ref([]);
     axios.get('/api/product/driver').then(res=>{
       console.log(res.data);
@@ -134,7 +136,14 @@ export default {
         console.log(err);
       });
     }
-    return {products, filter, clickedBrand, clickedTotal};
+
+    function purchase(e) {
+      console.log(e.target.value);
+      let productId = e.target.value;
+      router.push({name : 'PurchasePage', params : {id : productId}});
+
+    }
+    return {products, filter, clickedBrand, clickedTotal, purchase};
 
   }
 }
