@@ -1,53 +1,55 @@
 <template>
   <div>
     <div class="container">
-    <nav>
-      <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
-        <button @click="clickedTotal" class="nav-link check active" data-bs-toggle="tab" type="button" role="tab"  aria-selected="true">전체 보기</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">핑</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">테일러메이드</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">PXG</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">타이틀리스트</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">혼마</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">젝시오</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">야마하</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">미즈노</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">포틴</button>
-        <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">마제스티</button>
-      </div>
-    </nav>
-  </div>
+      <nav>
+        <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+          <button @click="clickedTotal" class="nav-link check active" data-bs-toggle="tab" type="button" role="tab"  aria-selected="true">전체 보기</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">핑</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">테일러메이드</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">PXG</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">타이틀리스트</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">혼마</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">젝시오</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">야마하</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">미즈노</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">포틴</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">마제스티</button>
+        </div>
+      </nav>
+    </div>
 
   <div class="container">
     <h3 class="mt-3 mb-3" style="text-align:left;">드라이버</h3>
   </div>
   
 
-  <div class="container">
-
+    <div class="container">
       <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-4">
         <div class="col" v-for="item in products" :key="item">
-          <div class="card shadow-sm">
+          <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
             <div id="img-border">
               <img id="image" :src='`http://localhost:3000/static/image/${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
             </div>
+            <div class="d-flex">
+              <span class="ms-1" style="font-size:11px;">상품 코드: </span>
+              <span class="ms-1" style="font-size:11px;">{{item.id}}</span>
+              <span v-if="item.deliverOut" class="ms-2" style="font-size:11px; color:red; font-weight:bold;">[해외직구]</span>
+            </div>
             
             <div class="card-body">
+              
               <div id="text-border1" class="d-lg-none">
-                <p id="product-text" class="card-text" style="font-weight:500;"> {{item.productName}} </p>
+                <p id="product-text" class="card-text" style="font-weight:600;"> {{item.productName}} </p>
               </div>
               <div id="text-border2" class="d-none d-lg-block">
-                <p id="product-text" class="card-text" style="font-weight:500;"> {{item.productName}} </p>
+                <p id="product-text" class="card-text" style="font-weight:600;"> {{item.productName}} </p>
               </div>
               
-              <p style="font-weight:900; font-size:20px;"> {{filter(item.productPrice)}} 원 </p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-success" style="font-weight:bold;">장바구니</button>
-                  <button @click="purchase" type="button" :value="item.id" class="btn btn-sm btn-danger" style="font-weight:bold;">구매하기</button>
-                </div>
-                <small style="font-weight:bold; color:red !important;" v-if="item.deliverOut" class="text-muted d-block d-md-none d-lg-block">[해외직구]</small>
-                <small style="font-weight:bold; color:red !important; font-size:12px " v-if="item.deliverOut" class="text-muted d-none d-md-block d-lg-none">[해외직구]</small>
+              <span class="text-decoration-line-through" style="font-weight:bold; color:gray">{{filter(item.beforeDiscount)}} 원</span>
+              <div>
+                <span style="font-weight:900; font-size:30px; color:red;"> {{discount(item.beforeDiscount, item.productPrice)}}% </span>
+                <span style="font-weight:900; font-size:22px;"> {{filter(item.productPrice)}} 원 </span>
+                
               </div>
             </div>
           </div>
@@ -79,6 +81,11 @@ export default {
 
     function filter(val) {
       return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function discount(before, after) {
+      let answer = 100 * (1 - after / before);
+      return Math.round(answer);
     }
 
     function clickedBrand(e) {
@@ -141,9 +148,14 @@ export default {
       console.log(e.target.value);
       let productId = e.target.value;
       router.push({name : 'PurchasePage', params : {id : productId}});
-
     }
-    return {products, filter, clickedBrand, clickedTotal, purchase};
+
+    function clickCard(e) {
+      let productId = e.currentTarget.children[1].children[1].innerText;
+      console.log(productId);
+      router.push({name : 'PurchasePage', params : {id : productId}});
+    }
+    return {products, filter, clickedBrand, clickedTotal, purchase, clickCard, discount};
 
   }
 }
@@ -198,7 +210,7 @@ export default {
 #text-border1::after {
   display: block;
   content: '';
-  padding-bottom: 40%;
+  padding-bottom: 35%;
 }
 
 #text-border2 {
@@ -209,7 +221,7 @@ export default {
 #text-border2::after {
   display: block;
   content: '';
-  padding-bottom: 20%;
+  padding-bottom: 25%;
 }
 
 #product-text {

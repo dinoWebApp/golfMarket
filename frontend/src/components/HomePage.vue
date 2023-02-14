@@ -129,7 +129,7 @@
       </div>
     </div>
   </nav>
-  <router-view @loginData='loginUpdate'></router-view>
+  <router-view :key="$route.fullPath" @loginData='loginUpdate'></router-view>
  
 </template>
 
