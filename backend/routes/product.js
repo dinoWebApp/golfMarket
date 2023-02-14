@@ -79,6 +79,15 @@ router.get('/purchase/:id', (req, res)=>{
   });
 });
 
+router.get('/related', (req, res)=>{
+  console.log(req.query.divide);
+  db.collection('products').find({divide : req.query.divide}).limit(6).sort({reviews : -1}).toArray((err, result)=>{
+    if (err) console.log(err);
+    console.log(result);
+    res.send(result);
+  });
+});
+
 
 router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}]), (req, res)=>{
   console.log(req.files);
@@ -96,7 +105,8 @@ router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}])
       deliverKor : data.deliverKor,
       deliverOut : data.deliverOut,
       thumbnail : req.files.thumbnail[0].filename,
-      infoImage : req.files.infoImage[0].filename
+      infoImage : req.files.infoImage[0].filename,
+      reviews : 0
     };
     db.collection('products').insertOne(dataSet, (err, result)=>{
       if (err) console.log(err);
