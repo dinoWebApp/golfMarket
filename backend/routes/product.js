@@ -72,21 +72,55 @@ router.get('/driver/brand', (req, res)=>{
 router.get('/purchase/:id', (req, res)=>{
   console.log(req.params.id);
   let productId = parseInt(req.params.id);
-  db.collection('products').findOne({id : productId}, (err, result)=>{
-    if (err) console.log(err);
+  let sendData = {
+    product : {},
+    relatedList : [],
+    reviews :[],
+    totalReview : {
+      average : 0,
+      fivePer : 0,
+      fourPer : 0,
+      threePer : 0,
+      twoPer : 0,
+      onePer : 0,
+    },
+  }
+
+  db.collection('products').findOne({id : productId})
+  .then(result=>{
     console.log(result);
-    res.send(result);
-  });
+    sendData.product = result;
+    return db.collection('products').find({divide : result.divide}).limit(6).sort({reviews : -1}).toArray();
+  })
+  .then(result=>{
+    sendData.relatedList = result;
+    console.log(result);
+    return db.collection('reviews').find({productId : productId}).toArray();
+  })
+  .then(result=>{
+    sendData.reviews = result;
+    let starArray = result.map(review=>{
+      return review.stars;
+    });
+    let average = 0;
+    let total = 0;
+    starArray.forEach(stars=>total+=stars);
+    average = total/starArray.length;
+    sendData.totalReview.average = average;
+    sendData.totalReview.fivePer = (starArray.filter(e => 5 === e).length / starArray.length)*100;
+    sendData.totalReview.fourPer = (starArray.filter(e => 4 === e).length / starArray.length)*100;
+    sendData.totalReview.threePer = (starArray.filter(e => 3 === e).length / starArray.length)*100;
+    sendData.totalReview.twoPer = (starArray.filter(e => 2 === e).length / starArray.length)*100;
+    sendData.totalReview.onePer = (starArray.filter(e => 1 === e).length / starArray.length)*100;
+    console.log(sendData);
+    res.send(sendData);
+  })
+  .catch(err=>{
+    console.log(err);
+    res.status(404).send('not found');
+  })
 });
 
-router.get('/related', (req, res)=>{
-  console.log(req.query.divide);
-  db.collection('products').find({divide : req.query.divide}).limit(6).sort({reviews : -1}).toArray((err, result)=>{
-    if (err) console.log(err);
-    console.log(result);
-    res.send(result);
-  });
-});
 
 
 router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}]), (req, res)=>{
