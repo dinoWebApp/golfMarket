@@ -119,7 +119,21 @@
             
           </div>
         </div>
-
+        <div class="mb-3" align="left" v-if="review" >
+          <div v-for="item in reviews" :key="item" align='left'>
+            <hr/>
+            <div>
+              <span> 작성자 : {{item.user}}</span>
+            </div>
+            <div style="display:inline-block;">
+              <star-rating :inline="true" :star-size="20" :read-only="true" :show-rating="false" v-model:rating="item.stars"></star-rating>
+              <span style="font-size:12px" class="ms-1">{{item.date}} </span>
+            </div>
+            <div class="mt-4">
+              {{item.comment}}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -128,10 +142,14 @@
 <script>
 import axios from 'axios';
 import { useRoute, useRouter, } from 'vue-router'
-import { ref } from '@vue/reactivity';
+import { ref } from '@vue/reactivity'
+import StarRating from 'vue-star-rating'
 
 export default {
   name: 'PurchasePage',
+  components: {
+    StarRating
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -148,20 +166,17 @@ export default {
     let review = ref(false);
     let qna = ref(false);
     let relatedList = ref([]);
+    let reviews = ref([]);
 
 
     axios.get('/api/product/purchase/' + route.params.id)
     .then(res=>{
       console.log(res.data);
-      product.value = res.data;
-      imagePath.value = 'http://localhost:3000/static/image/' + res.data.thumbnail;
-      infoImage.value = 'http://localhost:3000/static/image/' + res.data.infoImage;
-      console.log(res.data.divide);
-      return axios.get('/api/product/related?divide=' + res.data.divide);
-    })
-    .then(res=>{
-      console.log(res.data);
-      relatedList.value = res.data;
+      product.value = res.data.product;
+      imagePath.value = 'http://localhost:3000/static/image/' + res.data.product.thumbnail;
+      infoImage.value = 'http://localhost:3000/static/image/' + res.data.product.infoImage;
+      relatedList.value = res.data.relatedList;
+      reviews.value = res.data.reviews
     })
     .catch(err=>{
       console.log(err);
@@ -236,30 +251,13 @@ export default {
       console.log(productId);
       router.push({name : 'PurchasePage', params : {id : productId}});
       
-      // axios.get('/api/product/purchase/' + productId)
-      // .then(res=>{
-      //   console.log(res.data);
-      //   product.value = res.data;
-      //   imagePath.value = 'http://localhost:3000/static/image/' + res.data.thumbnail;
-      //   infoImage.value = 'http://localhost:3000/static/image/' + res.data.infoImage;
-      //   console.log(res.data.divide);
-      //   return axios.get('/api/product/related?divide=' + res.data.divide);
-      // })
-      // .then(res=>{
-      //   console.log(res.data);
-      //   relatedList.value = res.data;
-      // })
-      // .catch(err=>{
-      //   console.log(err);
-      // });
-      // router.go();
     }
 
     
     
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, selectNum, optionSelected, orderNum, infoImage,
-    productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard};
+    productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews};
   }
 }
 </script>
