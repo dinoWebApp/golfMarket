@@ -28,7 +28,7 @@
             {{item.optionText}}(+{{item.optionPrice}}원)
           </option>
         </select>
-         <select id="optionText" class="form-select mb-5" aria-label="Default select example">
+         <select id="optionText" class="form-select mb-4" aria-label="Default select example">
           <option selected>결제 방법</option>
           <option> 무통장입금 </option>
           <option> 일반 카드 결제 </option>
@@ -119,7 +119,65 @@
             
           </div>
         </div>
-        <div class="mb-3" align="left" v-if="review" >
+        <div class="mb-3" v-if="review" >
+          <div class="row p-5 bg-light rounded-3 mt-3">
+            <div class="row col-6">
+              <div class="col-0 col-md-2 col-xl-3"></div>
+              <div class="col-12 col-md-10 col-xl-9" align='left'>
+                <div class="d-none d-lg-block ms-2 mb-2" style="font-size:30px; font-weight:bold;">상품후기({{product.reviews}})</div>
+                <div class="d-block d-lg-none ms-2 mb-2" style="font-size:25px; font-weight:bold;">상품후기({{product.reviews}})</div>
+                <star-rating class="d-none d-lg-block" :rating="totalReview.average" :show-rating="false" :read-only="true" :increment="0.01"></star-rating>
+                <star-rating class="d-block d-lg-none" :star-size="30" :rating="totalReview.average" :show-rating="false" :read-only="true" :increment="0.01"></star-rating>
+                <div class="d-none d-lg-block ms-5 mt-3" style="font-size:20px">
+                  평점 평균 : {{totalReview.average}}/5
+                </div>
+                <div class="d-block d-lg-none ms-2 mt-3" style="font-size:15px">
+                  평점 평균 : {{totalReview.average}}/5
+                </div>
+              </div>
+              
+            </div>
+            <div class="row col-6">
+              <div class="col-lg-1 col-0"></div>
+              <div class="col-lg-10 col-xl-9 col-12">
+                <div class="d-flex mb-3 ">
+                  <div class="col-2 col-lg-1" style="font-size:15px">5점</div>
+                  <div class="col-lg-9 col-8 progress">
+                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.fivePer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <div class="col-2" style="font-size:15px">{{totalReview.fivePer}}%</div>
+                </div>
+                <div class="d-flex mb-3">
+                  <div class="col-2 col-lg-1" style="font-size:15px">4점</div>
+                  <div class="col-lg-9 col-8 progress">
+                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.fourPer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <div class="col-2" style="font-size:15px">{{totalReview.fourPer}}%</div>
+                </div>
+                <div class="d-flex mb-3">
+                  <div class="col-2 col-lg-1" style="font-size:15px">3점</div>
+                  <div class="col-lg-9 col-8 progress">
+                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.threePer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <div class="col-2" style="font-size:15px">{{totalReview.threePer}}%</div>
+                </div>
+                <div class="d-flex mb-3">
+                  <div class="col-2 col-lg-1" style="font-size:15px">2점</div>
+                  <div class="col-lg-9 col-8 progress">
+                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.twoPer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <div class="col-2" style="font-size:15px">{{totalReview.twoPer}}%</div>
+                </div>
+                <div class="d-flex mb-3">
+                  <div class="col-2 col-lg-1" style="font-size:15px">1점</div>
+                  <div class="col-lg-9 col-8 progress">
+                    <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.onePer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <div class="col-2" style="font-size:15px">{{totalReview.onePer}}%</div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div v-for="item in reviews" :key="item" align='left'>
             <hr/>
             <div>
@@ -134,6 +192,17 @@
             </div>
           </div>
         </div>
+        <div class="mb-3" v-if="qna">
+          <div class="row p-5 bg-light rounded-3 mt-3">
+            <div class="row">
+              <textarea class="col-9" id="qna" cols="30" rows="3"></textarea>
+              <button class="btn btn-secondary col-2" style="font-weight:bold;">문의하기</button>
+            </div>
+            
+            
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -167,6 +236,7 @@ export default {
     let qna = ref(false);
     let relatedList = ref([]);
     let reviews = ref([]);
+    let totalReview = ref({});
 
 
     axios.get('/api/product/purchase/' + route.params.id)
@@ -177,6 +247,7 @@ export default {
       infoImage.value = 'http://localhost:3000/static/image/' + res.data.product.infoImage;
       relatedList.value = res.data.relatedList;
       reviews.value = res.data.reviews
+      totalReview.value = res.data.totalReview;
     })
     .catch(err=>{
       console.log(err);
@@ -257,7 +328,8 @@ export default {
     
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, selectNum, optionSelected, orderNum, infoImage,
-    productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews};
+    productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
+    totalReview};
   }
 }
 </script>
