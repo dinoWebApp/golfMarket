@@ -194,11 +194,16 @@
         </div>
         <div class="mb-3" v-if="qna">
           <div class="row p-5 bg-light rounded-3 mt-3">
+            <div class="row" style="font-weight:30; font-size:23px;">
+              상품에 관하여 궁금한 것을 물어보세요
+            </div>
+            <li class="row mb-4" style="color:darkgray">
+              상품 문의를 통한 교환, 반품, 환불은 처리되지 않습니다.
+            </li>
             <div class="row">
               <textarea class="col-9" id="qna" cols="30" rows="3"></textarea>
               <button class="btn btn-secondary col-2" style="font-weight:bold;">문의하기</button>
             </div>
-            
             
           </div>
         </div>

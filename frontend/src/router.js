@@ -6,12 +6,18 @@ import WuPage from './components/WuPage.vue'
 import SignUp from './components/SignUp.vue'
 import AdminPage from './components/AdminPage.vue'
 import PurchasePage from './components/PurchasePage.vue'
+import MainPage from './components/MainPage.vue'
 const routes = [
   {
     path:'/',
     name:'HomePage',
     component: HomePage,
     children:[
+      {
+        path:'/',
+        name:'MainPage',
+        component: MainPage
+      },
       {
         path:'customer/login',
         name:'LoginPage',

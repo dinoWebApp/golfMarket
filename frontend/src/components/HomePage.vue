@@ -112,17 +112,7 @@
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">드라이버</a>
-          </li>
-
-          
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" style="font-weight:bold; color:white;" href="#" data-bs-toggle="dropdown" aria-expanded="false">드라이버</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#"></a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
+            <a class="menu nav-link active" aria-current="page" href="#">중고장터</a>
           </li>
         </ul>
         
