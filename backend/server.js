@@ -73,9 +73,6 @@ app.post('/api/admin-pw', (req, res)=>{
 
 
 
-
-
-
 passport.use(new LocalStrategy({
   usernameField: 'id',
   passwordField: 'pw',
