@@ -7,6 +7,7 @@ import SignUp from './components/SignUp.vue'
 import AdminPage from './components/AdminPage.vue'
 import PurchasePage from './components/PurchasePage.vue'
 import MainPage from './components/MainPage.vue'
+import MyPage from './components/MyPage.vue'
 const routes = [
   {
     path:'/',
@@ -43,6 +44,11 @@ const routes = [
         component: SignUp,
         name: 'SignUp'
       },
+      {
+        path:'customer/mypage',
+        component: MyPage,
+        name: 'MyPage'
+      }
     ]
   },
   {

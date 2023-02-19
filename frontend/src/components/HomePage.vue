@@ -51,7 +51,7 @@
         </div>
         <div v-if="myInfo" class="text-end col-md-3 col-lg-auto d-none d-md-block ms-xl-5">
           <h6> {{nickName}} 님, 환영합니다!</h6>
-          <button type="button" class="btn btn-warning btn-sm me-1" style="color:white; font-weight:bold;">마이페이지</button>
+          <button @click="mypage" type="button" class="btn btn-warning btn-sm me-1" style="color:white; font-weight:bold;">마이페이지</button>
           <button @click="logout" type="button" class="btn btn-danger btn-sm" style=" color:white; font-weight:bold;">로그아웃</button>
         </div>
         <div class="d-block d-md-none col-sm-2 col-2">
@@ -208,6 +208,10 @@ export default {
       profileModal.value = false;
     }
 
+    function mypage() {
+      router.push({name:'MyPage', query:{nickName:nickName.value}});
+    }
+
 
     
 
@@ -216,7 +220,7 @@ export default {
 
 
     return {login, signUp, loginInfo, myInfo, nickName, logout, loginUpdate, profileClick, profileModal, profileDelete,
-    profileLogout};
+    profileLogout, mypage};
   
   }
 }

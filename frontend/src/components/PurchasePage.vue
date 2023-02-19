@@ -1,5 +1,5 @@
 <template>
-  <div class="container px-4 px-lg-5 my-5">
+  <div v-if="purchaseDetail === false" class="container px-4 px-lg-5 my-5">
     <div class="row gx-4 gx-lg-5 align-items-center">
       <div class="col-md-6 col-xl-5">
         <img :src='imagePath' alt="product" class="card-img-top mb-5 mb-md-0">
@@ -28,7 +28,7 @@
             {{item.optionText}}(+{{item.optionPrice}}원)
           </option>
         </select>
-         <select id="optionText" class="form-select mb-4" aria-label="Default select example">
+         <select id="purchase-way" class="form-select mb-4" aria-label="Default select example">
           <option selected>결제 방법</option>
           <option> 무통장입금 </option>
           <option> 일반 카드 결제 </option>
@@ -57,7 +57,7 @@
               <i class="bi-cart-fill me-1"></i>
               장바구니 담기
           </button>
-          <button class="btn btn-danger" style="font-weight:bold;">구매하기</button>
+          <button @click="clickPurchase" class="btn btn-danger" style="font-weight:bold;">구매하기</button>
         </div>
       </div>
       
@@ -211,6 +211,9 @@
       </div>
     </div>
   </div>
+  <div v-if="purchaseDetail" class="container">
+    
+  </div>
 </template>
 
 <script>
@@ -242,6 +245,7 @@ export default {
     let relatedList = ref([]);
     let reviews = ref([]);
     let totalReview = ref({});
+    let purchaseDetail = ref(false);
 
 
     axios.get('/api/product/purchase/' + route.params.id)
@@ -326,7 +330,18 @@ export default {
       let productId = e.currentTarget.children[1].children[1].innerText;
       console.log(productId);
       router.push({name : 'PurchasePage', params : {id : productId}});
-      
+    }
+
+    function clickPurchase() {
+      if(optionSelected.value === 0) {
+        alert('옵션을 선택하여 주십시오.');
+      } else if(document.getElementById('purchase-way')
+      .options[document.getElementById('purchase-way').selectedIndex]
+      .text === '결제 방법') {
+        alert('결제 방법을 선택하여 주십시오.');
+      } else if(orderNum.value === 0) {
+        alert('주문 개수를 선택하여 주십시오.')
+      } else purchaseDetail.value = true;
     }
 
     
@@ -334,7 +349,7 @@ export default {
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
-    totalReview};
+    totalReview, purchaseDetail, clickPurchase};
   }
 }
 </script>
