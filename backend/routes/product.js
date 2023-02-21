@@ -121,6 +121,18 @@ router.get('/purchase/:id', (req, res)=>{
   })
 });
 
+router.get('/purchase-detail', loginCheck, (req, res)=>{
+  let userData = {
+    name: req.user.name,
+    phoneNum: req.user.phoneNum,
+    addressNum : req.user.addressNum,
+    address : req.user.address,
+    addressName : req.user.addressName,
+    detailAddress : req.user.detailAddress
+  }
+  res.send(userData)
+})
+
 
 
 router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}]), (req, res)=>{

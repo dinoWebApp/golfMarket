@@ -59,6 +59,7 @@ router.post('/sign-up', (req, res)=>{
           phoneNum : req.body.phoneNum,
           addressNum : req.body.addressNum,
           address : req.body.address,
+          addressName : req.body.addressName,
           detailAddress : req.body.detailAddress,
           point : 0,
         }, (err, result)=>{
