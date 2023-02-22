@@ -38,7 +38,7 @@
           </select>
           <div class="d-flex mb-3">
             <span class="me-3" style="font-size:25px; font-weight:900; color:red;">최종 금액:</span>
-            <span class="me-1" style="font-size:25px; font-weight:900"> {{filter((product.productPrice * 1 + optionPrice * 1)*optionSelected*orderNum)}} </span>
+            <span class="me-1" style="font-size:25px; font-weight:900"> {{filter(calTotal(product.productPrice, optionPrice, optionSelected, orderNum))}} </span>
             <span style="font-size:25px; font-weight:900"> 원 </span>
             
           </div>  
@@ -218,7 +218,7 @@
       </div>
       <hr/>
       <div class="mt-3 mb-3">
-        <h4 style="font-weight:bold;" align="left">배송지 입력</h4>
+        <h4 style="font-weight:bold;" align="left">배송지 입력 (수정 가능)</h4>
       </div>
       <div class="border">
         <div class="col-5 col-lg-3 ms-1 me-1 mt-3 mb-3">
@@ -251,6 +251,37 @@
             
           </div>
         </div>
+      </div>
+      <div class="mt-4 mb-3">
+        <h4 style="font-weight:bold;" align='left'>주문상품</h4>
+      </div>
+      <hr/>
+      <div class="border">
+        <div class="row mt-4">
+          <div class="col-6"> <h6>주문상품 및 옵션</h6></div>
+          <div class="col-2"><h6>수량</h6></div>
+          <div class="col-4"> <h6>상품금액</h6></div>
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="col-6">
+            <div class="d-none d-lg-block"> <h5>{{product.productName}}</h5> </div>
+            <div class="d-block d-lg-none"> <h6>{{product.productName}}</h6> </div>
+            <div style="color:darkgray">{{optionText}}</div>
+          </div>
+          <div class="col-2 d-none d-lg-block"><h5> {{orderNum}} </h5></div>
+          <div class="col-2 d-block d-lg-none"><h6> {{orderNum}} </h6></div>
+          <div class="col-4">
+            <div class="d-none d-lg-block" style="font-weight:bold;"> <h5>{{filter(totalPrice)}} 원</h5>  </div>
+            <div class="d-block d-lg-none" style="font-weight:bold;"> <h6>{{filter(totalPrice)}} 원</h6>  </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 d-flex">
+        <h2 style="color:red; font-weight:bold;">결제 금액:</h2>
+        <h2 class="ms-3"> {{filter(totalPrice)}} 원 </h2>
+        <button class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
+        <button @click="backPage" class="btn btn-outline-success flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
     </div>
 
@@ -294,6 +325,7 @@ export default {
     let address = ref('');
     let addressName = ref('');
     let detailAddress = ref('');
+    let totalPrice = ref(0);
 
 
     axios.get('/api/product/purchase/' + route.params.id)
@@ -406,12 +438,21 @@ export default {
       }
     }
 
+    function calTotal(productPrice, optionPrice, optionSelected, orderNum) {
+      totalPrice.value = (productPrice * 1 + optionPrice * 1)*optionSelected*orderNum;
+      return totalPrice.value;
+    }
+
+    function backPage() {
+      router.go(0);
+    }
+
     
     
 
-    return{productId, product, filter, discount, selectOption, imagePath, optionPrice, selectNum, optionSelected, orderNum, infoImage,
+    return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
-    totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress};
+    totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage};
   }
 }
 </script>
