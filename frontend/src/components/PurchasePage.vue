@@ -29,12 +29,11 @@
               {{item.optionText}}(+{{item.optionPrice}}원)
             </option>
           </select>
-          <select id="purchase-way" class="form-select mb-4" aria-label="Default select example">
-            <option selected>결제 방법</option>
-            <option> 무통장입금 </option>
-            <option> 일반 카드 결제 </option>
-            <option> 카카오페이 </option>
-            <option> 네이버페이 </option>
+          <select id="orderNum" @change="selectNum" class="form-select mb-4" aria-label="Default select example">
+            <option selected value="0">상품 수량</option>
+            <option value="1">1개</option>
+            <option value="2">2개</option>
+            <option value="3">3개</option>
           </select>
           <div class="d-flex mb-3">
             <span class="me-3" style="font-size:25px; font-weight:900; color:red;">최종 금액:</span>
@@ -47,12 +46,12 @@
           </div>
           <div class="d-flex mb-2">
             
-            <select @change="selectNum" id="orderNum" class="form-select me-2 ms-1" aria-label="Default select example" style="max-width: 4rem">
+            <!-- <select  id="orderNum" class="form-select me-2 ms-1" aria-label="Default select example" style="max-width: 4rem">
               <option selected>0</option>
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
-            </select>
+            </select> -->
             <!-- <input class="form-control text-center me-3 ms-1" id="inputQuantity" type="num" value="1" style="max-width: 3rem"> -->
             <button class="btn btn-outline-success flex-shrink-0 me-1" style="font-weight:bold;" type="button">
                 <i class="bi-cart-fill me-1"></i>
@@ -284,8 +283,9 @@
         <button @click="backPage" class="btn btn-outline-success flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
     </div>
-
+    
   </div>
+  
   
 </template>
 
@@ -326,6 +326,7 @@ export default {
     let addressName = ref('');
     let detailAddress = ref('');
     let totalPrice = ref(0);
+    let loginCheck = ref(false);
 
 
     axios.get('/api/product/purchase/' + route.params.id)
@@ -415,15 +416,12 @@ export default {
     function clickPurchase() {
       if(optionSelected.value === 0) {
         alert('옵션을 선택하여 주십시오.');
-      } else if(document.getElementById('purchase-way')
-      .options[document.getElementById('purchase-way').selectedIndex]
-      .text === '결제 방법') {
-        alert('결제 방법을 선택하여 주십시오.');
       } else if(orderNum.value === 0) {
         alert('주문 개수를 선택하여 주십시오.')
       } else {
         axios.get('/api/product/purchase-detail')
         .then(res=>{
+
           name.value = res.data.name;
           phoneNum.value = res.data.phoneNum;
           addressNum.value = res.data.addressNum;
@@ -431,6 +429,7 @@ export default {
           addressName.value = res.data.addressName;
           detailAddress.value = res.data.detailAddress;
           purchaseDetail.value = true;
+          loginCheck.value = true;
         })
         .catch(err=>{
           console.log(err);
