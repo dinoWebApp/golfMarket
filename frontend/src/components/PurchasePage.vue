@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div align="center" class="black-bg">
+      <div class="white-bg border">
+        <h4>장바구니 담기 완료</h4>
+        <p>장바구니로 이동하시겠습니까?</p>
+        <div align='center'>
+          <button class="btn btn-light btn-sm border me-2">닫기</button>
+          <button style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">장바구니로 이동</button>
+        </div>
+      </div>
+    </div>
     <div v-if="purchaseDetail === false" class="container px-4 px-lg-5 my-5">
       <div class="row gx-4 gx-lg-5 align-items-center">
         <div class="col-md-6 col-xl-5">
@@ -41,9 +51,7 @@
             <span style="font-size:25px; font-weight:900"> 원 </span>
             
           </div>  
-          <div class="d-flex">
-            <span class="ms-2" style="font-size:15px;">주문 개수</span>
-          </div>
+          
           <div class="d-flex mb-2">
             
             <!-- <select  id="orderNum" class="form-select me-2 ms-1" aria-label="Default select example" style="max-width: 4rem">
@@ -57,7 +65,8 @@
                 <i class="bi-cart-fill me-1"></i>
                 장바구니 담기
             </button>
-            <button @click="clickPurchase" class="btn btn-danger" style="font-weight:bold;">구매하기</button>
+            <button v-if="loginCheck" @click="clickPurchase" class="btn btn-danger" style="font-weight:bold;">구매하기</button>
+            <button v-if="loginCheck === false" @click="clickPurchase" class="btn btn-danger" style="font-weight:bold;">비회원 주문</button>
           </div>
         </div>
         
@@ -279,7 +288,7 @@
       <div class="mt-4 d-flex">
         <h2 style="color:red; font-weight:bold;">결제 금액:</h2>
         <h2 class="ms-3"> {{filter(totalPrice)}} 원 </h2>
-        <button class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
+        <button @click="clickFinal" class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
         <button @click="backPage" class="btn btn-outline-success flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
     </div>
@@ -294,6 +303,7 @@ import axios from 'axios';
 import { useRoute, useRouter, } from 'vue-router'
 import { ref } from '@vue/reactivity'
 import StarRating from 'vue-star-rating'
+import { watch } from 'vue';
 
 export default {
   name: 'PurchasePage',
@@ -327,11 +337,13 @@ export default {
     let detailAddress = ref('');
     let totalPrice = ref(0);
     let loginCheck = ref(false);
+    let cartModal = ref(false);
 
 
     axios.get('/api/product/purchase/' + route.params.id)
     .then(res=>{
       console.log(res.data);
+      if(res.data.userInfo !== 'not login') loginCheck.value = true;
       product.value = res.data.product;
       imagePath.value = 'http://localhost:3000/static/image/' + res.data.product.thumbnail;
       infoImage.value = 'http://localhost:3000/static/image/' + res.data.product.infoImage;
@@ -421,20 +433,48 @@ export default {
       } else {
         axios.get('/api/product/purchase-detail')
         .then(res=>{
-
-          name.value = res.data.name;
-          phoneNum.value = res.data.phoneNum;
-          addressNum.value = res.data.addressNum;
-          address.value = res.data.address;
-          addressName.value = res.data.addressName;
-          detailAddress.value = res.data.detailAddress;
+          if(res.data !== 'need login') {
+            name.value = res.data.name;
+            phoneNum.value = res.data.phoneNum;
+            addressNum.value = res.data.addressNum;
+            address.value = res.data.address;
+            addressName.value = res.data.addressName;
+            detailAddress.value = res.data.detailAddress;
+          }
           purchaseDetail.value = true;
-          loginCheck.value = true;
         })
         .catch(err=>{
           console.log(err);
         });
       }
+    }
+
+    function inputName(e) {
+      name.value = e.target.value;
+    }
+
+    function inputPhoneNum(e) {
+      phoneNum.value = e.target.value;
+    }
+
+    watch(phoneNum, (newValue, oldValue)=>{
+      console.log({newValue, oldValue});
+      let blank_pattern = /[\s]/g;
+      if (isNaN(newValue) || blank_pattern.test(newValue) ) {
+        phoneNum.value = oldValue;
+      }
+    });
+
+    function clickFinal() {
+      if(
+        name.value === '' ||
+        phoneNum.value === '' ||
+        addressNum.value === '' ||
+        address.value === '' ||
+        addressName.value === '' ||
+        detailAddress.value === ''
+      ) alert('배송지 정보를 모두 입력해 주십시오.');
+      
     }
 
     function calTotal(productPrice, optionPrice, optionSelected, orderNum) {
@@ -451,7 +491,8 @@ export default {
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
-    totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage};
+    totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
+    clickFinal, inputName, inputPhoneNum, cartModal};
   }
 }
 </script>
@@ -463,4 +504,20 @@ export default {
 .nav-pills > .nav-item > button{
   color:darkgray;
 }
+
+body {
+  margin : 0;
+}
+div {
+  box-sizing: border-box;
+}
+.black-bg {
+  width: 100%; height:100%;
+  position: fixed; padding: 20px;
+}
+.white-bg {
+  width: 50%; background: white;
+  border-radius: 8px;
+  padding: 20px;
+} 
 </style>
