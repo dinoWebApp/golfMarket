@@ -71,8 +71,11 @@ router.get('/driver/brand', (req, res)=>{
 
 router.get('/purchase/:id', (req, res)=>{
   console.log(req.params.id);
+  let userInfo = 'not login'
+  if(req.user !== undefined) userInfo = req.user;
   let productId = parseInt(req.params.id);
   let sendData = {
+    userInfo : userInfo,
     product : {},
     relatedList : [],
     reviews :[],
