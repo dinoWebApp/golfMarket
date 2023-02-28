@@ -62,6 +62,7 @@ router.post('/sign-up', (req, res)=>{
           addressName : req.body.addressName,
           detailAddress : req.body.detailAddress,
           point : 0,
+          cart : []
         }, (err, result)=>{
           if (err) console.log(err);
           res.send('sign-up success');

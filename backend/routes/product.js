@@ -166,6 +166,19 @@ router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}])
   });
 });
 
+router.put('/purchase/:id', (req, res)=>{
+  console.log(req.user.id);
+  console.log(req.params.id);
+  db.collection('customers').updateOne({id : req.user.id}, {$push : {cart : {productId : req.params.id}}})
+  .then(result=>{
+    console.log(result.data);
+    res.send('addCart success');
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+})
+
 
 
 
