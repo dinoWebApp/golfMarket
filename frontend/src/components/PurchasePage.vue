@@ -1,11 +1,12 @@
 <template>
   <div>
-    <div align="center" class="black-bg">
+    <div v-if="cartModal" align="center" class="black-bg">
       <div class="white-bg border">
         <h4>장바구니 담기 완료</h4>
-        <p>장바구니로 이동하시겠습니까?</p>
+        <p class="d-block d-lg-none" style="font-size:15px">장바구니로 이동하시겠습니까?</p>
+        <p class="d-none d-lg-block" style="font-size:20px">장바구니로 이동하시겠습니까?</p>
         <div align='center'>
-          <button class="btn btn-light btn-sm border me-2">닫기</button>
+          <button @click="deleteCart" class="btn btn-light btn-sm border me-2">닫기</button>
           <button style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">장바구니로 이동</button>
         </div>
       </div>
@@ -61,7 +62,7 @@
               <option value="3">3</option>
             </select> -->
             <!-- <input class="form-control text-center me-3 ms-1" id="inputQuantity" type="num" value="1" style="max-width: 3rem"> -->
-            <button class="btn btn-outline-success flex-shrink-0 me-1" style="font-weight:bold;" type="button">
+            <button @click="addCart" class="btn btn-outline-success flex-shrink-0 me-1" style="font-weight:bold;" type="button">
                 <i class="bi-cart-fill me-1"></i>
                 장바구니 담기
             </button>
@@ -486,13 +487,33 @@ export default {
       router.go(0);
     }
 
+    function deleteCart() {
+      cartModal.value = false;
+    }
+
+    function addCart() {
+      if(loginCheck.value === false) {
+        alert('로그인이 필요합니다.');
+        router.push({path:'/customer/login'});
+      } else {
+        axios.put('/api/product/purchase/' + product.value.id)
+        .then(res=>{
+          console.log(res.data);
+          cartModal.value = true;
+        })
+        .catch(err=>{
+          console.log(err);
+        });
+      }
+    }
+
     
     
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
     totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
-    clickFinal, inputName, inputPhoneNum, cartModal};
+    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart};
   }
 }
 </script>
