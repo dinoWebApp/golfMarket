@@ -17,18 +17,9 @@
         <a href="#" class="list-group-item list-group-item-action">주문조회</a>
         <a href="#" class="list-group-item list-group-item-action">배송관리</a>
         <a href="#" class="list-group-item list-group-item-action">반품관리</a>
-        <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-        <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
       </div>
     </div>
-    <div class="col-10 mt-5" v-if="productEnroll === true">
+    <div class="col-9 col-md-10 mt-5" v-if="productEnroll === true">
       <div class="container mt-3 col-11 col-sm-11 col-md-11 col-lg-9 col-xxl-7 border ">
         <div class="mt-4 mb-3">
           <h3>상품 등록 하기</h3>
@@ -133,6 +124,29 @@
       </div>
   
     </div>
+    <div v-if="memberControl" class="col-9 ms-1">
+      <div class="container mt-5">
+        <h2>회원관리</h2>
+        <div class="row mt-4">
+          <div class="col-3">
+            <select id="searchTool" @change="searchTool" class="form-select" aria-label="Default select example">
+              <option selected value="0">분류</option>
+              <option value="name">이름</option>
+              <option value="id">아이디</option>
+              <option value="phoneNum">휴대폰번호</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <input v-bind:value="searchMemberText" @input="inputMember" type="text" class="form-control">
+          </div>
+          
+          <button class="btn btn-danger col-auto">검색</button>
+          
+          
+        </div>
+        
+      </div>
+    </div>
   </div>
   
   
@@ -151,7 +165,7 @@ export default {
   setup() {
     let divide = ref('');
     let brand = ref('');
-    let productEnroll = ref(true);
+    let productEnroll = ref(false);
     let productName = ref('');
     let beforeDiscount = ref('');
     let productPrice = ref('');
@@ -178,6 +192,10 @@ export default {
     let checkData = ref({
       pw : pw
     });
+    let memberControl = ref(true);
+    let selectedSearch = ref('');
+    let searchMemberText = ref('');
+
     const router = useRouter();
     axios.get('/api/admin-check').then(res=>{
       console.log(res.data);
@@ -330,6 +348,21 @@ export default {
       });
     }
 
+    function searchTool() {
+      let selectSearch = document.getElementById('searchTool');
+      selectedSearch.value = selectSearch.options[document.getElementById('searchTool').selectedIndex].value;
+      console.log(selectedSearch.value);
+    }
+
+    function inputMember(e) {
+      searchMemberText.value = e.target.value;
+    }
+
+    function clickSearch() {
+      let selectSearch = document.getElementById('searchTool');
+      
+    }
+
     watch(beforeDiscount, (newValue, oldValue)=>{
       console.log({newValue, oldValue});
       let blank_pattern = /[\s]/g;
@@ -349,7 +382,7 @@ export default {
 
     return {adminData, pw, submit, productEnroll, divide, productDivide, productPrice ,brandChoice, productName, inputProductName, inputProductPrice,
     selectThum, selectInfo, posting, selectKor, selectOut, optionNumber, addOption, optionText, optionPrice, inputOptionText, inputOptionPrice, beforeDiscount,
-    inputBeforeDiscount};
+    inputBeforeDiscount, memberControl, searchTool, searchMemberText, inputMember, clickSearch};
   }
 }
 </script>
