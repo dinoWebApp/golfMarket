@@ -1,5 +1,5 @@
+const router = require('express').Router();
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
@@ -22,10 +22,10 @@ let upload = multer({storage : storage});
 require('dotenv').config();
 let db;
 
-app.use(bodyParser.urlencoded({extended : true}));
-app.use(express.json());
-app.use(cors());
-app.use(session({
+router.use(bodyParser.urlencoded({extended : true}));
+router.use(express.json());
+router.use(cors());
+router.use(session({
   secret : 'secretcode',
   resave : true,
   saveUninitialized : false,
@@ -35,43 +35,28 @@ app.use(session({
     maxAge: 30 * 24 * 60 * 60 * 1000,
   }
 }));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use('/api/customer', require('./routes/customer.js'));
-app.use('/api/product', require('./routes/product.js'));
-app.use('/api/admin', require('./routes/admin.js'));
-app.use('/static',express.static(__dirname + '/public'));
+router.use(passport.initialize());
+router.use(passport.session());
 
 MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
-  app.listen(process.env.PORT, ()=>{
-    console.log('listening on 3000');
-  });
 });
 
-
-
-app.get('/api/', (req, res)=>{
-  res.send('home');
-})
-
-app.get('/api/admin-check', loginCheck, (req, res)=>{
-  let adminData = [req.user.nickName, req.user.id];
-  res.send(adminData);
-});
-
-app.post('/api/admin-pw', (req, res)=>{
-  db.collection('admin').findOne({id : 'admin'}, (err, result)=>{
-    bcrypt.compare(req.body.pw, result.pw, (err, isMatch)=>{
-      if (err) console.log(err);
-      if (isMatch) {
-        res.send('ok');
-      } else res.send('fail');
-    })
+router.get('/search', (req, res)=>{
+  let type = req.query.type;
+  let searchMemberText = req.query.searchMemberText;
+  db.collection('customers').find({[type] : searchMemberText}).toArray()
+  .then(result=>{
+    console.log(result);
+    if(result.length === 0) res.send('not found');
+    else res.send(result);
   })
-})
+  .catch(err=>{
+    console.log(err);
+  })
 
+})
 
 
 passport.use(new LocalStrategy({
@@ -83,6 +68,7 @@ passport.use(new LocalStrategy({
   console.log(inputId, inputPw);
   db.collection('customers').findOne({id : inputId}, (err, result)=>{
     if(err) return done(err);
+    console.log(result);
     if(!result) return done(null, false, {message : 'id fail'});
     bcrypt.compare(inputPw, result.pw, (err, isMatch)=>{
       if (err) return done(err);
@@ -112,3 +98,4 @@ function loginCheck(req, res, next) {
   }
 }
 
+module.exports = router;
