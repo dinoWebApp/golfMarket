@@ -140,7 +140,7 @@
             <input v-bind:value="searchMemberText" @input="inputMember" type="text" class="form-control">
           </div>
           
-          <button class="btn btn-danger col-auto">검색</button>
+          <button @click="clickSearch" class="btn btn-danger col-auto">검색</button>
           
           
         </div>
@@ -195,6 +195,7 @@ export default {
     let memberControl = ref(true);
     let selectedSearch = ref('');
     let searchMemberText = ref('');
+    let searchedMember = ref([])
 
     const router = useRouter();
     axios.get('/api/admin-check').then(res=>{
@@ -359,7 +360,18 @@ export default {
     }
 
     function clickSearch() {
-      let selectSearch = document.getElementById('searchTool');
+      if(selectedSearch.value === '' || selectedSearch.value === '0') alert('검색 분류를 선택해 주십시오');
+      else {
+        axios.get('/api/admin/search?type=' + selectedSearch.value + '&searchMemberText=' + searchMemberText.value)
+        .then(res=>{
+          console.log(res.data);
+          if(res.data === 'not found') alert('해당하는 회원이 존재하지 않습니다.');
+          else searchedMember.value = res.data;
+        })
+        .catch(err=>{
+          console.log(err);
+        });
+      }
       
     }
 
