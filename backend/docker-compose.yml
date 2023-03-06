@@ -1,0 +1,9 @@
+version: '2.3'
+services:
+  express:
+    build: ./
+    container_name: tgolshop
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "3000:3000"
