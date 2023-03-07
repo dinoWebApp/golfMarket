@@ -227,7 +227,10 @@
       </div>
       <hr/>
       <div class="mt-3 mb-3">
-        <h4 style="font-weight:bold;" align="left">배송지 입력 (수정 가능)</h4>
+        <h4 v-if="loginCheck" style="font-weight:bold;" align="left">배송지 입력 (수정 가능)</h4>
+      </div>
+      <div class="mt-3 mb-3">
+        <h4 v-if="loginCheck === false" style="font-weight:bold;" align="left">배송지 입력</h4>
       </div>
       <div class="border">
         <div class="col-5 col-lg-3 ms-1 me-1 mt-3 mb-3">
@@ -236,7 +239,7 @@
           <div align='left' class="ms-1 mb-1">휴대폰 번호</div>
           <input v-bind:value="phoneNum" @input="inputPhoneNum" type="tel" class="form-control mb-2" id="phoneNum" placeholder="휴대폰 번호 (10~11자)" maxlength="11">
         </div>
-        <div class="ms-1 col-10 col-lg-5 mt-3">
+        <div class="ms-1 col-11 col-lg-7 mt-3">
           <div class="d-flex">
             <div class="col-6">
               <input type="text" class="form-control mb-2" id="address-num" v-model="addressNum" placeholder="우편번호" readonly>
@@ -507,13 +510,17 @@ export default {
       }
     }
 
+    function mypage() {
+      router.push({path:'/customer/mypage'});
+    }
+
     
     
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
     totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
-    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart};
+    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage};
   }
 }
 </script>

@@ -1,12 +1,12 @@
 <template>
   <div v-if="profileModal" id="profile-xs" class="list-group d-block d-sm-none">
-    <a href="#" class="list-group-item list-group-item-action">마이페이지</a>
+    <a href="#" @click="mypage" class="list-group-item list-group-item-action">마이페이지</a>
     <a href="#" class="list-group-item list-group-item-action">장바구니</a>
     <a href="#" @click="profileLogout" class="list-group-item list-group-item-action">로그아웃</a>
     <a href="#" @click="profileDelete" id="mypageDelete" class="list-group-item list-group-item-action" style="background-color:red; color:white; font-weight:bold;">닫기</a>
   </div>
   <div v-if="profileModal" id="profile-sm" class="list-group d-none d-sm-block d-md-none">
-    <a href="#" class="list-group-item list-group-item-action">마이페이지</a>
+    <a href="#" @click="mypage" class="list-group-item list-group-item-action">마이페이지</a>
     <a href="#" class="list-group-item list-group-item-action">장바구니</a>
     <a href="#" @click="profileLogout" class="list-group-item list-group-item-action">로그아웃</a>
     <a href="#" @click="profileDelete" id="mypageDelete" class="list-group-item list-group-item-action" style="background-color:red; color:white; font-weight:bold;">닫기</a>
