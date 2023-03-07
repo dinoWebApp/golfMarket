@@ -114,7 +114,9 @@ router.get('/login-check', loginCheck, (req, res)=>{
 router.get('/logout', (req, res)=>{
   req.session.destroy();
   res.send('logout success');
-})
+});
+
+router.get('/mypage')
 
 
 
