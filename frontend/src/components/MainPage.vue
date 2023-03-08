@@ -28,24 +28,28 @@
         </button>
       </div>
     </div>
-    
-    <header id="banner" class="container py-5">
-      <div class="container px-5">
-        <div class="row gx-5 align-items-center justify-content-center">
-          <div class="col-lg-8 col-xl-7 col-xxl-6">
-            <div class="my-5 text-center text-xl-start">
-              
-              <p style="" class="display-6 lead fw-normal text-dark-50 mb-2">지금 바로 신규 회원 가입시</p>
-              <h1 class="display-4 fw-bolder text-dark mb-5">즉시 사용 가능한 포인트 지급!</h1>
-              <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                <a style="font-weight:bold;" class="btn btn-dark btn-lg px-4 me-sm-3" href="/customer/sign-up">회원가입 하러 가기</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="../assets/coupon-2.jpg" alt="..." /></div>
+    <div class="container mt-3 mb-3">
+      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/sign-up-event.jpg" class="d-block w-100" alt="...">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-    </header>
+    </div>
+    
+    
     
   <!-- Features section-->
   <section class="py-5" id="features">
