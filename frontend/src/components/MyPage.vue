@@ -62,8 +62,7 @@ export default {
 
 <style>
 .mypage-option {
-  font-size: 15px;
-  width: 26%;
-  padding: 5px;
+  font-size: 15px !important;
+  padding: 5px !important;
 }
 </style>

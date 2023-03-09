@@ -498,8 +498,12 @@ export default {
       if(loginCheck.value === false) {
         alert('로그인이 필요합니다.');
         router.push({path:'/customer/login'});
-      } else {
-        axios.put('/api/product/purchase/' + product.value.id)
+      } else if(optionSelected.value === 0) {
+        alert('옵션을 선택하여 주십시오.');
+      } else if(orderNum.value === 0) {
+        alert('주문 개수를 선택하여 주십시오.')
+      }else{
+        axios.put('/api/product/purchase?id=' + product.value.id + '&option=' + optionText.value + '&orderNum=' + orderNum.value)
         .then(res=>{
           console.log(res.data);
           cartModal.value = true;
