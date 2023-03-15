@@ -116,7 +116,17 @@ router.get('/logout', (req, res)=>{
   res.send('logout success');
 });
 
-router.get('/mypage')
+router.get('/mypage', (req, res)=>{
+  console.log(req.query.nickName);
+  let customer = req.query.nickName;
+  db.collection('customers').findOne({nickName : customer})
+  .then(result=>{
+    let customerInfo = {
+      
+    }
+  })
+
+})
 
 
 
