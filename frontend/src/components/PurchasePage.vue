@@ -333,6 +333,7 @@ export default {
     let reviews = ref([]);
     let totalReview = ref({});
     let purchaseDetail = ref(false);
+    let nickName = ref('');
     let name = ref('');
     let phoneNum = ref('');
     let addressNum = ref('');
@@ -478,7 +479,22 @@ export default {
         addressName.value === '' ||
         detailAddress.value === ''
       ) alert('배송지 정보를 모두 입력해 주십시오.');
-      
+      else {
+        let purchaseInfo = {
+          nickName : nickName.value,
+          name : name.value,
+          phoneNum : phoneNum.value,
+          addressNum : addressNum.value,
+          address : address.value,
+          addressName : addressName.value,
+          detailAddress : detailAddress.value,
+          productId : productId.value,
+          productName : product.productName,
+          orderNum : orderNum.value,
+          optionText : optionText.value,
+          totalPrice : totalPrice.value
+        }
+      }
     }
 
     function calTotal(productPrice, optionPrice, optionSelected, orderNum) {
