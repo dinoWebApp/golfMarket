@@ -126,6 +126,7 @@ router.get('/purchase/:id', (req, res)=>{
 
 router.get('/purchase-detail', loginCheck, (req, res)=>{
   let userData = {
+    nickName: req.user.nickName,
     name: req.user.name,
     phoneNum: req.user.phoneNum,
     addressNum : req.user.addressNum,
