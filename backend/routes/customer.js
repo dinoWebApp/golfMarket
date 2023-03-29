@@ -119,11 +119,39 @@ router.get('/logout', (req, res)=>{
 router.get('/mypage', (req, res)=>{
   console.log(req.query.nickName);
   let customer = req.query.nickName;
+  let customerInfo = {
+    purchaseData : [],
+    cart : [],
+    id : '',
+    nickName : '',
+    name : '',
+    phoneNum : '',
+    addressNum : '',
+    address : '',
+    addressName : '',
+    detailAddress : '',
+    point : 0
+  }
   db.collection('customers').findOne({nickName : customer})
   .then(result=>{
-    let customerInfo = {
-      
-    }
+    customerInfo.cart = result.cart;
+    customerInfo.id = result.id;
+    customerInfo.nickName = result.nickName;
+    customerInfo.name = result.name;
+    customerInfo.phoneNum = result.phoneNum;
+    customerInfo.addressNum = result.addressNum;
+    customerInfo.address = result.address;
+    customerInfo.addressName = result.addressName;
+    customerInfo.detailAddress = result.detailAddress;
+    customerInfo.point = result.point;
+    return db.collection('purchaseData').find({nickName : result.nickName}).toArray()
+  })
+  .then(result=>{
+    customerInfo.purchaseData = result;
+    res.send(customerInfo);
+  })
+  .catch(err=>{
+    console.log(err);
   })
 
 })
