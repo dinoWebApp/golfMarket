@@ -439,6 +439,7 @@ export default {
         axios.get('/api/product/purchase-detail')
         .then(res=>{
           if(res.data !== 'need login') {
+            nickName.value = res.data.nickName;
             name.value = res.data.name;
             phoneNum.value = res.data.phoneNum;
             addressNum.value = res.data.addressNum;
@@ -488,12 +489,21 @@ export default {
           address : address.value,
           addressName : addressName.value,
           detailAddress : detailAddress.value,
-          productId : productId.value,
-          productName : product.productName,
+          productId : product.value.id,
+          productName : product.value.productName,
           orderNum : orderNum.value,
           optionText : optionText.value,
           totalPrice : totalPrice.value
         }
+        console.log(purchaseInfo);
+        axios.post('/api/product/purchase', purchaseInfo)
+        .then(result=>{
+          console.log(result.data);
+          router.push({name: 'PurchaseComplete'});
+        })
+        .catch(err=>{
+          console.log(err);
+        })
       }
     }
 
@@ -519,7 +529,7 @@ export default {
       } else if(orderNum.value === 0) {
         alert('주문 개수를 선택하여 주십시오.')
       }else{
-        axios.put('/api/product/purchase?id=' + product.value.id + '&option=' + optionText.value + '&orderNum=' + orderNum.value)
+        axios.put('/api/product/addCart?id=' + product.value.id + '&option=' + optionText.value + '&orderNum=' + orderNum.value)
         .then(res=>{
           console.log(res.data);
           cartModal.value = true;

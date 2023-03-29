@@ -8,6 +8,7 @@ import AdminPage from './components/AdminPage.vue'
 import PurchasePage from './components/PurchasePage.vue'
 import MainPage from './components/MainPage.vue'
 import MyPage from './components/MyPage.vue'
+import PurchaseComplete from './components/PurchaseComplete.vue'
 const routes = [
   {
     path:'/',
@@ -48,6 +49,11 @@ const routes = [
         path:'customer/mypage',
         component: MyPage,
         name: 'MyPage'
+      },
+      {
+        path:'product/submit',
+        component : PurchaseComplete,
+        name: 'PurchaseComplete'
       }
     ]
   },

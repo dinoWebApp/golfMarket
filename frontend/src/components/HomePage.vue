@@ -209,7 +209,7 @@ export default {
     }
 
     function mypage() {
-      router.push({name:'MyPage', query:{nickName:nickName.value}});
+      router.push({name:'MyPage', query:{nickName:nickName.value, cart: 0}});
     }
 
 
