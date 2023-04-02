@@ -7,7 +7,7 @@
         <p class="d-none d-lg-block" style="font-size:20px">장바구니로 이동하시겠습니까?</p>
         <div align='center'>
           <button @click="deleteCart" class="btn btn-light btn-sm border me-2">닫기</button>
-          <button style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">장바구니로 이동</button>
+          <button @click="moveCart" style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">장바구니로 이동</button>
         </div>
       </div>
     </div>
@@ -529,7 +529,7 @@ export default {
       } else if(orderNum.value === 0) {
         alert('주문 개수를 선택하여 주십시오.')
       }else{
-        axios.put('/api/product/addCart?id=' + product.value.id + '&option=' + optionText.value + '&orderNum=' + orderNum.value)
+        axios.put('/api/product/addCart?id=' + product.value.id + '&option=' + optionText.value + '&orderNum=' + orderNum.value + '&totalPrice=' + totalPrice.value)
         .then(res=>{
           console.log(res.data);
           cartModal.value = true;
@@ -544,13 +544,24 @@ export default {
       router.push({path:'/customer/mypage'});
     }
 
+    function moveCart() {
+      axios.get('/api/customer/mypage/getNick')
+      .then(result=>{
+        let nick = result.data;
+        router.push({name:'MyPage', query:{nickName:nick, cart: 1}});
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    }
+
     
     
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
     totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
-    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage};
+    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage, moveCart};
   }
 }
 </script>
