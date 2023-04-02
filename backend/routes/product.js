@@ -201,9 +201,16 @@ router.post('/purchase', (req, res)=>{
 router.put('/addCart', (req, res)=>{
   console.log(req.user.id);
   console.log(req.query.id, req.query.option, req.query.orderNum);
-  db.collection('customers').updateOne({id : req.user.id}, {$push : {cart : {productId : req.query.id, productOption : req.query.option, productNum : req.query.orderNum}}})
+  db.collection('cartId').findOne({name : 'cartId'})
+  .then(result=>{
+    let cartId = result.cartId;
+    return db.collection('customers').updateOne({id : req.user.id}, {$push : {cart : {productId : req.query.id, productOption : req.query.option, productNum : req.query.orderNum, cartId : cartId + 1}}})
+  })
   .then(result=>{
     console.log(result.data);
+    return db.collection('cartId').updateOne({name : 'cartId'}, {$inc : {cartId : 1}})
+  })
+  .then(()=>{
     res.send('addCart success');
   })
   .catch(err=>{
