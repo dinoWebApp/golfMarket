@@ -174,29 +174,37 @@ router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}])
 router.post('/purchase', (req, res)=>{
   let data = req.body
   console.log(data);
-  let purchaseData = {
-    nickName : data.nickName,
-    name : data.name,
-    phoneNum : data.phoneNum,
-    addressNum : data.addressNum,
-    address : data.address,
-    addressName : data.addressName,
-    detailAddress : data.detailAddress,
-    productId : data.productId,
-    productName : data.productName,
-    orderNum : data.orderNum,
-    optionText : data.optionText,
-    totalPrice : data.totalPrice,
-    currentState : '결제완료'
-  }
-  db.collection('purchaseData').insertOne(purchaseData)
+  db.collection('orderId').findOne({name : 'orderId'})
+  .then(result=>{
+    let orderId = result.orderId;
+    let purchaseData = {
+      nickName : data.nickName,
+      name : data.name,
+      phoneNum : data.phoneNum,
+      addressNum : data.addressNum,
+      address : data.address,
+      addressName : data.addressName,
+      detailAddress : data.detailAddress,
+      productId : data.productId,
+      productName : data.productName,
+      orderNum : data.orderNum,
+      optionText : data.optionText,
+      totalPrice : data.totalPrice,
+      orderId : orderId + 1,
+      currentState : '결제완료'
+    }
+    return db.collection('purchaseData').insertOne(purchaseData)
+  })
+  .then(()=>{
+    return db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}})
+  })
   .then(()=>{
     res.send('purchase success');
   })
   .catch(err=>{
     console.log(err);
-  })
-})
+  });
+});
 
 router.put('/addCart', (req, res)=>{
   console.log(req.user.id);
@@ -204,7 +212,15 @@ router.put('/addCart', (req, res)=>{
   db.collection('cartId').findOne({name : 'cartId'})
   .then(result=>{
     let cartId = result.cartId;
-    return db.collection('customers').updateOne({id : req.user.id}, {$push : {cart : {productId : req.query.id, productOption : req.query.option, productNum : req.query.orderNum, cartId : cartId + 1}}})
+    return db.collection('customers').updateOne({id : req.user.id}, {$push : {cart : 
+      {
+        productId : req.query.id,
+        productOption : req.query.option,
+        productNum : req.query.orderNum,
+        totalPrice : req.query.totalPrice,
+        cartId : cartId + 1
+      }
+    }});
   })
   .then(result=>{
     console.log(result.data);

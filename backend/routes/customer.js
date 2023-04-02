@@ -154,6 +154,13 @@ router.get('/mypage', (req, res)=>{
     console.log(err);
   })
 
+});
+
+router.get('/mypage/getNick', (req, res)=>{
+  if(!req.user) res.send('need login');
+  else {
+    res.send(req.user.nickName);
+  }
 })
 
 
