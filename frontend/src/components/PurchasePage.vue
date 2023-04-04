@@ -471,6 +471,42 @@ export default {
       }
     });
 
+    function inputAddress() {
+      new window.daum.Postcode({
+        oncomplete: function(data) {
+          let addr = '';
+          let extraAddr = '';
+          if (data.userSelectedType === 'R') {
+            addr = data.roadAddress;
+          } else {
+            addr = data.jibunAddress;
+          }
+
+          if (data.userSelectedType === 'R') {
+            if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+              extraAddr += data.bname;
+            }
+
+            if(data.buildingName !== '' && data.apartment === 'Y') {
+              extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+            }
+
+            if(extraAddr !== '') {
+              extraAddr = ' (' + extraAddr + ')';
+            }
+
+            addressName.value = extraAddr;
+          } else {
+            addressName.value = '';
+          }
+
+          addressNum.value = data.zonecode;
+          address.value = addr;
+          document.getElementById('detailAddress').focus();
+        }
+      }).open();
+    }
+
     function clickFinal() {
       if(
         name.value === '' ||
@@ -529,7 +565,20 @@ export default {
       } else if(orderNum.value === 0) {
         alert('주문 개수를 선택하여 주십시오.')
       }else{
-        axios.put('/api/product/addCart?id=' + product.value.id + '&option=' + optionText.value + '&orderNum=' + orderNum.value + '&totalPrice=' + totalPrice.value)
+        let cartData = {
+          productId : product.value.id,
+          productName : product.value.productName,
+          option : optionText.value,
+          orderNum : orderNum.value,
+          totalPrice : totalPrice.value
+        }
+        // axios.put(
+        //   '/api/product/addCart?id=' + product.value.id
+        //   + '&productName=' + product.value.productName
+        //   + '&option=' + optionText.value
+        //   + '&orderNum=' + orderNum.value
+        //   + '&totalPrice=' + totalPrice.value)
+        axios.put('/api/product/addCart', cartData)
         .then(res=>{
           console.log(res.data);
           cartModal.value = true;
@@ -561,7 +610,7 @@ export default {
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
     totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
-    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage, moveCart};
+    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage, moveCart, inputAddress};
   }
 }
 </script>
