@@ -161,6 +161,21 @@ router.get('/mypage/getNick', (req, res)=>{
   else {
     res.send(req.user.nickName);
   }
+});
+
+router.delete('/mypage/deleteCart', (req, res)=>{
+  let cartId = parseInt(req.query.cartId);
+  db.collection('customers').updateOne({nickName : req.query.nickName}, {$pull : {cart : {cartId : cartId}}})
+  .then(()=>{
+    return db.collection('customers').findOne({nickName : req.query.nickName})
+  })
+  .then(result=>{
+    res.send(result.cart);
+    
+  })
+  .catch(err=>{
+    console.log(err);
+  })
 })
 
 

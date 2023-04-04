@@ -178,6 +178,7 @@ router.post('/purchase', (req, res)=>{
   .then(result=>{
     let orderId = result.orderId;
     let purchaseData = {
+      cartBool : false,
       nickName : data.nickName,
       name : data.name,
       phoneNum : data.phoneNum,
@@ -206,18 +207,56 @@ router.post('/purchase', (req, res)=>{
   });
 });
 
+router.post('/cartPurchase', (req, res)=>{
+  let data = req.body;
+  for(let i = 0; i < data.length; i++) {
+    db.collection('orderId').findOne({name : 'orderId'})
+    .then(result=>{
+      let orderId = result.orderId;
+      let purchaseData = {
+        cartBool : true,
+        nickName : data[i].nickName,
+        name : data[i].name,
+        phoneNum : data[i].phoneNum,
+        addressNum : data[i].addressNum,
+        address : data[i].address,
+        addressName : data[i].addressName,
+        detailAddress : data[i].detailAddress,
+        productId : data[i].productId,
+        productName : data[i].productName,
+        orderNum : data[i].orderNum,
+        optionText : data[i].optionText,
+        totalPrice : data[i].totalPrice,
+        orderId : orderId + 1,
+        currentState : '결제완료'
+      }
+      return db.collection('purchaseData').insertOne(purchaseData)
+    })
+    .catch(err=>{
+      console.log(err);
+    });
+  }
+  db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}})
+  .then(()=>{
+    res.send('purchase success');
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+});
+
 router.put('/addCart', (req, res)=>{
   console.log(req.user.id);
-  console.log(req.query.id, req.query.option, req.query.orderNum);
   db.collection('cartId').findOne({name : 'cartId'})
   .then(result=>{
     let cartId = result.cartId;
     return db.collection('customers').updateOne({id : req.user.id}, {$push : {cart : 
       {
-        productId : req.query.id,
-        productOption : req.query.option,
-        productNum : req.query.orderNum,
-        totalPrice : req.query.totalPrice,
+        productName : req.body.productName,
+        productId : req.body.productId,
+        productOption : req.body.option,
+        productNum : req.body.orderNum,
+        totalPrice : req.body.totalPrice,
         cartId : cartId + 1
       }
     }});
