@@ -205,6 +205,7 @@
       </div>
     </div>
 
+    <!-- 배송조회 -->
     <div v-if="deliInfo">
       <div>
         <div>
@@ -218,22 +219,41 @@
             <div class="col-5">
               <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
               <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
-              <div style="color:darkgray">{{item.productOption}}</div>
+              <div style="color:darkgray">{{item.optionText}}</div>
             </div>
             <div class="col-4 d-none d-lg-block"><h5> {{item.deliNum}} </h5></div>
             <div class="col-4 d-block d-lg-none"><h6> {{item.deliNum}} </h6></div>
             <div class="col-3">
-              <button class="btn btn-light btn-sm border">배송조회</button>
+              <button @click="clickDeliNum" class="btn btn-light btn-sm border">배송조회</button>
             </div>
           </div>
         </div>
         
       </div>
-      <hr/>
-      <div class="mt-4 d-flex">
-        <h3 style="color:red; font-weight:bold;">총 결제 금액:</h3>
-        <h3 class="ms-3"> {{filter(totalPrice)}} 원 </h3>
-        <button @click="clickPurchase" class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
+    </div>
+    <div v-if="reviews">
+      <div>
+        <div>
+          <div class="row mt-4">
+            <div class="col-5"> <h6>상품 및 옵션</h6></div>
+            <div class="col-4"><h6>구매 날짜</h6></div>
+            <div class="col-3"> <h6></h6></div>
+          </div>
+          <div class="row" v-for="item in mypageData.purchaseData" :key="item">
+            <hr/>
+            <div class="col-5">
+              <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
+              <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
+              <div style="color:darkgray">{{item.optionText}}</div>
+            </div>
+            <div class="col-4 d-none d-lg-block"><h5> {{item.purchaseDate}} </h5></div>
+            <div class="col-4 d-block d-lg-none"><h6> {{item.purchaseDate}} </h6></div>
+            <div class="col-3">
+              <button class="btn btn-light btn-sm border">리뷰쓰기</button>
+            </div>
+          </div>
+        </div>
+        
       </div>
     </div>
   </div>
@@ -492,11 +512,15 @@ export default {
         })
       }
     }
+
+    function clickDeliNum() {
+      window.open('https://www.ilogen.com/m/personal/trace/1234556712');
+    }
     
   
     return {nickName, updateKey, purchaseList, cart, mypageData, filter, deliInfo, reviews, qna, point, info, clickPurchaseData, clickDeliInfo,
     clickCart, clickReviews, clickQna, clickPoint, clickInfo, totalPrice, deleteCart, clickPurchase, purchaseDetail, inputName, inputPhoneNum,
-    inputAddress, clickFinal, clickBack};
+    inputAddress, clickFinal, clickBack, clickDeliNum};
   }
 }
 </script>
