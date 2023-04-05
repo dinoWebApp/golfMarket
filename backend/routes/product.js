@@ -177,6 +177,11 @@ router.post('/purchase', (req, res)=>{
   db.collection('orderId').findOne({name : 'orderId'})
   .then(result=>{
     let orderId = result.orderId;
+    let now = new Date();
+    let year = now.getFullYear();
+    let month = now.getMonth() + 1;
+    let date = now.getDate();
+    let today = year + '-' + month + '-' + date;
     let purchaseData = {
       cartBool : false,
       nickName : data.nickName,
@@ -192,7 +197,9 @@ router.post('/purchase', (req, res)=>{
       optionText : data.optionText,
       totalPrice : data.totalPrice,
       orderId : orderId + 1,
+      purchaseDate : today,
       deliNum : 0,
+      review : false,
       currentState : '결제완료'
     }
     return db.collection('purchaseData').insertOne(purchaseData)
@@ -214,6 +221,11 @@ router.post('/cartPurchase', (req, res)=>{
     db.collection('orderId').findOne({name : 'orderId'})
     .then(result=>{
       let orderId = result.orderId;
+      let now = new Date();
+      let year = now.getFullYear();
+      let month = now.getMonth() + 1;
+      let date = now.getDate();
+      let today = year + '-' + month + '-' + date;
       let purchaseData = {
         cartBool : true,
         nickName : data[i].nickName,
@@ -229,7 +241,9 @@ router.post('/cartPurchase', (req, res)=>{
         optionText : data[i].optionText,
         totalPrice : data[i].totalPrice,
         orderId : orderId + 1,
+        purchaseDate : today,
         deliNum : 0,
+        review : false,
         currentState : '결제완료'
       }
       console.log(purchaseData);
