@@ -63,6 +63,7 @@
       
       <div>
         <div>
+          <hr/>
           <div class="row mt-4">
             <div class="col-5"> <h6>주문상품 및 옵션</h6></div>
             <div class="col-2"><h6>수량</h6></div>
@@ -74,7 +75,7 @@
             <div class="col-5">
               <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
               <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
-              <div style="color:darkgray">{{item.optionText}}</div>
+              <div style="color:darkgray; font-size: 14px;">{{item.optionText}}</div>
             </div>
             <div class="col-2 d-none d-lg-block"><h5> {{item.orderNum}} </h5></div>
             <div class="col-2 d-block d-lg-none"><h6> {{item.orderNum}} </h6></div>
@@ -204,6 +205,37 @@
       </div>
     </div>
 
+    <div v-if="deliInfo">
+      <div>
+        <div>
+          <div class="row mt-4">
+            <div class="col-5"> <h6>상품 및 옵션</h6></div>
+            <div class="col-4"><h6>운송장번호</h6></div>
+            <div class="col-3"> <h6>조회</h6></div>
+          </div>
+          <div class="row" v-for="item in mypageData.purchaseData" :key="item">
+            <hr/>
+            <div class="col-5">
+              <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
+              <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
+              <div style="color:darkgray">{{item.productOption}}</div>
+            </div>
+            <div class="col-4 d-none d-lg-block"><h5> {{item.deliNum}} </h5></div>
+            <div class="col-4 d-block d-lg-none"><h6> {{item.deliNum}} </h6></div>
+            <div class="col-3">
+              <button class="btn btn-light btn-sm border">배송조회</button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <hr/>
+      <div class="mt-4 d-flex">
+        <h3 style="color:red; font-weight:bold;">총 결제 금액:</h3>
+        <h3 class="ms-3"> {{filter(totalPrice)}} 원 </h3>
+        <button @click="clickPurchase" class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -440,10 +472,12 @@ export default {
               address : mypageData.value.address,
               addressName : mypageData.value.addressName,
               detailAddress : mypageData.value.detailAddress,
-              productId : mypageData.value.productId,
-              orderNum : mypageData.value.productNum,
-              optionText : mypageData.value.productOption,
-              totalPrice : mypageData.value.totalPrice
+              productName : mypageData.value.cart[i].productName,
+              productId : mypageData.value.cart[i].productId,
+              orderNum : mypageData.value.cart[i].productNum,
+              optionText : mypageData.value.cart[i].productOption,
+              totalPrice : mypageData.value.cart[i].totalPrice,
+              cartId : mypageData.value.cart[i].cartId
             }
           )
         }
