@@ -192,6 +192,7 @@ router.post('/purchase', (req, res)=>{
       optionText : data.optionText,
       totalPrice : data.totalPrice,
       orderId : orderId + 1,
+      deliNum : 0,
       currentState : '결제완료'
     }
     return db.collection('purchaseData').insertOne(purchaseData)
@@ -228,21 +229,23 @@ router.post('/cartPurchase', (req, res)=>{
         optionText : data[i].optionText,
         totalPrice : data[i].totalPrice,
         orderId : orderId + 1,
+        deliNum : 0,
         currentState : '결제완료'
       }
+      console.log(purchaseData);
       return db.collection('purchaseData').insertOne(purchaseData)
+    })
+    .then(()=>{
+      return db.collection('customers').updateOne({nickName : data[i].nickName}, {$pull : {cart : {cartId : data[i].cartId}}});
+    })
+    .then(()=>{
+      return db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}});
     })
     .catch(err=>{
       console.log(err);
     });
   }
-  db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}})
-  .then(()=>{
-    res.send('purchase success');
-  })
-  .catch(err=>{
-    console.log(err);
-  });
+  res.send('purchase success');
 });
 
 router.put('/addCart', (req, res)=>{
