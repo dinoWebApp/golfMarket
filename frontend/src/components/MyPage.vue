@@ -18,7 +18,7 @@
           <button @click="clickCart" class="nav-link mypage-option" id="cart" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">장바구니</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button @click="clickReviews" class="nav-link mypage-option" id="reviews" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">리뷰관리</button>
+          <button @click="clickReviews" class="nav-link mypage-option" id="reviews" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">후기작성</button>
         </li>
         <li class="nav-item" role="presentation">
           <button @click="clickQna" class="nav-link mypage-option" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">1:1문의</button>
@@ -145,7 +145,7 @@
           <div align='left' class="ms-1 mb-1">성명</div>
           <input v-bind:value="mypageData.name" @input="inputName" type="text" class="form-control mb-2" id="name" placeholder="성명" maxlength="6">
           <div align='left' class="ms-1 mb-1">휴대폰 번호</div>
-          <input v-bind:value="mypageData.phoneNum" @input="inputPhoneNum" type="tel" class="form-control mb-2" id="phoneNum" placeholder="휴대폰 번호 (10~11자)" maxlength="11">
+          <input v-bind:value="phoneNum" @input="inputPhoneNum" type="tel" class="form-control mb-2" id="phoneNum" placeholder="휴대폰 번호 (10~11자)" maxlength="11">
         </div>
         <div class="ms-1 col-11 col-lg-7 mt-3">
           <div class="d-flex">
@@ -231,6 +231,7 @@
         
       </div>
     </div>
+    <!-- 후기 -->
     <div v-if="reviews">
       <div>
         <div>
@@ -248,10 +249,61 @@
             </div>
             <div class="col-4 d-none d-lg-block"><h5> {{item.purchaseDate}} </h5></div>
             <div class="col-4 d-block d-lg-none"><h6> {{item.purchaseDate}} </h6></div>
-            <div class="col-3">
-              <button class="btn btn-light btn-sm border">리뷰쓰기</button>
+            <div v-if="item.review === false" class="col-3">
+              <button @click="clickReview" class="btn btn-light btn-sm border">리뷰쓰기</button>
+            </div>
+            <div v-if="item.review" class="col-3">
+              작성완료
             </div>
           </div>
+        </div>
+        
+      </div>
+    </div>
+   
+    <div class="mb-3" v-if="reviewWrite">
+      <div class="row p-5 bg-light rounded-3 mt-3">
+        <div class="row" style="font-weight:30; font-size:23px;">
+          주문하신 상품에 관한 후기를 남겨주세요.
+        </div>
+        <li class="row mb-4" style="color:darkgray">
+          ({{ reviewProductName }})
+        </li>
+        <li class="row mb-4" style="color:darkgray">
+          리뷰 작성 시 300포인트 지급
+        </li>
+        <div align="left" class="col-3 mb-1">
+          평점:
+          <select @change="selectGrade" name="grade">
+            <option value="5" selected="selected">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="3">2</option>
+            <option value="3">1</option>
+          </select>
+        </div>
+        <div class="row">
+          <textarea v-bind:value="reviewText" @input="inputReview" class="col-10" id="qna" cols="30" rows="3"></textarea>
+          <button @click="reviewSubmit" class="btn btn-secondary col-2" style="font-weight:bold;">등록</button>
+        </div>
+        <div align="left">
+          <span>{{ reviewText.length }}/100</span>
+        </div>
+        
+        
+      </div>
+    </div>
+    <div class="mb-3" v-if="qnaWrite">
+      <div class="row p-5 bg-light rounded-3 mt-3">
+        <div class="row" style="font-weight:30; font-size:23px;">
+          결제취소, 반품, 교환 등 문의 사항을 작성해주십시오.
+        </div>
+        <li class="row mb-4" style="color:darkgray">
+          50자 이내로 작성
+        </li>
+        <div class="row">
+          <textarea class="col-9" id="qna" cols="30" rows="3"></textarea>
+          <button class="btn btn-secondary col-2" style="font-weight:bold;">문의하기</button>
         </div>
         
       </div>
@@ -271,6 +323,7 @@ export default {
     const router = useRouter();
     let nickName = ref(route.query.nickName);
     let mypageData = ref({});
+    let phoneNum = ref('');
     let updateKey = ref(0);
     let purchaseList = ref(true);
     let cart = ref(false);
@@ -281,11 +334,19 @@ export default {
     let reviews = ref(false);
     let totalPrice = ref(0);
     let purchaseDetail = ref(false);
+    let reviewProductId = ref();
+    let reviewProductName = ref('');
+    let qnaWrite = ref(false);
+    let reviewWrite = ref(false);
+    let reviewText = ref('');
+    let reviewLength = ref(0);
+    let reviewGrade = ref(5);
 
 
     axios.get('/api/customer/mypage?nickName=' + route.query.nickName)
     .then(res=>{
       mypageData.value = res.data;
+      phoneNum.value = res.data.phoneNum;
       if(route.query.cart === '1') {
         purchaseList.value = false;
         deliInfo.value = false;
@@ -308,6 +369,9 @@ export default {
       return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
     function clickPurchaseData() {
+      reviewWrite.value = false;
+      qnaWrite.value = false;
+      purchaseDetail.value = false;
       purchaseList.value = true;
       deliInfo.value = false;
       cart.value = false;
@@ -318,6 +382,9 @@ export default {
     }
 
     function clickDeliInfo() {
+      reviewWrite.value = false;
+      qnaWrite.value = false;
+      purchaseDetail.value = false;
       purchaseList.value = false;
       deliInfo.value = true;
       cart.value = false;
@@ -328,6 +395,9 @@ export default {
     }
 
     function clickCart() {
+      reviewWrite.value = false;
+      qnaWrite.value = false;
+      purchaseDetail.value = false;
       purchaseList.value = false;
       deliInfo.value = false;
       cart.value = true;
@@ -338,6 +408,9 @@ export default {
     }
 
     function clickReviews() {
+      reviewWrite.value = false;
+      qnaWrite.value = false;
+      purchaseDetail.value = false;
       purchaseList.value = false;
       deliInfo.value = false;
       cart.value = false;
@@ -348,6 +421,9 @@ export default {
     }
 
     function clickQna() {
+      reviewWrite.value = false;
+      qnaWrite.value = true;
+      purchaseDetail.value = false;
       purchaseList.value = false;
       deliInfo.value = false;
       cart.value = false;
@@ -358,6 +434,9 @@ export default {
     }
 
     function clickPoint() {
+      reviewWrite.value = false;
+      qnaWrite.value = false;
+      purchaseDetail.value = false;
       purchaseList.value = false;
       deliInfo.value = false;
       cart.value = false;
@@ -367,7 +446,11 @@ export default {
       info.value = false;
     }
 
+
     function clickInfo() {
+      reviewWrite.value = false;
+      qnaWrite.value = false;
+      purchaseDetail.value = false;
       purchaseList.value = false;
       deliInfo.value = false;
       cart.value = false;
@@ -381,6 +464,8 @@ export default {
       if(totalPrice.value === 0) {
         alert('결제할 상품이 없습니다.');
       } else {
+        reviewWrite.value = false;
+        qnaWrite.value = false;
         purchaseDetail.value = true;
         purchaseList.value = false;
         deliInfo.value = false;
@@ -393,6 +478,8 @@ export default {
     }
 
     function clickBack() {
+      reviewWrite.value = false;
+      qnaWrite.value = false;
       purchaseDetail.value = false;
       purchaseList.value = false;
       deliInfo.value = false;
@@ -408,14 +495,14 @@ export default {
     }
 
     function inputPhoneNum(e) {
-      mypageData.value.phoneNum = e.target.value;
+      phoneNum.value = e.target.value;
     }
 
-    watch(mypageData.value.phoneNum, (newValue, oldValue)=>{
+    watch(phoneNum, (newValue, oldValue)=>{
       console.log({newValue, oldValue});
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
-        mypageData.value.phoneNum = oldValue;
+        phoneNum = oldValue;
       }
     });
 
@@ -474,7 +561,7 @@ export default {
     function clickFinal() {
       if(
         mypageData.value.name === '' ||
-        mypageData.value.phoneNum === '' ||
+        phoneNum.value === '' ||
         mypageData.value.addressNum === '' ||
         mypageData.value.address === '' ||
         mypageData.value.addressName === '' ||
@@ -487,7 +574,7 @@ export default {
             {
               nickName : mypageData.value.nickName,
               name : mypageData.value.name,
-              phoneNum :mypageData.value.phoneNum,
+              phoneNum :phoneNum.value,
               addressNum : mypageData.value.addressNum,
               address : mypageData.value.address,
               addressName : mypageData.value.addressName,
@@ -516,11 +603,66 @@ export default {
     function clickDeliNum() {
       window.open('https://www.ilogen.com/m/personal/trace/1234556712');
     }
+
+    function clickReview(e) {
+      const nodes = [...e.target.parentElement.parentElement.parentElement.children];
+      let cartIndex = nodes.indexOf(e.target.parentElement.parentElement) - 1;
+      
+      reviewProductId.value = mypageData.value.purchaseData[cartIndex].productId;
+      reviewProductName.value = mypageData.value.purchaseData[cartIndex].productName;
+      console.log(reviewProductId.value);
+
+      reviewWrite.value = true;
+      purchaseDetail.value = false;
+      purchaseList.value = false;
+      deliInfo.value = false;
+      cart.value = false;
+      reviews.value = false;
+      qna.value = false;
+      point.value = false;
+      info.value = false;
+    }
+
+    
+
+    function inputReview(e) {
+      if(e.target.value.length <= 100) {
+        reviewText.value = e.target.value;
+      } else {
+        alert('100자 이내로 입력하시기 바랍니다.');
+        e.target.value = reviewText.value;
+      }
+    }
+
+    function reviewSubmit() {
+      let reviewData = {
+        nickName : nickName.value,
+        text : reviewText.value,
+        star : reviewGrade.value,
+        productId : reviewProductId.value
+      }
+      axios.put('/api/customer/mypage/reviewSubmit', reviewData)
+      .then(()=>{
+        reviewText.value = '';
+        reviewWrite.value = false;
+        reviews.value = true;
+        reviewGrade.value = 5;
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    }
+
+    function selectGrade(e) {
+      reviewGrade.value = e.target.value;
+      console.log(reviewGrade.value);
+    }
     
   
     return {nickName, updateKey, purchaseList, cart, mypageData, filter, deliInfo, reviews, qna, point, info, clickPurchaseData, clickDeliInfo,
     clickCart, clickReviews, clickQna, clickPoint, clickInfo, totalPrice, deleteCart, clickPurchase, purchaseDetail, inputName, inputPhoneNum,
-    inputAddress, clickFinal, clickBack, clickDeliNum};
+    inputAddress, clickFinal, clickBack, clickDeliNum, clickReview, phoneNum, qnaWrite, reviewWrite, reviewProductName, reviewText, reviewLength,
+    inputReview, reviewSubmit, selectGrade};
   }
 }
 </script>

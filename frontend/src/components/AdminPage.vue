@@ -13,7 +13,7 @@
       <div class="list-group">
         <a href="#" class="list-group-item list-group-item-action">회원관리</a>
         <a href="#" class="list-group-item list-group-item-action">상품관리</a>
-        <a href="#" class="list-group-item list-group-item-action">상품등록</a>
+        <a @click="clickProductEnroll" href="#" class="list-group-item list-group-item-action">상품등록</a>
         <a href="#" class="list-group-item list-group-item-action">주문조회</a>
         <a href="#" class="list-group-item list-group-item-action">배송관리</a>
         <a href="#" class="list-group-item list-group-item-action">반품관리</a>
@@ -391,10 +391,15 @@ export default {
       }
     });
 
+    function clickProductEnroll() {
+      productEnroll.value = true;
+      memberControl.value = false;
+    }
+
 
     return {adminData, pw, submit, productEnroll, divide, productDivide, productPrice ,brandChoice, productName, inputProductName, inputProductPrice,
     selectThum, selectInfo, posting, selectKor, selectOut, optionNumber, addOption, optionText, optionPrice, inputOptionText, inputOptionPrice, beforeDiscount,
-    inputBeforeDiscount, memberControl, searchTool, searchMemberText, inputMember, clickSearch};
+    inputBeforeDiscount, memberControl, searchTool, searchMemberText, inputMember, clickSearch, clickProductEnroll};
   }
 }
 </script>
