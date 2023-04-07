@@ -144,7 +144,7 @@ router.get('/mypage', (req, res)=>{
     customerInfo.addressName = result.addressName;
     customerInfo.detailAddress = result.detailAddress;
     customerInfo.point = result.point;
-    return db.collection('purchaseData').find({nickName : result.nickName}).toArray()
+    return db.collection('purchaseData').find({nickName : result.nickName}).sort({orderId : -1}).toArray()
   })
   .then(result=>{
     customerInfo.purchaseData = result;
@@ -176,7 +176,36 @@ router.delete('/mypage/deleteCart', (req, res)=>{
   .catch(err=>{
     console.log(err);
   })
-})
+});
+
+router.put('/mypage/reviewSubmit', (req, res)=>{
+  let data = req.body;
+  let now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth() + 1;
+  let date = now.getDate();
+  let today = year + '-' + month + '-' + date;
+  let reviewData = {
+    stars : data.star,
+    comment : data.text,
+    user : data.nickName,
+    productId : data.productId,
+    date : today
+  }
+  db.collection('reviews').insertOne(reviewData)
+  .then(()=>{
+    return db.collection('products').updateOne({id : data.productId}, {$inc : {reviews : 1}});
+  })
+  .then(()=>{
+    return db.collection('purchaseData').updateOne({nickName : data.nickName}, {$set : {review : true}});
+  })
+  .then(()=>{
+    res.send('review success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
 
 
 
