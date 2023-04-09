@@ -197,11 +197,19 @@
           </div>
         </div>
       </div>
+      <div class="mt-4" align="left">
+        <span>보유 중인 포인트 : {{ leavedPoint }} P</span>
+      </div>
+      <div class="mt-2" align="left">
+        <span>사용할 포인트 : </span>
+        <input v-bind:value="usePoint" @input="inputPoint" type="text">
+      </div>
+      <hr/>
       <div class="mt-4 d-flex">
-        <h3 style="color:red; font-weight:bold;">총 결제 금액:</h3>
-        <h3 class="ms-3"> {{filter(totalPrice)}} 원 </h3>
-        <button @click="clickFinal" class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
-        <button @click="clickBack" class="btn btn-outline-success flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
+        <h4 style="color:red; font-weight:bold;">결제 금액:</h4>
+        <h4 class="ms-3"> {{filter(leavedPrice)}} 원 </h4>
+        <button @click="clickFinal" class="btn btn-danger btn-sm ms-4 mb-2" style="font-weight:bold;">결제하기</button>
+        <button @click="clickBack" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 mb-2" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
     </div>
 
@@ -257,7 +265,6 @@
             </div>
           </div>
         </div>
-        
       </div>
     </div>
    
@@ -278,8 +285,8 @@
             <option value="5" selected="selected">5</option>
             <option value="4">4</option>
             <option value="3">3</option>
-            <option value="3">2</option>
-            <option value="3">1</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
           </select>
         </div>
         <div class="row">
@@ -290,23 +297,75 @@
           <span>{{ reviewText.length }}/100</span>
         </div>
         
-        
       </div>
     </div>
     <div class="mb-3" v-if="qnaWrite">
       <div class="row p-5 bg-light rounded-3 mt-3">
-        <div class="row" style="font-weight:30; font-size:23px;">
+        <div align="left" class="row" style="font-weight:30; font-size:18px;">
           결제취소, 반품, 교환 등 문의 사항을 작성해주십시오.
         </div>
         <li class="row mb-4" style="color:darkgray">
           50자 이내로 작성
         </li>
         <div class="row">
-          <textarea class="col-9" id="qna" cols="30" rows="3"></textarea>
-          <button class="btn btn-secondary col-2" style="font-weight:bold;">문의하기</button>
+          <textarea v-bind:value="qnaText" @input="inputQna" class="col-9" id="qna" cols="30" rows="3"></textarea>
+          <button @click="qnaSubmit" class="btn btn-secondary col-2" style="font-weight:bold;">등록</button>
         </div>
-        
+        <div align="left">
+          <span>{{ qnaText.length }}/100</span>
+        </div>
       </div>
+      <div v-for="item in qnaList" :key="item" align='left'>
+        <hr/>
+        <div>
+          <span> 작성자 : {{item.nickName}}</span>
+          <span style="font-size:12px" class="ms-2">{{item.date}} </span>
+        </div>
+        <div class="mt-3">
+          {{item.text}}
+        </div>
+      </div>
+    </div>
+    <div class="mb-3" v-if="point">
+      <div class="row p-5 bg-light rounded-3 mt-3">
+        <span><h3>보유 중인 포인트 : {{ mypageData.point }}P</h3></span>
+      </div>
+    </div>
+    <div v-if="info" class="border">
+      <div class="col-5 col-lg-3 ms-1 me-1 mt-3 mb-3">
+        <div align='left' class="ms-1 mb-1">성명</div>
+        <input v-bind:value="changeData.name" @input="changeName" type="text" class="form-control mb-2" placeholder="성명" maxlength="6">
+        <div align='left' class="ms-1 mb-1">휴대폰 번호</div>
+        <input v-bind:value="changePn" @input="changePhoneNum" type="tel" class="form-control mb-2" placeholder="휴대폰 번호 (10~11자)" maxlength="11">
+      </div>
+      <div class="ms-1 col-11 col-lg-7 mt-3">
+        <div class="d-flex">
+          <div class="col-6">
+            <input type="text" class="form-control mb-2"  v-model="changeData.addressNum" placeholder="우편번호" readonly>
+          </div>
+          <div class="col-auto ms-1">
+            <button  type="button" class="btn btn-light border" @click="changeAddress">우편번호 찾기</button>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="col-9 pe-1">
+            <input type="text" class="form-control mb-2" id="address1" v-model="changeData.address" placeholder="주소"  readonly>
+          </div>
+          <div class="col-3 ps-1" >
+            <input type="text" class="form-control mb-2" id="address3" v-model="changeData.addressName" placeholder="" readonly>
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="col-12">
+            <input type="text" class="form-control mb-2" id="changeDetailAddress" v-model="changeData.detailAddress" placeholder="상세주소" maxlength="25">
+          </div>
+          
+        </div>
+      </div>
+      <div align="left" class="ms-1">
+        <button @click="clickChange" style="font-weight: bold;" class="btn btn-danger mt-2 mb-2">변경하기</button>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -335,18 +394,43 @@ export default {
     let totalPrice = ref(0);
     let purchaseDetail = ref(false);
     let reviewProductId = ref();
+    let reviewOrderId = ref();
     let reviewProductName = ref('');
     let qnaWrite = ref(false);
     let reviewWrite = ref(false);
     let reviewText = ref('');
     let reviewLength = ref(0);
     let reviewGrade = ref(5);
+    let qnaText = ref('');
+    let qnaList = ref([]);
+    let changeData = ref({
+      name : '',
+      phoneNum : '',
+      addressNum : '',
+      address : '',
+      addressName: '',
+      detailAddress : ''
+    });
+    let changePn = ref('');
+    let leavedPoint = ref(0);
+    let leavedPrice = ref(0);
+    let usePoint = ref(0);
+   
 
 
     axios.get('/api/customer/mypage?nickName=' + route.query.nickName)
     .then(res=>{
       mypageData.value = res.data;
       phoneNum.value = res.data.phoneNum;
+      qnaList.value = res.data.qna;
+      changeData.value.name = res.data.name;
+      changePn.value = res.data.phoneNum;
+      changeData.value.addressNum = res.data.addressNum;
+      changeData.value.address = res.data.address;
+      changeData.value.addressName = res.data.addressName;
+      changeData.value.detailAddress = res.data.detailAddress;
+      changeData.value.phoneNum = res.data.phoneNum;
+      leavedPoint.value = res.data.point;
       if(route.query.cart === '1') {
         purchaseList.value = false;
         deliInfo.value = false;
@@ -359,6 +443,7 @@ export default {
       }
       for(let i = 0 ; i < res.data.cart.length; i++) {
         totalPrice.value += res.data.cart[i].totalPrice;
+        leavedPrice.value += res.data.cart[i].totalPrice;
       }
     })
     .catch(err=>{
@@ -502,7 +587,7 @@ export default {
       console.log({newValue, oldValue});
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
-        phoneNum = oldValue;
+        phoneNum.value = oldValue;
       }
     });
 
@@ -558,6 +643,23 @@ export default {
       })
     }
 
+    function inputPoint(e) {
+      usePoint.value = e.target.value;
+      leavedPoint.value = mypageData.value.point - e.target.value;
+      leavedPrice.value = totalPrice.value - e.target.value;
+    }
+    watch(usePoint, (newValue, oldValue)=>{
+      let blank_pattern = /[\s]/g;
+      if (isNaN(newValue) || blank_pattern.test(newValue) ) {
+        usePoint.value = oldValue;
+      } else if(newValue > mypageData.value.point) {
+        alert('보유한 포인트까지만 사용가능합니다.');
+        usePoint.value = oldValue;
+        leavedPoint.value = mypageData.value.point - oldValue;
+        leavedPrice.value = totalPrice.value - oldValue;
+      }
+    });
+
     function clickFinal() {
       if(
         mypageData.value.name === '' ||
@@ -584,7 +686,8 @@ export default {
               orderNum : mypageData.value.cart[i].productNum,
               optionText : mypageData.value.cart[i].productOption,
               totalPrice : mypageData.value.cart[i].totalPrice,
-              cartId : mypageData.value.cart[i].cartId
+              cartId : mypageData.value.cart[i].cartId, 
+              leavedPoint : leavedPoint.value
             }
           )
         }
@@ -600,17 +703,23 @@ export default {
       }
     }
 
-    function clickDeliNum() {
-      window.open('https://www.ilogen.com/m/personal/trace/1234556712');
+    function clickDeliNum(e) {
+      let text = e.target.parentElement.previousElementSibling.textContent;
+      if(text === '0') {
+        alert('아직 운송장 정보가 등록되지 않았습니다.');
+      } else {
+        window.open('https://www.ilogen.com/m/personal/trace/' + text);
+      }
     }
 
     function clickReview(e) {
       const nodes = [...e.target.parentElement.parentElement.parentElement.children];
       let cartIndex = nodes.indexOf(e.target.parentElement.parentElement) - 1;
       
+      reviewOrderId.value = mypageData.value.purchaseData[cartIndex].orderId;
       reviewProductId.value = mypageData.value.purchaseData[cartIndex].productId;
       reviewProductName.value = mypageData.value.purchaseData[cartIndex].productName;
-      console.log(reviewProductId.value);
+      console.log(reviewOrderId.value);
 
       reviewWrite.value = true;
       purchaseDetail.value = false;
@@ -635,34 +744,146 @@ export default {
     }
 
     function reviewSubmit() {
-      let reviewData = {
-        nickName : nickName.value,
-        text : reviewText.value,
-        star : reviewGrade.value,
-        productId : reviewProductId.value
+      if(reviewText.value === '') {
+        alert('후기 내용을 작성해주십시오.');
+      } else {
+          let reviewData = {
+          nickName : nickName.value,
+          text : reviewText.value,
+          star : reviewGrade.value,
+          productId : reviewProductId.value,
+          orderId : reviewOrderId.value
+        }
+        axios.put('/api/customer/mypage/reviewSubmit', reviewData)
+        .then((result)=>{
+          reviewText.value = '';
+          reviewWrite.value = false;
+          reviews.value = true;
+          reviewGrade.value = 5;
+          mypageData.value.purchaseData = result.data;
+        })
+        .catch(err=>{
+          console.log(err);
+        })
       }
-      axios.put('/api/customer/mypage/reviewSubmit', reviewData)
-      .then(()=>{
-        reviewText.value = '';
-        reviewWrite.value = false;
-        reviews.value = true;
-        reviewGrade.value = 5;
-      })
-      .catch(err=>{
-        console.log(err);
-      })
     }
 
     function selectGrade(e) {
       reviewGrade.value = e.target.value;
       console.log(reviewGrade.value);
     }
+
+    function inputQna(e) {
+      if(e.target.value.length <= 100) {
+        qnaText.value = e.target.value;
+      } else {
+        alert('100자 이내로 입력하시기 바랍니다.');
+        e.target.value = qna.value;
+      }
+    }
+
+    function qnaSubmit() {
+      if(qnaText.value === '') {
+        alert('문의 내용을 입력해주십시오.');
+      } else {
+          let qnaData = {
+          nickName : nickName.value,
+          text : qnaText.value
+        }
+        axios.post('/api/customer/mypage/personalQna', qnaData)
+        .then((result)=>{
+          qnaText.value = '';
+          alert('등록되었습니다.');
+          qnaList.value = result.data;
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+      }
+    }
+
+    function changeName(e) {
+      changeData.value.name = e.target.value;
+    }
+
+    function changePhoneNum(e) {
+      changePn.value = e.target.value;
+      changeData.value.phoneNum = e.target.value;
+    }
+
+    watch(changePn, (newValue, oldValue)=>{
+      console.log({newValue, oldValue});
+      let blank_pattern = /[\s]/g;
+      if (isNaN(newValue) || blank_pattern.test(newValue) ) {
+        changePn.value = oldValue;
+      }
+    });
+
+    function changeAddress() {
+      new window.daum.Postcode({
+        oncomplete: function(data) {
+          let addr = '';
+          let extraAddr = '';
+          if (data.userSelectedType === 'R') {
+            addr = data.roadAddress;
+          } else {
+            addr = data.jibunAddress;
+          }
+
+          if (data.userSelectedType === 'R') {
+            if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+              extraAddr += data.bname;
+            }
+
+            if(data.buildingName !== '' && data.apartment === 'Y') {
+              extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+            }
+
+            if(extraAddr !== '') {
+              extraAddr = ' (' + extraAddr + ')';
+            }
+
+            changeData.value.addressName = extraAddr;
+          } else {
+            changeData.value.addressName = '';
+          }
+
+          changeData.value.addressNum = data.zonecode;
+          changeData.value.address = addr;
+          document.getElementById('changeDetailAddress').focus();
+        }
+      }).open();
+    }
+
+    function clickChange() {
+      if(
+        changeData.value.name === '' ||
+        changeData.value.phoneNum === '' ||
+        changeData.value.addressNum === '' ||
+        changeData.value.address === '' ||
+        changeData.value.addressName === '' ||
+        changeData.value.detailAddress === ''
+      ) alert('정보를 모두 입력해 주십시오.');
+      else {
+        axios.put('/api/customer/mypage/changeData', changeData.value)
+        .then(()=>{
+          alert('변경이 완료되었습니다.');
+          router.go(0);
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+      }
+    }
+
+    
     
   
     return {nickName, updateKey, purchaseList, cart, mypageData, filter, deliInfo, reviews, qna, point, info, clickPurchaseData, clickDeliInfo,
     clickCart, clickReviews, clickQna, clickPoint, clickInfo, totalPrice, deleteCart, clickPurchase, purchaseDetail, inputName, inputPhoneNum,
     inputAddress, clickFinal, clickBack, clickDeliNum, clickReview, phoneNum, qnaWrite, reviewWrite, reviewProductName, reviewText, reviewLength,
-    inputReview, reviewSubmit, selectGrade};
+    inputReview, reviewSubmit, selectGrade, qnaText, inputQna, qnaSubmit, qnaList, changeName, changePhoneNum, changeData, changeAddress, changePn,
+    clickChange, leavedPoint, leavedPrice, usePoint, inputPoint};
   }
 }
 </script>

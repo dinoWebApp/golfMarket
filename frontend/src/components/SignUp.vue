@@ -6,6 +6,7 @@
     <div class="row justify-content-center">
       <div class="col-9 ">
         닉네임
+        <span style="font-size: 13px; color: red;">(비밀번호 분실 시 사용)</span>
         <div class="col-9 d-flex">
           <div class="col-12">
             <input v-bind:value="nickName" @input="inputNickName" type="text" class="form-control mb-2" id="nickName" placeholder="닉네임 (5자 이내)" maxlength="5">

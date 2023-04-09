@@ -21,25 +21,15 @@
           
         </a>
 
-        <!-- <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
-          <li><a href="#" class="nav-link px-2 text-black">Features</a></li>
-          <li><a href="#" class="nav-link px-2 text-black">Features</a></li>
-          
-        </ul> -->
 
-        <form class="col-10 col-lg-6 col-xl-7 col-sm-6 col-md-6 mb-3 mb-lg-0 me-lg-3" role="search">
-          <!-- <input type="search" class="form-control form-control-dark text-bg-white" placeholder="Search..." aria-label="Search"> -->
+        <div class="col-10 col-lg-6 col-xl-7 col-sm-6 col-md-6 mb-3 mb-lg-0 me-lg-3">
           <div class="search_inner">
-            <form method="get" id="fitem_search" action="search.php">
-              <div class="search_box container-fluid">
-                <input type="text" name="keyword" value="" placeholder="쇼핑몰 검색창입니다." class="search_in col-10">
-                <button style="float:right" type="button" class="btn btn-outline-white col-1"><i class="bi bi-search"></i></button>
-              </div>
-              
-            </form>
+            <div class="search_box container-fluid">
+              <input @keyup.enter="clickSearch" type="text" name="keyword" v-bind:value="searchText" @input="inputSearch" placeholder="쇼핑몰 검색창입니다." class="search_in col-10" maxlength="30">
+              <button @click="clickSearch" style="float:right" type="button" class="btn btn-outline-white col-1"><i class="bi bi-search"></i></button>
+            </div>
           </div>
-        </form>
+        </div>
 
         <div v-if="loginInfo === false && myInfo === false" class="text-end col-md-3 col-lg-auto d-none d-md-block ms-xl-5" >
           <button @click="login" type="button" class="btn btn-out-secondary me-2" style="color:white; font-weight:bold; background-color:white;">로그인</button>
@@ -58,9 +48,7 @@
           <i @click="profileClick" id="mypage" class="bi bi-person ms-4" style=""></i>
         </div>
         
-        <!-- <button id="mypage-click" type="button" class="btn btn-sm d-block d-md-none col-sm-2 col-2"><i id="mypage" class="bi bi-person" style=""></i></button> -->
-        <!-- <button class="btn btn-outline-white d-block d-md-none col-sm-2 col-2" ><i id="mypage" class="bi bi-person-circle col-xs-2" style="font-size:30px; float:right;"></i></button> -->
-        <!-- <a href=""><i class="bi bi-person"></i></a> -->
+        
         
       </div>
     </div>
@@ -76,7 +64,7 @@
       <div class="collapse navbar-collapse justify-content-center" id="navbarsExample07">
         <ul class="navbar-nav mb-2 mb-lg-0 " style="align-items : center;">
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="/product/driver">드라이버</a>
+            <a class="menu nav-link active" aria-current="page" href="/product/driver" >드라이버</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
@@ -96,10 +84,6 @@
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">여성클럽</a>
-          </li>
-          <div class="updown d-none d-lg-block"></div>
-          <li class="nav-item">
             <a class="menu nav-link active" aria-current="page" href="#">골프백/볼/기타</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
@@ -110,10 +94,7 @@
           <li class="nav-item">
             <a class="menu nav-link active" aria-current="page" href="#">풀세트</a>
           </li>
-          <div class="updown d-none d-lg-block"></div>
-          <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">중고장터</a>
-          </li>
+          
         </ul>
         
       </div>
@@ -136,6 +117,8 @@ export default {
     let myInfo = ref(false);
     let nickName = ref('');
     let profileModal = ref(false);
+    let searchText = ref('');
+
     axios.get('/api/customer/login-check')
     .then(res=>{
       console.log(res.data);
@@ -212,15 +195,18 @@ export default {
       router.push({name:'MyPage', query:{nickName:nickName.value, cart: 0}});
     }
 
+    function inputSearch(e) {
+      searchText.value = e.target.value;
+    }
 
-    
+    function clickSearch() {
+      router.push({name : 'SearchPage', query : {searchText : searchText.value}});
+    }
 
-    
-    
 
 
     return {login, signUp, loginInfo, myInfo, nickName, logout, loginUpdate, profileClick, profileModal, profileDelete,
-    profileLogout, mypage};
+    profileLogout, mypage, searchText, inputSearch, clickSearch};
   
   }
 }
@@ -274,6 +260,7 @@ export default {
 
 .nav-item:hover a{
   color: #2c3e50 !important;
+  cursor: pointer;
 }
 
 .nav-item:visited a{

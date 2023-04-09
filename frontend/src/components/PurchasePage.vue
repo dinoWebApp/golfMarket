@@ -204,17 +204,29 @@
           </div>
           <div class="mb-3" v-if="qna">
             <div class="row p-5 bg-light rounded-3 mt-3">
-              <div class="row" style="font-weight:30; font-size:23px;">
-                상품에 관하여 궁금한 것을 물어보세요
+              <div class="row" style="font-weight:30; font-size:22px;">
+                상품에 관하여 궁금한 것을 물어보세요.
               </div>
               <li class="row mb-4" style="color:darkgray">
-                상품 문의를 통한 교환, 반품, 환불은 처리되지 않습니다.
+                상품 문의를 통한 교환, 반품은 처리되지 않습니다.
               </li>
               <div class="row">
-                <textarea class="col-9" id="qna" cols="30" rows="3"></textarea>
-                <button class="btn btn-secondary col-2" style="font-weight:bold;">문의하기</button>
+                <textarea v-bind:value="qnaText" @input="inputQna" class="col-9" id="qna" cols="30" rows="3"></textarea>
+                <button @click="qnaSubmit" class="btn btn-secondary col-2" style="font-weight:bold;">등록</button>
               </div>
-              
+              <div align="left">
+                <span>{{ qnaText.length }}/100</span>
+              </div>
+            </div>
+            <div v-for="item in qnaList" :key="item" align='left'>
+              <hr/>
+              <div>
+                <span> 작성자 : {{item.nickName}}</span>
+                <span style="font-size:12px" class="ms-2">{{item.date}} </span>
+              </div>
+              <div class="mt-3">
+                {{item.text}}
+              </div>
             </div>
           </div>
 
@@ -289,9 +301,17 @@
           </div>
         </div>
       </div>
+      <div class="mt-4" align="left">
+        <span>보유 중인 포인트 : {{ leavedPoint }} P</span>
+      </div>
+      <div class="mt-2" align="left">
+        <span>사용할 포인트 : </span>
+        <input v-bind:value="usePoint" @input="inputPoint" type="text">
+      </div>
+      <hr/>
       <div class="mt-4 d-flex">
-        <h2 style="color:red; font-weight:bold;">결제 금액:</h2>
-        <h2 class="ms-3"> {{filter(totalPrice)}} 원 </h2>
+        <h3 style="color:red; font-weight:bold;">결제 금액:</h3>
+        <h3 class="ms-3"> {{filter(leavedPrice)}} 원 </h3>
         <button @click="clickFinal" class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
         <button @click="backPage" class="btn btn-outline-success flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
@@ -343,6 +363,12 @@ export default {
     let totalPrice = ref(0);
     let loginCheck = ref(false);
     let cartModal = ref(false);
+    let qnaText = ref('');
+    let qnaList = ref([]);
+    let point = ref(0);
+    let usePoint = ref(0);
+    let leavedPoint = ref(0);
+    let leavedPrice = ref(0);
 
 
     axios.get('/api/product/purchase/' + route.params.id)
@@ -355,6 +381,7 @@ export default {
       relatedList.value = res.data.relatedList;
       reviews.value = res.data.reviews
       totalReview.value = res.data.totalReview;
+      qnaList.value = res.data.qna
     })
     .catch(err=>{
       console.log(err);
@@ -446,6 +473,8 @@ export default {
             address.value = res.data.address;
             addressName.value = res.data.addressName;
             detailAddress.value = res.data.detailAddress;
+            point.value = res.data.point;
+            leavedPoint.value = res.data.point;
           }
           purchaseDetail.value = true;
         })
@@ -529,7 +558,8 @@ export default {
           productName : product.value.productName,
           orderNum : orderNum.value,
           optionText : optionText.value,
-          totalPrice : totalPrice.value
+          totalPrice : totalPrice.value,
+          leavedPoint : leavedPoint.value
         }
         console.log(purchaseInfo);
         axios.post('/api/product/purchase', purchaseInfo)
@@ -545,6 +575,7 @@ export default {
 
     function calTotal(productPrice, optionPrice, optionSelected, orderNum) {
       totalPrice.value = (productPrice * 1 + optionPrice * 1)*optionSelected*orderNum;
+      leavedPrice.value = (productPrice * 1 + optionPrice * 1)*optionSelected*orderNum;
       return totalPrice.value;
     }
 
@@ -572,12 +603,6 @@ export default {
           orderNum : orderNum.value,
           totalPrice : totalPrice.value
         }
-        // axios.put(
-        //   '/api/product/addCart?id=' + product.value.id
-        //   + '&productName=' + product.value.productName
-        //   + '&option=' + optionText.value
-        //   + '&orderNum=' + orderNum.value
-        //   + '&totalPrice=' + totalPrice.value)
         axios.put('/api/product/addCart', cartData)
         .then(res=>{
           console.log(res.data);
@@ -604,13 +629,65 @@ export default {
       });
     }
 
+    function inputQna(e) {
+      if(e.target.value.length <= 100) {
+        qnaText.value = e.target.value;
+      } else {
+        alert('100자 이내로 입력하시기 바랍니다.');
+        e.target.value = qnaText.value;
+      }
+    }
+
+    function qnaSubmit() {
+      if(qnaText.value === '') {
+        alert('문의 내용을 입력해주십시오.');
+      } else {
+          let qnaData = {
+          productId : product.value.id,
+          text : qnaText.value
+        }
+        axios.post('/api/product/qnaSubmit', qnaData)
+        .then((result)=>{
+          if(result.data === 'need login') {
+            alert('로그인이 필요합니다.');
+            qnaText.value = '';
+          } else {
+            qnaText.value = '';
+            alert('등록되었습니다.');
+            qnaList.value = result.data;
+          }
+        })
+        .catch(err=>{
+          console.log(err);
+        })
+      }
+    }
+
+    function inputPoint(e) {
+      usePoint.value = e.target.value;
+      leavedPoint.value = point.value - e.target.value;
+      leavedPrice.value = totalPrice.value - e.target.value;
+    }
+    watch(usePoint, (newValue, oldValue)=>{
+      let blank_pattern = /[\s]/g;
+      if (isNaN(newValue) || blank_pattern.test(newValue) ) {
+        usePoint.value = oldValue;
+      } else if(newValue > point.value) {
+        alert('보유한 포인트까지만 사용가능합니다.');
+        usePoint.value = oldValue;
+        leavedPoint.value = point.value - oldValue;
+        leavedPrice.value = totalPrice.value - oldValue;
+      }
+    });
+
     
     
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
     totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
-    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage, moveCart, inputAddress};
+    clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage, moveCart, inputAddress, inputQna, qnaText, qnaSubmit, qnaList,
+    point, usePoint, inputPoint, leavedPoint, leavedPrice};
   }
 }
 </script>

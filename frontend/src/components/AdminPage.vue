@@ -36,9 +36,10 @@
                 <li><a @click="productDivide" class="dropdown-item" href="#">드라이버</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">우드/유틸</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">아이언</a></li>
+                <li><a @click="productDivide" class="dropdown-item" href="#">웨지</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">퍼터</a></li>
-                <li><a @click="productDivide" class="dropdown-item" href="#">여성클럽</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">골프백/볼/기타</a></li>
+                <li><a @click="productDivide" class="dropdown-item" href="#">헤드/샤프트</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">풀세트</a></li>
               </ul>
             </div>

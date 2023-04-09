@@ -9,6 +9,7 @@ import PurchasePage from './components/PurchasePage.vue'
 import MainPage from './components/MainPage.vue'
 import MyPage from './components/MyPage.vue'
 import PurchaseComplete from './components/PurchaseComplete.vue'
+import SearchPage from './components/SearchPage.vue'
 const routes = [
   {
     path:'/',
@@ -54,6 +55,11 @@ const routes = [
         path:'product/submit',
         component : PurchaseComplete,
         name: 'PurchaseComplete'
+      },
+      {
+        path:'search',
+        component : SearchPage,
+        name : 'SearchPage'
       }
     ]
   },

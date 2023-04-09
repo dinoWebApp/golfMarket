@@ -72,7 +72,9 @@ export default {
   setup() {
     const router = useRouter();
     let products = ref([]);
-    axios.get('/api/product/driver').then(res=>{
+    let divide = ref('driver');
+    let korDivide = ref('드라이버');
+    axios.get('/api/product/' + divide.value).then(res=>{
       console.log(res.data);
       products.value = res.data;
     }). catch(err=>{
@@ -125,7 +127,7 @@ export default {
           break;
       }
       console.log(brandEng);
-      axios.get('/api/product/driver/brand?brandName=' + brandEng)
+      axios.get('/api/product/brand?brandName=' + brandEng + '&divide=' + korDivide.value)
       .then(res=>{
         console.log(res.data);
         products.value = res.data;
@@ -136,7 +138,7 @@ export default {
     }
 
     function clickedTotal() {
-      axios.get('/api/product/driver').then(res=>{
+      axios.get('/api/product/' + divide.value).then(res=>{
         console.log(res.data);
         products.value = res.data;
       }). catch(err=>{
