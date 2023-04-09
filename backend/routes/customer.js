@@ -61,7 +61,7 @@ router.post('/sign-up', (req, res)=>{
           address : req.body.address,
           addressName : req.body.addressName,
           detailAddress : req.body.detailAddress,
-          point : 0,
+          point : 3000,
           cart : []
         }, (err, result)=>{
           if (err) console.log(err);
@@ -122,6 +122,7 @@ router.get('/mypage', (req, res)=>{
   let customerInfo = {
     purchaseData : [],
     cart : [],
+    qna : [],
     id : '',
     nickName : '',
     name : '',
@@ -148,6 +149,10 @@ router.get('/mypage', (req, res)=>{
   })
   .then(result=>{
     customerInfo.purchaseData = result;
+    return db.collection('personalQna').find({nickName : customer}).sort({id : -1}).toArray()
+  })
+  .then(result=>{
+    customerInfo.qna = result;
     res.send(customerInfo);
   })
   .catch(err=>{
@@ -162,6 +167,51 @@ router.get('/mypage/getNick', (req, res)=>{
     res.send(req.user.nickName);
   }
 });
+
+router.get('/findId', (req, res)=>{
+  let nickName = req.query.nickName;
+  let phoneNum = req.query.phoneNum;
+  db.collection('customers').findOne({nickName : nickName})
+  .then(result=>{
+    if(!result) {
+      res.send('wrong nickName');
+    } else {
+      if(result.phoneNum === phoneNum) {
+        res.send(result.id);
+      } else {
+        res.send('wrong phoneNum');
+      }
+    }
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.get('/findPw', (req, res)=>{
+  let nickName = req.query.nickName;
+  let phoneNum = req.query.phoneNum;
+  let id = req.query.id;
+  db.collection('customers').findOne({id : id})
+  .then(result=>{
+    if(!result) {
+      res.send('wrong id');
+    } else {
+      if(result.nickName !== nickName) {
+        res.send('wrong nickName');
+      } else if(result.phoneNum !== phoneNum){
+        res.send('wrong phoneNum');
+      } else {
+        res.send('success');
+      }
+    }
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+
 
 router.delete('/mypage/deleteCart', (req, res)=>{
   let cartId = parseInt(req.query.cartId);
@@ -186,10 +236,11 @@ router.put('/mypage/reviewSubmit', (req, res)=>{
   let date = now.getDate();
   let today = year + '-' + month + '-' + date;
   let reviewData = {
-    stars : data.star,
+    stars : parseInt(data.star),
     comment : data.text,
     user : data.nickName,
     productId : data.productId,
+    orderId : data.orderId,
     date : today
   }
   db.collection('reviews').insertOne(reviewData)
@@ -197,16 +248,81 @@ router.put('/mypage/reviewSubmit', (req, res)=>{
     return db.collection('products').updateOne({id : data.productId}, {$inc : {reviews : 1}});
   })
   .then(()=>{
-    return db.collection('purchaseData').updateOne({nickName : data.nickName}, {$set : {review : true}});
+    return db.collection('purchaseData').updateOne({orderId : data.orderId}, {$set : {review : true}});
   })
   .then(()=>{
-    res.send('review success');
+    return db.collection('purchaseData').find({nickName : data.nickName}).sort({orderId : -1}).toArray()
+  })
+  .then((result)=>{
+    res.send(result);
   })
   .catch(err=>{
     console.log(err);
   })
 });
 
+router.post('/mypage/personalQna', (req, res)=>{
+  let now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth() + 1;
+  let date = now.getDate();
+  let today = year + '-' + month + '-' + date;
+  db.collection('personalQnaId').findOne({name : 'personalQnaId'})
+  .then(result=>{
+    let data = {
+      id : result.id + 1,
+      nickName : req.body.nickName,
+      text : req.body.text,
+      date : today
+    }
+    return db.collection('personalQna').insertOne(data)
+  })
+  .then(()=>{
+    return db.collection('personalQnaId').updateOne({name : 'personalQnaId'}, {$inc : {id : 1}});
+  })
+  .then(()=>{
+    return db.collection('personalQna').find({nickName : req.body.nickName}).sort({id : -1}).toArray()
+  })
+  .then(result=>{
+    console.log(result);
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+  
+});
+
+router.put('/mypage/changeData', (req, res)=>{
+  let data = req.body
+  db.collection('customers').updateOne({nickName : req.user.nickName}, {$set : {
+    name : data.name,
+    phoneNum : data.phoneNum,
+    addressNum : data.addressNum,
+    address : data.address,
+    addressName : data.addressName,
+    detailAddress: data.detailAddress
+  }})
+  .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/changePw', (req, res)=>{
+  bcrypt.hash(req.body.pw, saltRounds)
+  .then(hash=>{
+    return db.collection('customers').updateOne({nickName : req.body.nickName}, {$set : {pw : hash}})
+  })
+  .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+})
 
 
 

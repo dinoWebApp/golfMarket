@@ -53,7 +53,21 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
 
 
 app.get('/api/', (req, res)=>{
-  res.send('home');
+  db.collection('products').find().limit(6).sort({reviews : -1}).toArray()
+  .then(result=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+
+app.get('/api/search', (req, res)=>{
+  db.collection('products').find({$text : {$search : req.query.searchText}}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
 })
 
 app.get('/api/admin-check', loginCheck, (req, res)=>{
@@ -71,6 +85,7 @@ app.post('/api/admin-pw', (req, res)=>{
     })
   })
 })
+
 
 
 

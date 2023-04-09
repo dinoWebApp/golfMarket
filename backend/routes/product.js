@@ -51,19 +51,56 @@ router.get('/driver', (req, res)=>{
     res.send(result);
   })
 });
-
-router.get('/driver/ping', (req, res)=>{
-  db.collection('products').find({divide : '드라이버', brand : '핑'}).toArray((err, result)=>{
+router.get('/wu', (req, res)=>{
+  db.collection('products').find({divide : '우드/유틸'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+router.get('/iron', (req, res)=>{
+  db.collection('products').find({divide : '아이언'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+router.get('/wedge', (req, res)=>{
+  db.collection('products').find({divide : '웨지'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+router.get('/putter', (req, res)=>{
+  db.collection('products').find({divide : '퍼터'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+router.get('/etc', (req, res)=>{
+  db.collection('products').find({divide : '골프백/볼/기타'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+router.get('/headShaft', (req, res)=>{
+  db.collection('products').find({divide : '헤드/샤프트'}).toArray((err, result)=>{
+    console.log(result);
+    res.send(result);
+  })
+});
+router.get('/fullSet', (req, res)=>{
+  db.collection('products').find({divide : '풀세트'}).toArray((err, result)=>{
     console.log(result);
     res.send(result);
   })
 });
 
-router.get('/driver/brand', (req, res)=>{
-  
+
+router.get('/brand', (req, res)=>{
+  let divide = req.query.divide;
   let brandName = req.query.brandName;
+  console.log(divide);
   console.log(brandName);
-  db.collection('products').find({divide : '드라이버', brand : brandName}).toArray((err, result)=>{
+  db.collection('products').find({$and : [{divide : divide}, {brand : brandName}]}).toArray((err, result)=>{
     console.log(result);
     res.send(result);
   })
@@ -87,6 +124,7 @@ router.get('/purchase/:id', (req, res)=>{
       twoPer : 0,
       onePer : 0,
     },
+    qna : []
   }
 
   db.collection('products').findOne({id : productId})
@@ -109,13 +147,17 @@ router.get('/purchase/:id', (req, res)=>{
     let total = 0;
     starArray.forEach(stars=>total+=stars);
     average = total/starArray.length;
-    sendData.totalReview.average = average;
-    sendData.totalReview.fivePer = (starArray.filter(e => 5 === e).length / starArray.length)*100;
-    sendData.totalReview.fourPer = (starArray.filter(e => 4 === e).length / starArray.length)*100;
-    sendData.totalReview.threePer = (starArray.filter(e => 3 === e).length / starArray.length)*100;
-    sendData.totalReview.twoPer = (starArray.filter(e => 2 === e).length / starArray.length)*100;
-    sendData.totalReview.onePer = (starArray.filter(e => 1 === e).length / starArray.length)*100;
-    console.log(sendData);
+    sendData.totalReview.average = average.toFixed(2);
+    sendData.totalReview.fivePer = ((starArray.filter(e => 5 === e).length / starArray.length)*100).toFixed(1);
+    sendData.totalReview.fourPer = ((starArray.filter(e => 4 === e).length / starArray.length)*100).toFixed(1);
+    sendData.totalReview.threePer = ((starArray.filter(e => 3 === e).length / starArray.length)*100).toFixed(1);
+    sendData.totalReview.twoPer = ((starArray.filter(e => 2 === e).length / starArray.length)*100).toFixed(1);
+    sendData.totalReview.onePer = ((starArray.filter(e => 1 === e).length / starArray.length)*100).toFixed(1);
+    return db.collection('qna').find({productId : productId}).sort({id : -1}).toArray();
+  })
+  .then(result=>{
+    sendData.qna = result;
+    console.log(result);
     res.send(sendData);
   })
   .catch(err=>{
@@ -132,7 +174,8 @@ router.get('/purchase-detail', loginCheck, (req, res)=>{
     addressNum : req.user.addressNum,
     address : req.user.address,
     addressName : req.user.addressName,
-    detailAddress : req.user.detailAddress
+    detailAddress : req.user.detailAddress,
+    point : req.user.point
   }
   res.send(userData)
 });
@@ -172,7 +215,7 @@ router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}])
 });
 
 router.post('/purchase', (req, res)=>{
-  let data = req.body
+  let data = req.body;
   console.log(data);
   db.collection('orderId').findOne({name : 'orderId'})
   .then(result=>{
@@ -208,6 +251,10 @@ router.post('/purchase', (req, res)=>{
     return db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}})
   })
   .then(()=>{
+    let point = parseInt(data.leavedPoint);
+    return db.collection('customers').updateOne({nickName : data.nickName}, {$set : {point : point}});
+  })
+  .then(()=>{
     res.send('purchase success');
   })
   .catch(err=>{
@@ -217,6 +264,8 @@ router.post('/purchase', (req, res)=>{
 
 router.post('/cartPurchase', (req, res)=>{
   let data = req.body;
+  let point = parseInt(data[0].leavedPoint);
+  console.log(point);
   for(let i = 0; i < data.length; i++) {
     db.collection('orderId').findOne({name : 'orderId'})
     .then(result=>{
@@ -255,11 +304,15 @@ router.post('/cartPurchase', (req, res)=>{
     .then(()=>{
       return db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}});
     })
+    .then(()=>{
+      return db.collection('customers').updateOne({nickName : data[i].nickName}, {$set : {point : point}});
+    })
     .catch(err=>{
       console.log(err);
     });
   }
   res.send('purchase success');
+  
 });
 
 router.put('/addCart', (req, res)=>{
@@ -288,6 +341,40 @@ router.put('/addCart', (req, res)=>{
   .catch(err=>{
     console.log(err);
   });
+});
+
+router.post('/qnaSubmit',loginCheck, (req, res)=>{
+  let nickName = req.user.nickName;
+  let now = new Date();
+  let year = now.getFullYear();
+  let month = now.getMonth() + 1;
+  let date = now.getDate();
+  let today = year + '-' + month + '-' + date;
+  db.collection('qnaId').findOne({name : 'qnaId'})
+  .then(result=>{
+    let data = {
+      id : result.id + 1,
+      nickName : nickName,
+      productId : req.body.productId,
+      text : req.body.text,
+      date : today
+    }
+    return db.collection('qna').insertOne(data)
+  })
+  .then(()=>{
+    return db.collection('qnaId').updateOne({name : 'qnaId'}, {$inc : {id : 1}});
+  })
+  .then(()=>{
+    return db.collection('qna').find({productId : req.body.productId}).sort({id : -1}).toArray()
+  })
+  .then(result=>{
+    console.log(result);
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+  
 })
 
 
