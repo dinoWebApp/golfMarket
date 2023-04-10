@@ -30,7 +30,7 @@ router.use(session({
   secret : 'secretcode',
   resave : true,
   saveUninitialized : false,
-  store : new MongoStore({mongoUrl : process.env.DB_URL}),
+  store : new MongoStore({mongoUrl : 'mongodb+srv://tgolshop:tgolshop@cluster0.ubizguy.mongodb.net/?retryWrites=true&w=majority'}),
   cookie : {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -39,7 +39,7 @@ router.use(session({
 router.use(passport.initialize());
 router.use(passport.session());
 
-MongoClient.connect(process.env.DB_URL, (err, client)=>{
+MongoClient.connect('mongodb+srv://tgolshop:tgolshop@cluster0.ubizguy.mongodb.net/?retryWrites=true&w=majority', (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
 });
