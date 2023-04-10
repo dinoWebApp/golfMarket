@@ -9,6 +9,7 @@ const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
+const path = require('path');
 let multer = require('multer');
 let storage = multer.diskStorage({
   destination : function(req, file, cb){
@@ -41,16 +42,18 @@ app.use('/api/customer', require('./routes/customer.js'));
 app.use('/api/product', require('./routes/product.js'));
 app.use('/api/admin', require('./routes/admin.js'));
 app.use('/static',express.static(__dirname + '/public'));
-
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
 MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
   app.listen(process.env.PORT, ()=>{
-    console.log('listening on 3000');
+    console.log('listening on 8080');
   });
 });
 
-
+app.get('/', (req, res)=>{
+  res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
+})
 
 app.get('/api/', (req, res)=>{
   db.collection('products').find().limit(6).sort({reviews : -1}).toArray()
@@ -98,6 +101,10 @@ app.post('/api/admin-pw', (req, res)=>{
       } else res.send('fail');
     })
   })
+});
+
+app.get('*', (req, res)=>{
+  res.sendFile(path.join(__dirname, 'frontend/dist/index.html'))
 })
 
 
