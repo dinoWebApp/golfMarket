@@ -125,7 +125,7 @@ export default {
 
     axios.get('/api/customer/login-check')
     .then(res=>{
-      console.log(res.data);
+      
       if(res.data !== 'not login') {
         router.push({path:'/'});
       }
@@ -138,7 +138,7 @@ export default {
     function login() {
       axios.post('/api/customer/login', loginData.value)
       .then(res=>{
-        console.log(res.data);
+        
         if (res.data === 'login fail') {
           alert('아이디 또는 비밀번호가 일치하지 않습니다.')
         } else {
@@ -194,7 +194,7 @@ export default {
             alert('존재하지 않는 아이디입니다.');
           }
           else if(result.data === 'wrong nickName') {
-            alert('닉네임이 일치하지 않습니다..');
+            alert('닉네임이 일치하지 않습니다.');
           } else if(result.data === 'wrong phoneNum') {
             alert('휴대폰 번호가 일치하지 않습니다.');
           } else {

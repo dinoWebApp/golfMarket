@@ -185,7 +185,7 @@ export default {
       } else {
         axios.post('/api/customer/sign-up', signUpData.value)
         .then(res=>{
-          console.log(res.data);
+          
           if(res.data === 'sign-up success') {
             router.push({path : '/customer/login'});
           } else alert('이미 등록된 휴대폰 번호입니다.')
@@ -200,10 +200,10 @@ export default {
       if (nickName.value === '') {
         alert('닉네임이 입력되지 않았습니다.');
       } else {
-        console.log(nickName.value);
+        
         axios.get('/api/customer/sign-up/nick-check?nick=' + nickName.value)
         .then(res=>{
-          console.log(res.data);
+          
           if (res.data === 'existed') {
             existNickName.value = true;
           } else {
@@ -221,10 +221,10 @@ export default {
       if (id.value === '') {
         alert('아이디가 입력되지 않았습니다.');
       } else {
-        console.log(id.value);
+        
         axios.get('/api/customer/sign-up/id-check?id=' + id.value)
         .then(res=>{
-          console.log(res.data);
+          
           if (res.data === 'existed') {
             existId.value = true;
           } else {
@@ -259,7 +259,7 @@ export default {
     }
 
     watch(phoneNum, (newValue, oldValue)=>{
-      console.log({newValue, oldValue});
+      
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
         phoneNum.value = oldValue;
@@ -282,7 +282,7 @@ export default {
     });
 
     watch(nickName, (newValue, oldValue)=>{
-      console.log({newValue, oldValue});
+      
       let blank_pattern = /[\s]/g;
       let special_pattern = /[~!@#$%^&*()_+|<>?:{}]/;
       if(blank_pattern.test(newValue) || special_pattern.test(newValue)){
@@ -292,7 +292,7 @@ export default {
     })
 
     watch(id, (newValue, oldValue)=>{
-      console.log({newValue, oldValue});
+      
       let blank_pattern = /[\s]/g;
       let special_pattern = /[~!@#$%^&*()_+|<>?:{}]/;
       let kor_pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
@@ -352,7 +352,7 @@ export default {
     });
 
     watch(name, (newValue, oldValue)=>{
-      console.log({newValue, oldValue});
+      
       let blank_pattern = /[\s]/g;
       let special_pattern = /[~!@#$%^&*()_+|<>?:{}]/;
       let num_pattern = /[0-9]/;

@@ -123,7 +123,7 @@ export default {
 
     function clickCard(e) {
       let productId = e.currentTarget.children[1].children[1].innerText;
-      console.log(productId);
+      
       router.push({name : 'PurchasePage', params : {id : productId}});
     }
 

@@ -46,7 +46,12 @@ export default {
     const router = useRouter();
     axios.get('/api/search?searchText=' + route.query.searchText)
     .then(result=>{
-      searchedList.value = result.data;
+      if(result.data.length === 0) {
+        alert('일치하는 검색결과가 없습니다.');
+        router.go(-1);
+      } else {
+        searchedList.value = result.data;
+      }
     })
     .catch(err=>{
       console.log(err);
@@ -54,7 +59,7 @@ export default {
 
     function clickCard(e) {
       let productId = e.currentTarget.children[1].children[1].innerText;
-      console.log(productId);
+      
       router.push({name : 'PurchasePage', params : {id : productId}});
     }
 

@@ -1,15 +1,15 @@
 <template>
   <div v-if="profileModal" id="profile-xs" class="list-group d-block d-sm-none">
-    <a href="#" @click="mypage" class="list-group-item list-group-item-action">마이페이지</a>
-    <a href="#" class="list-group-item list-group-item-action">장바구니</a>
-    <a href="#" @click="profileLogout" class="list-group-item list-group-item-action">로그아웃</a>
-    <a href="#" @click="profileDelete" id="mypageDelete" class="list-group-item list-group-item-action" style="background-color:red; color:white; font-weight:bold;">닫기</a>
+    <a @click="mypage" class="list-group-item list-group-item-action">마이페이지</a>
+    <a @click="cart" class="list-group-item list-group-item-action">장바구니</a>
+    <a @click="profileLogout" class="list-group-item list-group-item-action">로그아웃</a>
+    <a @click="profileDelete" id="mypageDelete" class="list-group-item list-group-item-action" style="background-color:red; color:white; font-weight:bold;">닫기</a>
   </div>
   <div v-if="profileModal" id="profile-sm" class="list-group d-none d-sm-block d-md-none">
-    <a href="#" @click="mypage" class="list-group-item list-group-item-action">마이페이지</a>
-    <a href="#" class="list-group-item list-group-item-action">장바구니</a>
-    <a href="#" @click="profileLogout" class="list-group-item list-group-item-action">로그아웃</a>
-    <a href="#" @click="profileDelete" id="mypageDelete" class="list-group-item list-group-item-action" style="background-color:red; color:white; font-weight:bold;">닫기</a>
+    <a @click="mypage" class="list-group-item list-group-item-action">마이페이지</a>
+    <a @click="cart" class="list-group-item list-group-item-action">장바구니</a>
+    <a @click="profileLogout" class="list-group-item list-group-item-action">로그아웃</a>
+    <a @click="profileDelete" id="mypageDelete" class="list-group-item list-group-item-action" style="background-color:red; color:white; font-weight:bold;">닫기</a>
   </div>
   <header class="p-3 text-bg-white">
     <div class="container">
@@ -64,35 +64,39 @@
       <div class="collapse navbar-collapse justify-content-center" id="navbarsExample07">
         <ul class="navbar-nav mb-2 mb-lg-0 " style="align-items : center;">
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="/product/driver" >드라이버</a>
+            <a @click="clickDivide" class="menu nav-link active" aria-current="page" >드라이버</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="/product/wu">우드/유틸</a>
+            <a @click="clickDivide"  class="menu nav-link active" aria-current="page">우드/유틸</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">아이언</a>
+            <a @click="clickDivide" class="menu nav-link active" aria-current="page">아이언</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">웨지</a>
+            <a @click="clickDivide" class="menu nav-link active" aria-current="page">웨지</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">퍼터</a>
+            <a @click="clickDivide" class="menu nav-link active" aria-current="page">퍼터</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">골프백/볼/기타</a>
+            <a @click="clickDivide" class="menu nav-link active" aria-current="page">골프백/볼/기타</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">헤드/샤프트</a>
+            <a @click="clickDivide" class="menu nav-link active" aria-current="page">헤드/샤프트</a>
           </li>
           <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a class="menu nav-link active" aria-current="page" href="#">풀세트</a>
+            <a @click="clickDivide" class="menu nav-link active" aria-current="page">풀세트</a>
+          </li>
+          <div class="updown d-none d-lg-block"></div>
+          <li class="nav-item ms-2">
+            <a @click="nonMemberOrder" style="font-size:14px" class="menu nav-link active" aria-current="page">비회원 주문조회</a>
           </li>
           
         </ul>
@@ -121,7 +125,7 @@ export default {
 
     axios.get('/api/customer/login-check')
     .then(res=>{
-      console.log(res.data);
+      
       if(res.data === 'not login') {
         loginInfo.value = true;
         myInfo.value = false;
@@ -143,7 +147,7 @@ export default {
     function logout() {
       axios.get('/api/customer/logout')
       .then(res=>{
-        console.log(res.data);
+        
         if(res.data === 'logout success') {
           alert('로그아웃 되었습니다.');
           loginInfo.value = true;
@@ -158,7 +162,7 @@ export default {
     function profileLogout() {
       axios.get('/api/customer/logout')
       .then(res=>{
-        console.log(res.data);
+       
         if(res.data === 'logout success') {
           alert('로그아웃 되었습니다.')
           loginInfo.value = true;
@@ -192,7 +196,13 @@ export default {
     }
 
     function mypage() {
+      profileModal.value = false;
       router.push({name:'MyPage', query:{nickName:nickName.value, cart: 0}});
+    }
+
+    function cart() {
+      profileModal.value = false;
+      router.push({name:'MyPage', query:{nickName:nickName.value, cart: 1}});
     }
 
     function inputSearch(e) {
@@ -203,10 +213,47 @@ export default {
       router.push({name : 'SearchPage', query : {searchText : searchText.value}});
     }
 
+    function clickDivide(e) {
+      let korDivide = e.target.innerText;
+      let engDivide = '';
+      switch(e.target.innerText) {
+        case '드라이버' :
+          engDivide = 'driver';
+          break;
+        case '우드/유틸' :
+          engDivide = 'wu';
+          break;
+        case '아이언' :
+          engDivide = 'iron';
+          break;
+        case '웨지' :
+          engDivide = 'wedge';
+          break;
+        case '퍼터' :
+          engDivide = 'putter';
+          break;
+        case '골프백/볼/기타' :
+          engDivide = 'etc';
+          break;
+        case '헤드/샤프트' :
+          engDivide = 'headShaft';
+          break;
+        case '풀세트' :
+          engDivide = 'fullSet';
+          break;
+      }
+      router.push({name : 'ProductsPage', query : {korDivide : korDivide, engDivide : engDivide}});
+
+    }
+
+    function nonMemberOrder() {
+      router.push({name : 'NonMemberPage'});
+    }
+
 
 
     return {login, signUp, loginInfo, myInfo, nickName, logout, loginUpdate, profileClick, profileModal, profileDelete,
-    profileLogout, mypage, searchText, inputSearch, clickSearch};
+    profileLogout, mypage, searchText, inputSearch, clickSearch, clickDivide, nonMemberOrder, cart};
   
   }
 }

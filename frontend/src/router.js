@@ -1,8 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import HomePage from './components/HomePage.vue'
 import LoginPage from './components/LoginPage.vue'
-import DriverPage from './components/DriverPage.vue'
-import WuPage from './components/WuPage.vue'
 import SignUp from './components/SignUp.vue'
 import AdminPage from './components/AdminPage.vue'
 import PurchasePage from './components/PurchasePage.vue'
@@ -10,6 +8,9 @@ import MainPage from './components/MainPage.vue'
 import MyPage from './components/MyPage.vue'
 import PurchaseComplete from './components/PurchaseComplete.vue'
 import SearchPage from './components/SearchPage.vue'
+import ProductsPage from './components/ProductsPage.vue'
+import NonMemberPage from './components/NonMemberPage.vue'
+
 const routes = [
   {
     path:'/',
@@ -25,16 +26,6 @@ const routes = [
         path:'customer/login',
         name:'LoginPage',
         component: LoginPage
-      },
-      {
-        path:'product/driver',
-        name:'DriverPage',
-        component: DriverPage,
-      },
-      {
-        path:'product/wu',
-        name:'WuPage',
-        component: WuPage,
       },
       {
         path:'product/purchase/:id',
@@ -60,6 +51,16 @@ const routes = [
         path:'search',
         component : SearchPage,
         name : 'SearchPage'
+      },
+      {
+        path:'/product',
+        component : ProductsPage,
+        name :'ProductsPage'
+      },
+      {
+        path:'/nonMemberOrder',
+        component : NonMemberPage,
+        name : 'NonMemberPage'
       }
     ]
   },

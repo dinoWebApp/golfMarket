@@ -227,6 +227,12 @@
               <div class="mt-3">
                 {{item.text}}
               </div>
+              <div style="color:red;" v-if="item.reply === false" class="mt-3">
+                답변 미등록
+              </div>
+              <div style="font-weight:bold;" v-if="item.reply" class="mt-3">
+                관리자의 답변: {{item.adminText}}
+              </div>
             </div>
           </div>
 
@@ -373,7 +379,7 @@ export default {
 
     axios.get('/api/product/purchase/' + route.params.id)
     .then(res=>{
-      console.log(res.data);
+      
       if(res.data.userInfo !== 'not login') loginCheck.value = true;
       product.value = res.data.product;
       imagePath.value = 'http://localhost:3000/static/image/' + res.data.product.thumbnail;
@@ -418,10 +424,10 @@ export default {
       let numberSelect = document.getElementById('orderNum');
       if (numberSelect.options[document.getElementById('orderNum').selectedIndex].text === '0') {
         orderNum.value = 0;
-        console.log(orderNum.value);
+        
       } else {
         orderNum.value = numberSelect.options[document.getElementById('orderNum').selectedIndex].value;
-        console.log(orderNum.value);
+        
       }
     }
 
@@ -493,7 +499,7 @@ export default {
     }
 
     watch(phoneNum, (newValue, oldValue)=>{
-      console.log({newValue, oldValue});
+      
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
         phoneNum.value = oldValue;
@@ -559,13 +565,14 @@ export default {
           orderNum : orderNum.value,
           optionText : optionText.value,
           totalPrice : totalPrice.value,
+          payPrice : leavedPrice.value,
           leavedPoint : leavedPoint.value
         }
-        console.log(purchaseInfo);
+        
         axios.post('/api/product/purchase', purchaseInfo)
         .then(result=>{
-          console.log(result.data);
-          router.push({name: 'PurchaseComplete'});
+          
+          router.push({name: 'PurchaseComplete', query : {orderId : result.data.orderId}});
         })
         .catch(err=>{
           console.log(err);
@@ -604,8 +611,8 @@ export default {
           totalPrice : totalPrice.value
         }
         axios.put('/api/product/addCart', cartData)
-        .then(res=>{
-          console.log(res.data);
+        .then(()=>{
+          
           cartModal.value = true;
         })
         .catch(err=>{
@@ -642,7 +649,8 @@ export default {
       if(qnaText.value === '') {
         alert('문의 내용을 입력해주십시오.');
       } else {
-          let qnaData = {
+        let qnaData = {
+          productName : product.value.productName,
           productId : product.value.id,
           text : qnaText.value
         }

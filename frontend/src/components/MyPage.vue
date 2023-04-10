@@ -258,7 +258,7 @@
             <div class="col-4 d-none d-lg-block"><h5> {{item.purchaseDate}} </h5></div>
             <div class="col-4 d-block d-lg-none"><h6> {{item.purchaseDate}} </h6></div>
             <div v-if="item.review === false" class="col-3">
-              <button @click="clickReview" class="btn btn-light btn-sm border">리뷰쓰기</button>
+              <button @click="clickReview" class="btn btn-light btn-sm border">후기작성</button>
             </div>
             <div v-if="item.review" class="col-3">
               작성완료
@@ -324,11 +324,17 @@
         <div class="mt-3">
           {{item.text}}
         </div>
+        <div style="color:red;" v-if="item.reply === false" class="mt-3">
+          답변 미등록
+        </div>
+        <div style="font-weight:bold;" v-if="item.reply" class="mt-3">
+          관리자의 답변: {{item.adminText}}
+        </div>
       </div>
     </div>
     <div class="mb-3" v-if="point">
       <div class="row p-5 bg-light rounded-3 mt-3">
-        <span><h3>보유 중인 포인트 : {{ mypageData.point }}P</h3></span>
+        <span><h3>보유 중인 포인트 : <span style="color:red">{{ mypageData.point }}</span> P</h3></span>
       </div>
     </div>
     <div v-if="info" class="border">
@@ -584,7 +590,7 @@ export default {
     }
 
     watch(phoneNum, (newValue, oldValue)=>{
-      console.log({newValue, oldValue});
+      
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
         phoneNum.value = oldValue;
@@ -635,7 +641,7 @@ export default {
       + '&cartId=' + cartId)
       .then(result=>{
         totalPrice.value -= mypageData.value.cart[cartIndex].totalPrice;
-        console.log(result.data);
+        
         mypageData.value.cart = result.data;
       })
       .catch(err=>{
@@ -686,6 +692,7 @@ export default {
               orderNum : mypageData.value.cart[i].productNum,
               optionText : mypageData.value.cart[i].productOption,
               totalPrice : mypageData.value.cart[i].totalPrice,
+              payPrice : leavedPrice.value,
               cartId : mypageData.value.cart[i].cartId, 
               leavedPoint : leavedPoint.value
             }
@@ -693,8 +700,8 @@ export default {
         }
         console.log(purchaseInfo);
         axios.post('/api/product/cartPurchase', purchaseInfo)
-        .then(result=>{
-          console.log(result.data);
+        .then(()=>{
+          
           router.push({name: 'PurchaseComplete'});
         })
         .catch(err=>{
@@ -755,12 +762,9 @@ export default {
           orderId : reviewOrderId.value
         }
         axios.put('/api/customer/mypage/reviewSubmit', reviewData)
-        .then((result)=>{
-          reviewText.value = '';
-          reviewWrite.value = false;
-          reviews.value = true;
-          reviewGrade.value = 5;
-          mypageData.value.purchaseData = result.data;
+        .then(()=>{
+          alert('후기가 등록되었습니다.');
+          router.go(0);
         })
         .catch(err=>{
           console.log(err);
@@ -770,7 +774,7 @@ export default {
 
     function selectGrade(e) {
       reviewGrade.value = e.target.value;
-      console.log(reviewGrade.value);
+      
     }
 
     function inputQna(e) {
@@ -812,7 +816,7 @@ export default {
     }
 
     watch(changePn, (newValue, oldValue)=>{
-      console.log({newValue, oldValue});
+      
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
         changePn.value = oldValue;
