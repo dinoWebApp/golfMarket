@@ -47,7 +47,7 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
   app.listen(process.env.PORT, ()=>{
-    console.log('listening on 8080');
+    console.log('listening on 3000');
   });
 });
 
