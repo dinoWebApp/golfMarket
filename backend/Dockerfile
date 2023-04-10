@@ -5,7 +5,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 RUN npm ci
+ENV NODE_ENV production
 
+USER node
 COPY server.js .
 
 EXPOSE 3000
