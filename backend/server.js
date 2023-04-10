@@ -32,7 +32,7 @@ app.use(session({
   store : new MongoStore({mongoUrl : process.env.DB_URL}),
   cookie : {
     httpOnly: true,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   }
 }));
 app.use(passport.initialize());
@@ -70,10 +70,24 @@ app.get('/api/search', (req, res)=>{
   })
 })
 
+
+
 app.get('/api/admin-check', loginCheck, (req, res)=>{
   let adminData = [req.user.nickName, req.user.id];
   res.send(adminData);
 });
+
+app.get('/api/nonMemberOrder', (req, res)=>{
+  let orderId = parseInt(req.query.orderId);
+  let name = req.query.name;
+  db.collection('purchaseData').findOne({$and : [{orderId : orderId}, {name : name}]})
+  .then((result)=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+})
 
 app.post('/api/admin-pw', (req, res)=>{
   db.collection('admin').findOne({id : 'admin'}, (err, result)=>{

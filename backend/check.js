@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 12;
 
-bcrypt.hash('tgolshop680328', saltRounds, (err, hash)=>{
+bcrypt.hash('0324', saltRounds, (err, hash)=>{
   console.log(hash);
 })

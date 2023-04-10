@@ -32,7 +32,7 @@ router.use(session({
   store : new MongoStore({mongoUrl : process.env.DB_URL}),
   cookie : {
     httpOnly: true,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   }
 }));
 router.use(passport.initialize());
@@ -248,13 +248,13 @@ router.put('/mypage/reviewSubmit', (req, res)=>{
     return db.collection('products').updateOne({id : data.productId}, {$inc : {reviews : 1}});
   })
   .then(()=>{
+    return db.collection('customers').updateOne({nickName : data.nickName}, {$inc : {point : 300}});
+  })
+  .then(()=>{
     return db.collection('purchaseData').updateOne({orderId : data.orderId}, {$set : {review : true}});
   })
   .then(()=>{
-    return db.collection('purchaseData').find({nickName : data.nickName}).sort({orderId : -1}).toArray()
-  })
-  .then((result)=>{
-    res.send(result);
+    res.send('success');
   })
   .catch(err=>{
     console.log(err);
@@ -273,6 +273,8 @@ router.post('/mypage/personalQna', (req, res)=>{
       id : result.id + 1,
       nickName : req.body.nickName,
       text : req.body.text,
+      adminText : '',
+      reply : false,
       date : today
     }
     return db.collection('personalQna').insertOne(data)

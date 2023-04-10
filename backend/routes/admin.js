@@ -32,7 +32,7 @@ router.use(session({
   store : new MongoStore({mongoUrl : process.env.DB_URL}),
   cookie : {
     httpOnly: true,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   }
 }));
 router.use(passport.initialize());
@@ -46,7 +46,7 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
 router.get('/search', (req, res)=>{
   let type = req.query.type;
   let searchMemberText = req.query.searchMemberText;
-  db.collection('customers').find({[type] : searchMemberText}).toArray()
+  db.collection('customers').findOne({[type] : searchMemberText})
   .then(result=>{
     console.log(result);
     if(result.length === 0) res.send('not found');
@@ -55,7 +55,133 @@ router.get('/search', (req, res)=>{
   .catch(err=>{
     console.log(err);
   })
+});
 
+router.get('/searchProduct', (req, res)=>{
+  db.collection('products').find({$and : [{brand : req.query.brand}, {divide : req.query.divide}]}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.get('/orderData', (req, res)=>{
+  db.collection('purchaseData').find().sort({orderId : -1}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.get('/qna', (req, res)=>{
+  db.collection('qna').find().sort({id : -1}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.get('/personalQna', (req, res)=>{
+  db.collection('personalQna').find().sort({id : -1}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+})
+
+router.put('/changePoint', (req, res)=>{
+  let point = parseInt(req.body.point);
+  
+  db.collection('customers').updateOne({nickName : req.body.nickName}, {$set : {point : point}})
+  .then(()=>{
+    return db.collection('customers').findOne({nickName : req.body.nickName})
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/changeState', (req, res)=>{
+  let orderId = req.body.orderId;
+  let currentState = req.body.currentState;
+  db.collection('purchaseData').updateOne({orderId : orderId}, {$set : {currentState : currentState}})
+  .then(()=>{
+    return db.collection('purchaseData').findOne({orderId : orderId});
+  })
+  .then(result=>{
+    let state = result.currentState;
+    res.send(state);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/changeDeliNum', (req, res)=>{
+  let orderId = parseInt(req.body.orderId);
+  let deliNum = req.body.deliNum;
+  db.collection('purchaseData').updateOne({orderId : orderId}, {$set : {deliNum : deliNum}})
+  .then(()=>{
+    return db.collection('purchaseData').findOne({orderId : orderId});
+  })
+  .then(result=>{
+    let sendData = result.deliNum;
+    res.send(sendData);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/submitReply', (req, res)=>{
+  let id = req.body.id;
+  let adminText = req.body.adminText;
+  db.collection('qna').updateOne({id : id}, {$set : {adminText : adminText, reply : true}})
+  .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/submitPersonalReply', (req, res)=>{
+  let id = req.body.id;
+  let adminText = req.body.adminText;
+  db.collection('personalQna').updateOne({id : id}, {$set : {adminText : adminText, reply : true}})
+  .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+})
+
+router.delete('/deleteProduct', (req, res)=>{
+  let id = parseInt(req.query.id);
+  let brand = req.query.brand;
+  let divide = req.query.divide;
+  db.collection('products').deleteOne({id : id})
+  .then(()=>{
+    return db.collection('products').find({$and : [{brand : brand}, {divide : divide}]}).toArray();
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
 })
 
 

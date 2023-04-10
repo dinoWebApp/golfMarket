@@ -33,7 +33,7 @@ router.use(session({
   store : new MongoStore({mongoUrl : process.env.DB_URL}),
   cookie : {
     httpOnly: true,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   }
 }));
 router.use(passport.initialize());
@@ -45,50 +45,8 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
 });
 
 
-router.get('/driver', (req, res)=>{
-  db.collection('products').find({divide : '드라이버'}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
-});
-router.get('/wu', (req, res)=>{
-  db.collection('products').find({divide : '우드/유틸'}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
-});
-router.get('/iron', (req, res)=>{
-  db.collection('products').find({divide : '아이언'}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
-});
-router.get('/wedge', (req, res)=>{
-  db.collection('products').find({divide : '웨지'}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
-});
-router.get('/putter', (req, res)=>{
-  db.collection('products').find({divide : '퍼터'}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
-});
-router.get('/etc', (req, res)=>{
-  db.collection('products').find({divide : '골프백/볼/기타'}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
-});
-router.get('/headShaft', (req, res)=>{
-  db.collection('products').find({divide : '헤드/샤프트'}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
-});
-router.get('/fullSet', (req, res)=>{
-  db.collection('products').find({divide : '풀세트'}).toArray((err, result)=>{
+router.get('/', (req, res)=>{
+  db.collection('products').find({divide : req.query.korDivide}).toArray((err, result)=>{
     console.log(result);
     res.send(result);
   })
@@ -180,7 +138,7 @@ router.get('/purchase-detail', loginCheck, (req, res)=>{
   res.send(userData)
 });
 
-router.get('/submit', (req, res)=>{
+router.get('/submit', loginCheck, (req, res)=>{
   res.send(req.user.nickName);
 })
 
@@ -239,6 +197,7 @@ router.post('/purchase', (req, res)=>{
       orderNum : data.orderNum,
       optionText : data.optionText,
       totalPrice : data.totalPrice,
+      payPrice : data.payPrice,
       orderId : orderId + 1,
       purchaseDate : today,
       deliNum : 0,
@@ -255,7 +214,10 @@ router.post('/purchase', (req, res)=>{
     return db.collection('customers').updateOne({nickName : data.nickName}, {$set : {point : point}});
   })
   .then(()=>{
-    res.send('purchase success');
+    return db.collection('orderId').findOne({name : 'orderId'});
+  })
+  .then((result)=>{
+    res.send(result);
   })
   .catch(err=>{
     console.log(err);
@@ -289,6 +251,7 @@ router.post('/cartPurchase', (req, res)=>{
         orderNum : data[i].orderNum,
         optionText : data[i].optionText,
         totalPrice : data[i].totalPrice,
+        payPrice : data[i].payPrice,
         orderId : orderId + 1,
         purchaseDate : today,
         deliNum : 0,
@@ -355,8 +318,11 @@ router.post('/qnaSubmit',loginCheck, (req, res)=>{
     let data = {
       id : result.id + 1,
       nickName : nickName,
+      productName : req.body.productName,
       productId : req.body.productId,
       text : req.body.text,
+      adminText : '',
+      reply : false,
       date : today
     }
     return db.collection('qna').insertOne(data)
