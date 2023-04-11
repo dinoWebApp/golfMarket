@@ -43,13 +43,18 @@ app.use('/api/product', require('./routes/product.js'));
 app.use('/api/admin', require('./routes/admin.js'));
 app.use('/static',express.static(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'TGolShop/dist')));
+app.use(express.static(path.join(__dirname, '.well-known/pki-validation')));
 MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
-  app.listen(3000, ()=>{
-    console.log('listening on 3000');
+  app.listen(8080, ()=>{
+    console.log('listening on 8080');
   });
 });
+
+app.get('/.well-known/pki-validation/E2F74FD275038D1962E4DCB0DA17732D.txt', (req, res)=>{
+  res.sendFile(path.join(__dirname, './.well-known/pki-validation/E2F74FD275038D1962E4DCB0DA17732D.txt'));
+})
 
 app.get('/', (req, res)=>{
   res.sendFile(path.join(__dirname, 'TGolShop/dist/index.html'));

@@ -106,11 +106,11 @@ router.get('/purchase/:id', (req, res)=>{
     starArray.forEach(stars=>total+=stars);
     average = total/starArray.length;
     sendData.totalReview.average = average.toFixed(2);
-    sendData.totalReview.fivePer = ((starArray.filter(e => 5 === e).length / starArray.length)*100).toFixed(1);
-    sendData.totalReview.fourPer = ((starArray.filter(e => 4 === e).length / starArray.length)*100).toFixed(1);
-    sendData.totalReview.threePer = ((starArray.filter(e => 3 === e).length / starArray.length)*100).toFixed(1);
-    sendData.totalReview.twoPer = ((starArray.filter(e => 2 === e).length / starArray.length)*100).toFixed(1);
-    sendData.totalReview.onePer = ((starArray.filter(e => 1 === e).length / starArray.length)*100).toFixed(1);
+    sendData.totalReview.fivePer = parseFloat(((starArray.filter(e => 5 === e).length / starArray.length)*100).toFixed(1));
+    sendData.totalReview.fourPer = parseFloat(((starArray.filter(e => 4 === e).length / starArray.length)*100).toFixed(1));
+    sendData.totalReview.threePer = parseFloat(((starArray.filter(e => 3 === e).length / starArray.length)*100).toFixed(1));
+    sendData.totalReview.twoPer = parseFloat(((starArray.filter(e => 2 === e).length / starArray.length)*100).toFixed(1));
+    sendData.totalReview.onePer = parseFloat(((starArray.filter(e => 1 === e).length / starArray.length)*100).toFixed(1));
     return db.collection('qna').find({productId : productId}).sort({id : -1}).toArray();
   })
   .then(result=>{

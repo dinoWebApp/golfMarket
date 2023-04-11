@@ -159,6 +159,7 @@ router.put('/submitReply', (req, res)=>{
 router.put('/submitPersonalReply', (req, res)=>{
   let id = req.body.id;
   let adminText = req.body.adminText;
+  console.log(adminText);
   db.collection('personalQna').updateOne({id : id}, {$set : {adminText : adminText, reply : true}})
   .then(()=>{
     res.send('success');
