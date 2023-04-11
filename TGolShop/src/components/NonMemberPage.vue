@@ -49,7 +49,7 @@
         <hr/>
         <div class="row">
           <div class="col-4"> 배송지 주소: </div>
-          <div class="col-auto"> {{orderData.address}}, {{orderData.detailAddress}} </div>
+          <div class="col-auto" style="font-size: small;"> {{orderData.address}}, {{orderData.detailAddress}} </div>
         </div>
         <hr/>
         <div class="row">

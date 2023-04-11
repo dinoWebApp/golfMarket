@@ -275,6 +275,9 @@ export default {
     }
 
     function nonMemberOrder() {
+      navbarToggler.value.setAttribute('aria-expanded', 'false');
+      navbarToggler.value.classList.remove('show');
+      navbarContent.value.classList.remove('show');
       router.push({name : 'NonMemberPage'});
     }
 
