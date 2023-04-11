@@ -442,15 +442,15 @@ export default {
     const router = useRouter();
     axios.get('/api/admin-check').then(res=>{
       console.log(res.data);
-      // if(res.data === 'not login') {
-      //   router.push({path:'/'});
-      //   alert('권한이 없습니다.');
-      // } else if(res.data[0] === 'admin' && res.data[1] === 'admin') {
-      //   alert('관리자 페이지에 접속하셨습니다.');
-      // } else {
-      //   alert('권한이 없습니다.');
-      //   router.push({path:'/'});
-      // }
+      if(res.data === 'not login') {
+        router.push({path:'/'});
+        alert('권한이 없습니다.');
+      } else if(res.data[0] === 'admin' && res.data[1] === 'admin') {
+        alert('관리자 페이지에 접속하셨습니다.');
+      } else {
+        alert('권한이 없습니다.');
+        router.push({path:'/'});
+      }
     }).catch(err=>{
       console.log(err);
     });
