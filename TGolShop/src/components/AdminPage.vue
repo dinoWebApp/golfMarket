@@ -300,7 +300,7 @@
               <select @change="selectState" name="state">
                 <option value="0" selected="selected">상태선택</option>
                 <option value="결제완료">결제완료</option>
-                <option value="상품준비중">상품준비중</option>
+                <option value="배송준비">배송준비</option>
                 <option value="배송시작">배송시작</option>
                 <option value="배송완료">배송완료</option>
               </select>
@@ -442,15 +442,15 @@ export default {
     const router = useRouter();
     axios.get('/api/admin-check').then(res=>{
       console.log(res.data);
-      if(res.data === 'not login') {
-        router.push({path:'/'});
-        alert('권한이 없습니다.');
-      } else if(res.data[0] === 'admin' && res.data[1] === 'admin') {
-        alert('관리자 페이지에 접속하셨습니다.');
-      } else {
-        alert('권한이 없습니다.');
-        router.push({path:'/'});
-      }
+      // if(res.data === 'not login') {
+      //   router.push({path:'/'});
+      //   alert('권한이 없습니다.');
+      // } else if(res.data[0] === 'admin' && res.data[1] === 'admin') {
+      //   alert('관리자 페이지에 접속하셨습니다.');
+      // } else {
+      //   alert('권한이 없습니다.');
+      //   router.push({path:'/'});
+      // }
     }).catch(err=>{
       console.log(err);
     });
@@ -809,8 +809,8 @@ export default {
     }
 
     function submitReply(e) {
-      const nodes = [...e.target.parentElement.parentElement.parentElement.parentElement.children];
-      let index = nodes.indexOf(e.target.parentElement.parentElement.parentElement);
+      const nodes = [...e.target.parentElement.parentElement.parentElement.children];
+      let index = nodes.indexOf(e.target.parentElement.parentElement);
       let id = qnaData.value[index].id;
       let adminText = qnaData.value[index].adminText;
       let data = {
@@ -834,8 +834,8 @@ export default {
     }
 
     function submitPersonalReply(e) {
-      const nodes = [...e.target.parentElement.parentElement.parentElement.parentElement.children];
-      let index = nodes.indexOf(e.target.parentElement.parentElement.parentElement);
+      const nodes = [...e.target.parentElement.parentElement.parentElement.children];
+      let index = nodes.indexOf(e.target.parentElement.parentElement);
       let id = personalQnaData.value[index].id;
       let adminText = personalQnaData.value[index].adminText;
       let data = {

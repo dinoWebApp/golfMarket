@@ -25,7 +25,9 @@
         <div class="col-8 col-lg-5 col-xl-6 col-sm-4 col-md-4">
           <input @keyup.enter="clickSearch" type="text" name="keyword" v-bind:value="searchText" @input="inputSearch" placeholder="쇼핑몰 검색창입니다." class="col-5 form-control border-success" maxlength="30">
         </div>
-        <button @click="clickSearch" style="font-weight: bold;" class="btn btn-light col-1 col-md-1 ms-1 me-lg-3 border"><i class="bi bi-search"></i></button>
+        <button @click="clickSearch" style="font-weight: bold;" class="btn btn-light col-1 d-block d-sm-none border btn-sm ms-1"><i class="bi bi-search"></i></button>
+        <button @click="clickSearch" style="font-weight: bold;" class="btn btn-light col-sm-1 d-none d-sm-block col-md-1 ms-1 me-lg-3 border"><i class="bi bi-search"></i></button>
+        
 
         <div v-if="loginInfo === false && myInfo === false" class="text-end col-md-3 col-lg-auto d-none d-md-block ms-xl-5" >
           <button @click="login" type="button" class="btn btn-out-secondary me-2" style="color:white; font-weight:bold; background-color:white;">로그인</button>
@@ -52,8 +54,7 @@
   
   <nav class="container navbar navbar-dark navbar-expand-lg" aria-label="Eighth navbar example">
     <div class="container">
-      <!-- <a class="navbar-brand" href="#">Container</a> -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" id="menuToggle" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -108,6 +109,7 @@
 import { ref } from '@vue/reactivity';
 import { useRouter } from 'vue-router'
 import axios from 'axios';
+import { onMounted} from 'vue';
 export default {
   name: 'HomePage',
 
@@ -118,7 +120,17 @@ export default {
     let nickName = ref('');
     let profileModal = ref(false);
     let searchText = ref('');
+    const navbarToggler = ref(null);
+    const navbarContent = ref(null);
 
+   
+
+    onMounted(()=>{
+      navbarToggler.value = document.querySelector('.navbar-toggler');
+      navbarContent.value = document.querySelector('#navbarsExample07');
+    })
+
+    
     axios.get('/api/customer/login-check')
     .then(res=>{
       
@@ -137,6 +149,7 @@ export default {
     }
 
     function signUp() {
+      document.getElementById('menuToggle').click();
       router.push({path:'/customer/sign-up'});
     }
 
@@ -178,6 +191,9 @@ export default {
     }
 
     function profileClick() {
+      navbarToggler.value.setAttribute('aria-expanded', 'false');
+      navbarToggler.value.classList.remove('show');
+      navbarContent.value.classList.remove('show');
       axios.get('/api/customer/login-check')
       .then(res=>{
         if (res.data === 'not login') {
@@ -188,15 +204,24 @@ export default {
     }
 
     function profileDelete() {
+      navbarToggler.value.setAttribute('aria-expanded', 'false');
+      navbarToggler.value.classList.remove('show');
+      navbarContent.value.classList.remove('show');
       profileModal.value = false;
     }
 
     function mypage() {
+      navbarToggler.value.setAttribute('aria-expanded', 'false');
+      navbarToggler.value.classList.remove('show');
+      navbarContent.value.classList.remove('show');
       profileModal.value = false;
       router.push({name:'MyPage', query:{nickName:nickName.value, cart: 0}});
     }
 
     function cart() {
+      navbarToggler.value.setAttribute('aria-expanded', 'false');
+      navbarToggler.value.classList.remove('show');
+      navbarContent.value.classList.remove('show');
       profileModal.value = false;
       router.push({name:'MyPage', query:{nickName:nickName.value, cart: 1}});
     }
@@ -206,12 +231,18 @@ export default {
     }
 
     function clickSearch() {
+      navbarToggler.value.setAttribute('aria-expanded', 'false');
+      navbarToggler.value.classList.remove('show');
+      navbarContent.value.classList.remove('show');
       router.push({name : 'SearchPage', query : {searchText : searchText.value}});
     }
 
     function clickDivide(e) {
       let korDivide = e.target.innerText;
       let engDivide = '';
+      navbarToggler.value.setAttribute('aria-expanded', 'false');
+      navbarToggler.value.classList.remove('show');
+      navbarContent.value.classList.remove('show');
       switch(e.target.innerText) {
         case '드라이버' :
           engDivide = 'driver';
@@ -237,6 +268,7 @@ export default {
         case '풀세트' :
           engDivide = 'fullSet';
           break;
+
       }
       router.push({name : 'ProductsPage', query : {korDivide : korDivide, engDivide : engDivide}});
 

@@ -12,9 +12,6 @@
           <button @click="clickPurchaseData" class="nav-link mypage-option active" id="purchase-data" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">주문목록</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button @click="clickDeliInfo" class="nav-link mypage-option" id="deliInfo" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">배송조회</button>
-        </li>
-        <li class="nav-item" role="presentation">
           <button @click="clickCart" class="nav-link mypage-option" id="cart" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">장바구니</button>
         </li>
         <li class="nav-item" role="presentation">
@@ -37,13 +34,10 @@
           <button @click="clickPurchaseData" class="nav-link mypage-option" id="purchase-data" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">주문목록</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button @click="clickDeliInfo" class="nav-link mypage-option" id="deliInfo" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">배송조회</button>
-        </li>
-        <li class="nav-item" role="presentation">
           <button @click="clickCart" class="nav-link mypage-option active" id="cart" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">장바구니</button>
         </li>
         <li class="nav-item" role="presentation">
-          <button @click="clickReviews" class="nav-link mypage-option" id="reviews" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">리뷰관리</button>
+          <button @click="clickReviews" class="nav-link mypage-option" id="reviews" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">후기작성</button>
         </li>
         <li class="nav-item" role="presentation">
           <button @click="clickQna" class="nav-link mypage-option" id="Qna" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">1:1문의</button>
@@ -58,7 +52,10 @@
     </div>
     <div v-if="purchaseList">
       <div class="mt-3" align="left">
-        <span style="color:darkgray">결제취소, 반품은 1:1문의로 문의 부탁드립니다.</span>
+        <span style="font-size: large;">결제취소, 반품은 1:1문의로 문의 부탁드립니다.</span>
+      </div>  
+      <div class="mt-1" align="left">
+        <span style="color:darkgray">배송이 시작되면 배송조회 버튼이 활성화됩니다.</span>
       </div>  
       
       <div>
@@ -72,20 +69,23 @@
           </div>
           <div class="row" v-for="item in mypageData.purchaseData" :key="item">
             <hr/>
-            <div class="col-5">
+            <div class="col-5" align="left">
               <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
-              <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
+              <div class="d-block d-lg-none" style="font-size: small;"> {{item.productName}} </div>
               <div style="color:darkgray; font-size: 14px;">{{item.optionText}}</div>
             </div>
             <div class="col-2 d-none d-lg-block"><h5> {{item.orderNum}} </h5></div>
             <div class="col-2 d-block d-lg-none"><h6> {{item.orderNum}} </h6></div>
             <div class="col-3">
               <div class="d-none d-lg-block" style="font-weight:bold;"> <h5>{{filter(item.totalPrice)}} 원</h5>  </div>
-              <div class="d-block d-lg-none" style="font-weight:bold;"> <h6>{{filter(item.totalPrice)}} 원</h6>  </div>
+              <div class="d-block d-lg-none" style="font-weight:bold; font-size: 13px;"> {{filter(item.totalPrice)}} 원 </div>
             </div>
-            <div class="col-2">
+            <div v-if="item.currentState !== '배송시작'" class="col-2">
               <div style="font-size: small;" class="d-block d-md-none"> {{ item.currentState }} </div>
               <div class="d-none d-md-block"> {{ item.currentState }} </div>
+            </div>
+            <div v-if="item.currentState === '배송시작'" class="col-2">
+              <button @click="clickDeliNum" class="btn btn-light btn-sm border">조회</button>
             </div>
           </div>
         </div>
@@ -116,8 +116,6 @@
             </div>
             <div class="col-2">
               <button @click="deleteCart" class="btn btn-danger btn-sm">삭제</button>
-              <!-- <div style="font-size: small;" class="d-block d-md-none"> {{ item.currentState }} </div>
-              <div class="d-none d-md-block"> {{ item.currentState }} </div> -->
             </div>
           </div>
         </div>
@@ -213,32 +211,8 @@
       </div>
     </div>
 
-    <!-- 배송조회 -->
-    <div v-if="deliInfo">
-      <div>
-        <div>
-          <div class="row mt-4">
-            <div class="col-5"> <h6>상품 및 옵션</h6></div>
-            <div class="col-4"><h6>운송장번호</h6></div>
-            <div class="col-3"> <h6>조회</h6></div>
-          </div>
-          <div class="row" v-for="item in mypageData.purchaseData" :key="item">
-            <hr/>
-            <div class="col-5">
-              <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
-              <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
-              <div style="color:darkgray">{{item.optionText}}</div>
-            </div>
-            <div class="col-4 d-none d-lg-block"><h5> {{item.deliNum}} </h5></div>
-            <div class="col-4 d-block d-lg-none"><h6> {{item.deliNum}} </h6></div>
-            <div class="col-3">
-              <button @click="clickDeliNum" class="btn btn-light btn-sm border">배송조회</button>
-            </div>
-          </div>
-        </div>
-        
-      </div>
-    </div>
+    
+    
     <!-- 후기 -->
     <div v-if="reviews">
       <div>
@@ -250,10 +224,10 @@
           </div>
           <div class="row" v-for="item in mypageData.purchaseData" :key="item">
             <hr/>
-            <div class="col-5">
+            <div class="col-5" align="left">
               <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
-              <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
-              <div style="color:darkgray">{{item.optionText}}</div>
+              <div class="d-block d-lg-none" style="font-size: small;"> {{item.productName}} </div>
+              <div style="color:darkgray; font-size: 14px;">{{item.optionText}}</div>
             </div>
             <div class="col-4 d-none d-lg-block"><h5> {{item.purchaseDate}} </h5></div>
             <div class="col-4 d-block d-lg-none"><h6> {{item.purchaseDate}} </h6></div>
@@ -270,16 +244,29 @@
    
     <div class="mb-3" v-if="reviewWrite">
       <div class="row p-5 bg-light rounded-3 mt-3">
-        <div class="row" style="font-weight:30; font-size:23px;">
+        <div class="row d-block d-sm-none" align="left" style="font-weight:30; font-size:18px;">
           주문하신 상품에 관한 후기를 남겨주세요.
         </div>
-        <li class="row mb-4" style="color:darkgray">
+        <div class="row d-none d-sm-block" align="left" style="font-weight:30; font-size:23px;">
+          주문하신 상품에 관한 후기를 남겨주세요.
+        </div>
+        <li class="row mb-1" style="color:darkgray">
           ({{ reviewProductName }})
         </li>
         <li class="row mb-4" style="color:darkgray">
           리뷰 작성 시 300포인트 지급
         </li>
-        <div align="left" class="col-3 mb-1">
+        <div align="left" class="col-4 mb-1 d-block d-sm-none">
+          평점:
+          <select @change="selectGrade" name="grade">
+            <option value="5" selected="selected">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
+        </div>
+        <div align="left" class="col-3 mb-1 d-none d-sm-block">
           평점:
           <select @change="selectGrade" name="grade">
             <option value="5" selected="selected">5</option>
@@ -291,7 +278,7 @@
         </div>
         <div class="row">
           <textarea v-bind:value="reviewText" @input="inputReview" class="col-10" id="qna" cols="30" rows="3"></textarea>
-          <button @click="reviewSubmit" class="btn btn-secondary col-2" style="font-weight:bold;">등록</button>
+          <button @click="reviewSubmit" class="btn btn-secondary btn-sm col-2" style="font-weight:bold;">등록</button>
         </div>
         <div align="left">
           <span>{{ reviewText.length }}/100</span>
@@ -299,22 +286,30 @@
         
       </div>
     </div>
-    <div class="mb-3" v-if="qnaWrite">
+    <div class="mb-3 container" v-if="qnaWrite">
       <div class="row p-5 bg-light rounded-3 mt-3">
-        <div align="left" class="row" style="font-weight:30; font-size:18px;">
-          결제취소, 반품, 교환 등 문의 사항을 작성해주십시오.
+        <div align="left" class="row" style="font-weight:30; font-size:17px;">
+          상품 관련 문의 사항을 작성해주십시오.
         </div>
         <li class="row mb-4" style="color:darkgray">
-          50자 이내로 작성
+          100자 이내로 작성
         </li>
         <div class="row">
-          <textarea v-bind:value="qnaText" @input="inputQna" class="col-9" id="qna" cols="30" rows="3"></textarea>
-          <button @click="qnaSubmit" class="btn btn-secondary col-2" style="font-weight:bold;">등록</button>
+          <textarea v-bind:value="qnaText" @input="inputQna" class="col-12 d-block d-sm-none" id="qna" cols="30" rows="3"></textarea>
+          <textarea v-bind:value="qnaText" @input="inputQna" class="col-10 d-none d-sm-block" id="qna" cols="30" rows="3"></textarea>
+          <button @click="qnaSubmit" class="btn btn-secondary btn-sm col-2 d-none d-sm-block" style="font-weight:bold;">등록</button>
         </div>
-        <div align="left">
+        <div align="right" class="mt-1 d-block d-sm-none">
+          <span>{{ qnaText.length }}/100</span>
+          <button @click="qnaSubmit" class="btn btn-secondary btn-sm col-2 me-2 ms-1" style="font-weight:bold;">등록</button>
+        </div>
+        <div align="left" class="d-none d-sm-block">
           <span>{{ qnaText.length }}/100</span>
         </div>
+        
       </div>
+      
+      
       <div v-for="item in qnaList" :key="item" align='left'>
         <hr/>
         <div>
@@ -392,7 +387,6 @@ export default {
     let updateKey = ref(0);
     let purchaseList = ref(true);
     let cart = ref(false);
-    let deliInfo = ref(false);
     let qna = ref(false);
     let point = ref(false);
     let info = ref(false);
@@ -439,7 +433,6 @@ export default {
       leavedPoint.value = res.data.point;
       if(route.query.cart === '1') {
         purchaseList.value = false;
-        deliInfo.value = false;
         cart.value = true;
         reviews.value = false;
         qna.value = false;
@@ -464,7 +457,6 @@ export default {
       qnaWrite.value = false;
       purchaseDetail.value = false;
       purchaseList.value = true;
-      deliInfo.value = false;
       cart.value = false;
       reviews.value = false;
       qna.value = false;
@@ -472,25 +464,12 @@ export default {
       info.value = false;
     }
 
-    function clickDeliInfo() {
-      reviewWrite.value = false;
-      qnaWrite.value = false;
-      purchaseDetail.value = false;
-      purchaseList.value = false;
-      deliInfo.value = true;
-      cart.value = false;
-      reviews.value = false;
-      qna.value = false;
-      point.value = false;
-      info.value = false;
-    }
 
     function clickCart() {
       reviewWrite.value = false;
       qnaWrite.value = false;
       purchaseDetail.value = false;
       purchaseList.value = false;
-      deliInfo.value = false;
       cart.value = true;
       reviews.value = false;
       qna.value = false;
@@ -503,7 +482,6 @@ export default {
       qnaWrite.value = false;
       purchaseDetail.value = false;
       purchaseList.value = false;
-      deliInfo.value = false;
       cart.value = false;
       reviews.value = true;
       qna.value = false;
@@ -516,7 +494,6 @@ export default {
       qnaWrite.value = true;
       purchaseDetail.value = false;
       purchaseList.value = false;
-      deliInfo.value = false;
       cart.value = false;
       reviews.value = false;
       qna.value = true;
@@ -529,7 +506,6 @@ export default {
       qnaWrite.value = false;
       purchaseDetail.value = false;
       purchaseList.value = false;
-      deliInfo.value = false;
       cart.value = false;
       reviews.value = false;
       qna.value = false;
@@ -543,7 +519,6 @@ export default {
       qnaWrite.value = false;
       purchaseDetail.value = false;
       purchaseList.value = false;
-      deliInfo.value = false;
       cart.value = false;
       reviews.value = false;
       qna.value = false;
@@ -559,7 +534,6 @@ export default {
         qnaWrite.value = false;
         purchaseDetail.value = true;
         purchaseList.value = false;
-        deliInfo.value = false;
         cart.value = false;
         reviews.value = false;
         qna.value = false;
@@ -573,7 +547,6 @@ export default {
       qnaWrite.value = false;
       purchaseDetail.value = false;
       purchaseList.value = false;
-      deliInfo.value = false;
       cart.value = true;
       reviews.value = false;
       qna.value = false;
@@ -711,11 +684,14 @@ export default {
     }
 
     function clickDeliNum(e) {
-      let text = e.target.parentElement.previousElementSibling.textContent;
-      if(text === '0') {
+      const nodes = [...e.target.parentElement.parentElement.parentElement.children];
+      let cartIndex = nodes.indexOf(e.target.parentElement.parentElement) - 2;
+      console.log(cartIndex);
+      let deliNum = mypageData.value.purchaseData[cartIndex].deliNum;
+      if(deliNum === 0) {
         alert('아직 운송장 정보가 등록되지 않았습니다.');
       } else {
-        window.open('https://www.ilogen.com/m/personal/trace/' + text);
+        window.open('https://www.ilogen.com/m/personal/trace/' + deliNum);
       }
     }
 
@@ -731,7 +707,6 @@ export default {
       reviewWrite.value = true;
       purchaseDetail.value = false;
       purchaseList.value = false;
-      deliInfo.value = false;
       cart.value = false;
       reviews.value = false;
       qna.value = false;
@@ -883,7 +858,7 @@ export default {
     
     
   
-    return {nickName, updateKey, purchaseList, cart, mypageData, filter, deliInfo, reviews, qna, point, info, clickPurchaseData, clickDeliInfo,
+    return {nickName, updateKey, purchaseList, cart, mypageData, filter, reviews, qna, point, info, clickPurchaseData,
     clickCart, clickReviews, clickQna, clickPoint, clickInfo, totalPrice, deleteCart, clickPurchase, purchaseDetail, inputName, inputPhoneNum,
     inputAddress, clickFinal, clickBack, clickDeliNum, clickReview, phoneNum, qnaWrite, reviewWrite, reviewProductName, reviewText, reviewLength,
     inputReview, reviewSubmit, selectGrade, qnaText, inputQna, qnaSubmit, qnaList, changeName, changePhoneNum, changeData, changeAddress, changePn,

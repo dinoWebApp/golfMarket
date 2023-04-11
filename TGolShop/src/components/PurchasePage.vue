@@ -1,10 +1,20 @@
 <template>
   <div>
-    <div v-if="cartModal" align="center" class="black-bg">
+    <div v-if="cartModal" align="center" class="black-bg d-none d-sm-block">
       <div class="white-bg border">
         <h4>장바구니 담기 완료</h4>
-        <p class="d-block d-lg-none" style="font-size:15px">장바구니로 이동하시겠습니까?</p>
-        <p class="d-none d-lg-block" style="font-size:20px">장바구니로 이동하시겠습니까?</p>
+        <p class="d-sm-block d-lg-none" style="font-size:15px">장바구니로 이동하시겠습니까?</p>
+        <p class="d-sm-none d-lg-block" style="font-size:20px">장바구니로 이동하시겠습니까?</p>
+        <div align='center'>
+          <button @click="deleteCart" class="btn btn-light btn-sm border me-2">닫기</button>
+          <button @click="moveCart" style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">장바구니로 이동</button>
+        </div>
+      </div>
+    </div>
+    <div v-if="cartModal" align="center" class="black-bg2 d-block d-sm-none">
+      <div class="white-bg2 border">
+        <h4>장바구니 담기 완료</h4>
+        <p  style="font-size:15px">장바구니로 이동하시겠습니까?</p>
         <div align='center'>
           <button @click="deleteCart" class="btn btn-light btn-sm border me-2">닫기</button>
           <button @click="moveCart" style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">장바구니로 이동</button>
@@ -128,13 +138,13 @@
                 <div class="col-0 col-md-2 col-xl-3"></div>
                 <div class="col-12 col-md-10 col-xl-9" align='left'>
                   <div class="d-none d-lg-block ms-2 mb-2" style="font-size:30px; font-weight:bold;">상품후기({{product.reviews}})</div>
-                  <div class="d-block d-lg-none ms-2 mb-2" style="font-size:25px; font-weight:bold;">상품후기({{product.reviews}})</div>
+                  <div class="d-block d-lg-none ms-2 mb-2" style="font-size:23px; font-weight:bold;">상품후기({{product.reviews}})</div>
                   <star-rating class="d-none d-lg-block" :rating="totalReview.average" :show-rating="false" :read-only="true" :increment="0.01"></star-rating>
                   <star-rating class="d-block d-lg-none" :star-size="30" :rating="totalReview.average" :show-rating="false" :read-only="true" :increment="0.01"></star-rating>
                   <div class="d-none d-lg-block ms-5 mt-3" style="font-size:20px">
                     평점 평균 : {{totalReview.average}}/5
                   </div>
-                  <div class="d-block d-lg-none ms-2 mt-3" style="font-size:15px">
+                  <div class="d-block d-lg-none ms-2 mt-3" style="font-size:14px">
                     평점 평균 : {{totalReview.average}}/5
                   </div>
                 </div>
@@ -142,41 +152,41 @@
               </div>
               <div class="row col-6">
                 <div class="col-lg-1 col-0"></div>
-                <div class="col-lg-10 col-xl-9 col-12">
+                <div class="col-lg-10 col-xl-9 col-12 ms-5">
                   <div class="d-flex mb-3 ">
-                    <div class="col-2 col-lg-1" style="font-size:15px">5점</div>
+                    <div class="col-3 col-lg-1" style="font-size:15px">5점</div>
                     <div class="col-lg-9 col-8 progress">
                       <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.fivePer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <div class="col-2" style="font-size:15px">{{totalReview.fivePer}}%</div>
+                    <div class="col-2 ms-1" style="font-size:15px">{{totalReview.fivePer}}%</div>
                   </div>
                   <div class="d-flex mb-3">
-                    <div class="col-2 col-lg-1" style="font-size:15px">4점</div>
+                    <div class="col-3 col-lg-1" style="font-size:15px">4점</div>
                     <div class="col-lg-9 col-8 progress">
                       <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.fourPer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <div class="col-2" style="font-size:15px">{{totalReview.fourPer}}%</div>
+                    <div class="col-2 ms-1" style="font-size:15px">{{totalReview.fourPer}}%</div>
                   </div>
                   <div class="d-flex mb-3">
-                    <div class="col-2 col-lg-1" style="font-size:15px">3점</div>
+                    <div class="col-3 col-lg-1" style="font-size:15px">3점</div>
                     <div class="col-lg-9 col-8 progress">
                       <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.threePer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <div class="col-2" style="font-size:15px">{{totalReview.threePer}}%</div>
+                    <div class="col-2 ms-1" style="font-size:15px">{{totalReview.threePer}}%</div>
                   </div>
                   <div class="d-flex mb-3">
-                    <div class="col-2 col-lg-1" style="font-size:15px">2점</div>
+                    <div class="col-3 col-lg-1" style="font-size:15px">2점</div>
                     <div class="col-lg-9 col-8 progress">
                       <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.twoPer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <div class="col-2" style="font-size:15px">{{totalReview.twoPer}}%</div>
+                    <div class="col-2 ms-1" style="font-size:15px">{{totalReview.twoPer}}%</div>
                   </div>
                   <div class="d-flex mb-3">
-                    <div class="col-2 col-lg-1" style="font-size:15px">1점</div>
+                    <div class="col-3 col-lg-1" style="font-size:15px">1점</div>
                     <div class="col-lg-9 col-8 progress">
                       <div class="progress-bar bg-warning" role="progressbar" aria-label="Success example" :style="`width: ${totalReview.onePer}%`" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <div class="col-2" style="font-size:15px">{{totalReview.onePer}}%</div>
+                    <div class="col-2 ms-1" style="font-size:15px">{{totalReview.onePer}}%</div>
                   </div>
                 </div>
               </div>
@@ -197,17 +207,29 @@
           </div>
           <div class="mb-3" v-if="qna">
             <div class="row p-5 bg-light rounded-3 mt-3">
-              <div class="row" style="font-weight:30; font-size:22px;">
+              <div class="row d-block d-sm-none" align="left" style="font-weight:30; font-size:17px;">
                 상품에 관하여 궁금한 것을 물어보세요.
               </div>
-              <li class="row mb-4" style="color:darkgray">
+              <div class="row d-none d-sm-block" align="left" style="font-weight:30; font-size:23px;">
+                상품에 관하여 궁금한 것을 물어보세요.
+              </div>
+              <li class="row mb-4 d-block d-sm-none" align="left" style="color:darkgray; font-size: 13px;">
                 상품 문의를 통한 교환, 반품은 처리되지 않습니다.
               </li>
+              <li class="row mb-4 d-none d-sm-block" align="left" style="color:darkgray;">
+                상품 문의를 통한 교환, 반품은 처리되지 않습니다.
+              </li>
+
               <div class="row">
-                <textarea v-bind:value="qnaText" @input="inputQna" class="col-9" id="qna" cols="30" rows="3"></textarea>
-                <button @click="qnaSubmit" class="btn btn-secondary col-2" style="font-weight:bold;">등록</button>
+                <textarea v-bind:value="qnaText" @input="inputQna" class="col-12 d-block d-sm-none" id="qna" cols="30" rows="3"></textarea>
+                <textarea v-bind:value="qnaText" @input="inputQna" class="col-10 d-none d-sm-block" id="qna" cols="30" rows="3"></textarea>
+                <button @click="qnaSubmit" class="btn btn-secondary btn-sm col-2 d-none d-sm-block" style="font-weight:bold;">등록</button>
               </div>
-              <div align="left">
+              <div align="right" class="mt-1 d-block d-sm-none">
+                <span>{{ qnaText.length }}/100</span>
+                <button @click="qnaSubmit" class="btn btn-secondary btn-sm col-2 me-2 ms-1" style="font-weight:bold;">등록</button>
+              </div>
+              <div align="left" class="d-none d-sm-block">
                 <span>{{ qnaText.length }}/100</span>
               </div>
             </div>
@@ -309,10 +331,14 @@
       </div>
       <hr/>
       <div class="mt-4 d-flex">
-        <h3 style="color:red; font-weight:bold;">결제 금액:</h3>
-        <h3 class="ms-3"> {{filter(leavedPrice)}} 원 </h3>
-        <button @click="clickFinal" class="btn btn-danger ms-4" style="font-weight:bold;">결제하기</button>
-        <button @click="backPage" class="btn btn-outline-success flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
+        <h3 class="d-none d-sm-block" style="color:red; font-weight:bold;">결제 금액:</h3>
+        <h5 class="d-block d-sm-none" style="color:red; font-weight:bold;">결제 금액:</h5>
+        <h3 class="ms-3 d-none d-sm-block"> {{filter(leavedPrice)}} 원 </h3>
+        <h5 class="ms-3 d-block d-sm-none"> {{filter(leavedPrice)}} 원 </h5>
+        <button @click="clickFinal" class="btn btn-danger btn-sm ms-4 d-block d-sm-none" style="font-weight:bold;">결제하기</button>
+        <button @click="backPage" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 d-block d-sm-none" style="font-weight:bold;" type="button">이전페이지</button>
+        <button @click="clickFinal" class="btn btn-danger d-none d-sm-block ms-4 " style="font-weight:bold;">결제하기</button>
+        <button @click="backPage" class="btn btn-outline-success d-none d-sm-block flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
     </div>
     
@@ -415,13 +441,8 @@ export default {
 
     function selectNum() {
       let numberSelect = document.getElementById('orderNum');
-      if (numberSelect.options[document.getElementById('orderNum').selectedIndex].text === '0') {
-        orderNum.value = 0;
-        
-      } else {
-        orderNum.value = numberSelect.options[document.getElementById('orderNum').selectedIndex].value;
-        
-      }
+      console.log(numberSelect.options[document.getElementById('orderNum').selectedIndex].value)
+      orderNum.value = numberSelect.options[document.getElementById('orderNum').selectedIndex].value;
     }
 
     function clickProdInfo() {
@@ -459,7 +480,7 @@ export default {
     function clickPurchase() {
       if(optionSelected.value === 0) {
         alert('옵션을 선택하여 주십시오.');
-      } else if(orderNum.value === 0) {
+      } else if(orderNum.value === '0') {
         alert('주문 개수를 선택하여 주십시오.')
       } else {
         axios.get('/api/product/purchase-detail')
@@ -673,6 +694,8 @@ export default {
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
         usePoint.value = oldValue;
+        leavedPoint.value = point.value - oldValue;
+        leavedPrice.value = totalPrice.value - oldValue;
       } else if(newValue > point.value) {
         alert('보유한 포인트까지만 사용가능합니다.');
         usePoint.value = oldValue;
@@ -680,6 +703,8 @@ export default {
         leavedPrice.value = totalPrice.value - oldValue;
       }
     });
+
+
 
     
     
@@ -713,6 +738,16 @@ div {
 }
 .white-bg {
   width: 50%; background: white;
+  border-radius: 8px;
+  padding: 20px;
+} 
+
+.black-bg2 {
+  width: 100%; height:100%;
+  position: fixed; padding: 20px;
+}
+.white-bg2 {
+  width: 80%; background: white;
   border-radius: 8px;
   padding: 20px;
 } 

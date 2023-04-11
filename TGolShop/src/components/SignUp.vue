@@ -11,10 +11,10 @@
           <div class="col-12">
             <input v-bind:value="nickName" @input="inputNickName" type="text" class="form-control mb-2" id="nickName" placeholder="닉네임 (5자 이내)" maxlength="5">
           </div>
-          <div class="col-5" v-if="nickNameCheck === false">
+          <div class="col-6" v-if="nickNameCheck === false">
             <button @click="checkNick" type="button" class="btn btn-danger" style="font-weight:bold;">중복검사</button>
           </div>
-          <div class="col-5" v-if="nickNameCheck === true">
+          <div class="col-6" v-if="nickNameCheck === true">
             <button type="button" class="btn btn-success" style="font-weight:bold;">중복검사</button>
           </div>
         </div>
@@ -27,10 +27,10 @@
           <div class="col-12">
             <input v-bind:value="id" @input="inputId" type="text" class="form-control mb-2" id="id" placeholder="아이디" maxlength="15">
           </div>
-          <div class="col-5" v-if="idCheck === false">
+          <div class="col-6" v-if="idCheck === false">
             <button @click="checkId" type="button" class="btn btn-danger" style="font-weight:bold;">중복검사</button>
           </div>
-          <div class="col-5" v-if="idCheck === true">
+          <div class="col-6" v-if="idCheck === true">
             <button type="button" class="btn btn-success" style="font-weight:bold;">중복검사</button>
           </div>
         </div>
