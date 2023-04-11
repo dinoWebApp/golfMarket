@@ -30,7 +30,7 @@ app.use(session({
   secret : 'secretcode',
   resave : true,
   saveUninitialized : false,
-  store : new MongoStore({mongoUrl : 'mongodb+srv://tgolshop:tgolshop@cluster0.ubizguy.mongodb.net/?retryWrites=true&w=majority'}),
+  store : new MongoStore({mongoUrl : process.env.DB_URL}),
   cookie : {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -43,7 +43,7 @@ app.use('/api/product', require('./routes/product.js'));
 app.use('/api/admin', require('./routes/admin.js'));
 app.use('/static',express.static(__dirname + '/public'));
 app.use(express.static(path.join(__dirname, 'TGolShop/dist')));
-MongoClient.connect('mongodb+srv://tgolshop:tgolshop@cluster0.ubizguy.mongodb.net/?retryWrites=true&w=majority', (err, client)=>{
+MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
   app.listen(3000, ()=>{
