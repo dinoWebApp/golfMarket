@@ -94,9 +94,13 @@ export default {
       } else {
         axios.get('/api/nonMemberOrder?orderId=' + orderId.value + '&name=' + name.value)
         .then(result=>{
-          orderData.value = result.data;
-          inputInfo.value = false;
-          orderInfo.value = true;
+          if(result.data === 'wrong') {
+            alert('일치하는 주문정보가 없습니다.')
+          } else {
+            orderData.value = result.data;
+            inputInfo.value = false;
+            orderInfo.value = true;
+          }
         })
         .catch(err=>{
           console.log(err);

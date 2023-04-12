@@ -90,7 +90,10 @@ app.get('/api/nonMemberOrder', (req, res)=>{
   let name = req.query.name;
   db.collection('purchaseData').findOne({$and : [{orderId : orderId}, {name : name}]})
   .then((result)=>{
-    res.send(result);
+    if(!result) {
+      res.send("wrong");
+    } else res.send(result);
+    
   })
   .catch(err=>{
     console.log(err);

@@ -2,11 +2,11 @@
   <div>
     <div class="container mt-3 mb-3">
       <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
+        <!-- <div class="carousel-indicators">
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
+        </div> -->
         <div class="carousel-inner">
           <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/g430-banner.jpeg" class="d-block w-100" alt="...">
@@ -28,10 +28,10 @@
         </button>
       </div>
       <div id="second" class="carousel slide mt-1" data-bs-ride="carousel">
-        <div class="carousel-indicators">
+        <!-- <div class="carousel-indicators">
           <button type="button" data-bs-target="#second" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
           <button type="button" data-bs-target="#second" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        </div>
+        </div> -->
         <div class="carousel-inner">
           <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/sign-up-event.jpg" class="d-block w-100" alt="...">
@@ -69,7 +69,7 @@
         <div class="col" v-for="item in productList" :key="item">
           <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
             <div id="img-border">
-              <img id="image" :src='`http://localhost:3000/static/image/${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+              <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
             </div>
             <div class="d-flex">
               <span class="ms-1" style="font-size:11px;">상품 코드: </span>
@@ -79,15 +79,19 @@
             
             <div class="card-body">
               
-              <div id="text-border1" class="d-lg-none">
-                <p id="product-text" class="card-text" style="font-weight: 600;"> {{item.productName}} </p>
+              <div id="text-border1" class="d-block d-lg-none">
+                <p id="product-text" class="card-text" style="font-weight: 600; font-size: 13px;"> {{item.productName}} </p>
               </div>
-              <div id="text-border2" class="d-none d-lg-block">
-                <p id="product-text" class="card-text" style="font-weight:600; font-size:20px"> {{item.productName}} </p>
+              <div id="text-border1" class="d-none d-lg-block">
+                <p id="product-text" class="card-text" style="font-weight: 600; font-size: 22px;"> {{item.productName}} </p>
               </div>
               
               <span class="text-decoration-line-through" style="font-weight:bold; color:gray">{{filter(item.beforeDiscount)}} 원</span>
-              <div>
+              <div class="d-block d-sm-none">
+                <span style="font-weight:900; font-size:24px; color:red;"> {{discount(item.beforeDiscount, item.productPrice, 0)}}% </span>
+                <span style="font-weight:900; font-size:18px;"> {{filter(item.productPrice)}} 원 </span>
+              </div>
+              <div class="d-none d-sm-block">
                 <span style="font-weight:900; font-size:30px; color:red;"> {{discount(item.beforeDiscount, item.productPrice, 0)}}% </span>
                 <span style="font-weight:900; font-size:22px;"> {{filter(item.productPrice)}} 원 </span>
               </div>

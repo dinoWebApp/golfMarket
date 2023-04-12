@@ -9,6 +9,10 @@ const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
+const curr = new Date();
+const utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+const KR_TIME_DIFF = 9*60*60*1000;
+const kr_curr = new Date(utc + KR_TIME_DIFF + 60 * 4 * 1000);
 let multer = require('multer');
 let storage = multer.diskStorage({
   destination : function(req, file, cb){
@@ -105,7 +109,7 @@ router.get('/purchase/:id', (req, res)=>{
     let total = 0;
     starArray.forEach(stars=>total+=stars);
     average = total/starArray.length;
-    sendData.totalReview.average = average.toFixed(2);
+    sendData.totalReview.average = parseFloat(average.toFixed(2));
     sendData.totalReview.fivePer = parseFloat(((starArray.filter(e => 5 === e).length / starArray.length)*100).toFixed(1));
     sendData.totalReview.fourPer = parseFloat(((starArray.filter(e => 4 === e).length / starArray.length)*100).toFixed(1));
     sendData.totalReview.threePer = parseFloat(((starArray.filter(e => 3 === e).length / starArray.length)*100).toFixed(1));
@@ -144,9 +148,8 @@ router.get('/submit', loginCheck, (req, res)=>{
 
 
 
-router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}]), (req, res)=>{
-  console.log(req.files);
-  let data = JSON.parse(req.body.data);
+router.post('/upload', (req, res)=>{
+  let data = req.body
   db.collection('productNum').findOne({name : 'productId'}, (err, result)=>{
     let productNum = result.totalProducts;
     let dataSet = {
@@ -159,8 +162,8 @@ router.post('/upload', upload.fields([{name: 'thumbnail'}, {name: 'infoImage'}])
       optionData : data.optionData,
       deliverKor : data.deliverKor,
       deliverOut : data.deliverOut,
-      thumbnail : req.files.thumbnail[0].filename,
-      infoImage : req.files.infoImage[0].filename,
+      thumbnail : data.thumbnail,
+      infoImage : data.infoImage,
       reviews : 0
     };
     db.collection('products').insertOne(dataSet, (err, result)=>{
@@ -178,11 +181,12 @@ router.post('/purchase', (req, res)=>{
   db.collection('orderId').findOne({name : 'orderId'})
   .then(result=>{
     let orderId = result.orderId;
-    let now = new Date();
-    let year = now.getFullYear();
-    let month = now.getMonth() + 1;
-    let date = now.getDate();
-    let today = year + '-' + month + '-' + date;
+    let year = kr_curr.getFullYear();
+    let month = kr_curr.getMonth() + 1;
+    let date = kr_curr.getDate();
+    let hours = kr_curr.getHours();
+    let minutes = kr_curr.getMinutes();
+    let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
     let purchaseData = {
       cartBool : false,
       nickName : data.nickName,
@@ -232,11 +236,12 @@ router.post('/cartPurchase', (req, res)=>{
     db.collection('orderId').findOne({name : 'orderId'})
     .then(result=>{
       let orderId = result.orderId;
-      let now = new Date();
-      let year = now.getFullYear();
-      let month = now.getMonth() + 1;
-      let date = now.getDate();
-      let today = year + '-' + month + '-' + date;
+      let year = kr_curr.getFullYear();
+      let month = kr_curr.getMonth() + 1;
+      let date = kr_curr.getDate();
+      let hours = kr_curr.getHours();
+      let minutes = kr_curr.getMinutes();
+      let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
       let purchaseData = {
         cartBool : true,
         nickName : data[i].nickName,
@@ -308,11 +313,12 @@ router.put('/addCart', (req, res)=>{
 
 router.post('/qnaSubmit',loginCheck, (req, res)=>{
   let nickName = req.user.nickName;
-  let now = new Date();
-  let year = now.getFullYear();
-  let month = now.getMonth() + 1;
-  let date = now.getDate();
-  let today = year + '-' + month + '-' + date;
+  let year = kr_curr.getFullYear();
+  let month = kr_curr.getMonth() + 1;
+  let date = kr_curr.getDate();
+  let hours = kr_curr.getHours();
+  let minutes = kr_curr.getMinutes();
+  let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
   db.collection('qnaId').findOne({name : 'qnaId'})
   .then(result=>{
     let data = {
@@ -341,7 +347,9 @@ router.post('/qnaSubmit',loginCheck, (req, res)=>{
     console.log(err);
   })
   
-})
+});
+
+
 
 
 
@@ -388,5 +396,6 @@ function loginCheck(req, res, next) {
     res.send('need login');
   }
 }
+
 
 module.exports = router;

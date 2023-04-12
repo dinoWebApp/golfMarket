@@ -187,6 +187,7 @@ export default {
         .then(res=>{
           
           if(res.data === 'sign-up success') {
+            alert('회원가입이 완료되었습니다.');
             router.push({path : '/customer/login'});
           } else alert('이미 등록된 휴대폰 번호입니다.')
         }).catch(err=>{

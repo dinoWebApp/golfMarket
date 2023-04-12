@@ -99,12 +99,13 @@
             <div class="d-none d-md-block col-md-1 col-xl-2"></div>
           </div>
 
+          <!-- 사진사용 -->
           <div v-if="relatedProduct" class="container mt-5">
             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-4">
               <div class="col" v-for="item in relatedList" :key="item">
                 <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
                   <div id="img-border">
-                    <img id="image" :src='`http://localhost:3000/static/image/${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+                    <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
                   </div>
                   <div class="d-flex">
                     <span class="ms-1" style="font-size:11px;">상품 코드: </span>
@@ -115,16 +116,20 @@
                   <div class="card-body">
                     
                     <div id="text-border1" class="d-lg-none">
-                      <p id="product-text" class="card-text" style="font-weight:600;"> {{item.productName}} </p>
+                      <p id="product-text" class="card-text" style="font-weight:600; font-size: 13px;"> {{item.productName}} </p>
                     </div>
                     <div id="text-border2" class="d-none d-lg-block">
-                      <p id="product-text" class="card-text" style="font-weight:600;"> {{item.productName}} </p>
+                      <p id="product-text" class="card-text" style="font-weight:600; font-size: 17px;"> {{item.productName}} </p>
                     </div>
                     
                     <span class="text-decoration-line-through" style="font-weight:bold; color:gray">{{filter(item.beforeDiscount)}} 원</span>
-                    <div>
+                    <div class="d-none d-lg-block">
                       <span style="font-weight:900; font-size:30px; color:red;"> {{discount(item.beforeDiscount, item.productPrice, 0)}}% </span>
                       <span style="font-weight:900; font-size:22px;"> {{filter(item.productPrice)}} 원 </span>
+                    </div>
+                    <div class="d-block d-lg-none">
+                      <span style="font-weight:900; font-size:24px; color:red;"> {{discount(item.beforeDiscount, item.productPrice, 0)}}% </span>
+                      <span style="font-weight:900; font-size:18px;"> {{filter(item.productPrice)}} 원 </span>
                     </div>
                   </div>
                 </div>
@@ -138,7 +143,7 @@
                 <div class="col-0 col-md-2 col-xl-3"></div>
                 <div class="col-12 col-md-10 col-xl-9" align='left'>
                   <div class="d-none d-lg-block ms-2 mb-2" style="font-size:30px; font-weight:bold;">상품후기({{product.reviews}})</div>
-                  <div class="d-block d-lg-none ms-2 mb-2" style="font-size:23px; font-weight:bold;">상품후기({{product.reviews}})</div>
+                  <div class="d-block d-lg-none ms-2 mb-2" style="font-size:19px; font-weight:bold;">상품후기({{product.reviews}})</div>
                   <star-rating class="d-none d-lg-block" :rating="totalReview.average" :show-rating="false" :read-only="true" :increment="0.01"></star-rating>
                   <star-rating class="d-block d-lg-none" :star-size="30" :rating="totalReview.average" :show-rating="false" :read-only="true" :increment="0.01"></star-rating>
                   <div class="d-none d-lg-block ms-5 mt-3" style="font-size:20px">
@@ -266,7 +271,7 @@
         <h4 v-if="loginCheck === false" style="font-weight:bold;" align="left">배송지 입력</h4>
       </div>
       <div class="border">
-        <div class="col-5 col-lg-3 ms-1 me-1 mt-3 mb-3">
+        <div class="col-6 col-lg-3 ms-1 me-1 mt-3 mb-3">
           <div align='left' class="ms-1 mb-1">성명</div>
           <input v-bind:value="name" @input="inputName" type="text" class="form-control mb-2" id="name" placeholder="성명" maxlength="6">
           <div align='left' class="ms-1 mb-1">휴대폰 번호</div>
@@ -368,7 +373,7 @@ export default {
     let productId = ref(0);
     let optionText = ref('');
     let optionPrice = ref(0);
-    let orderNum = ref(0);
+    let orderNum = ref('0');
     let optionSelected = ref(0);
     let productInfo = ref(true);
     let relatedProduct = ref(false);
@@ -398,11 +403,11 @@ export default {
 
     axios.get('/api/product/purchase/' + route.params.id)
     .then(res=>{
-      
+      //사진사용
       if(res.data.userInfo !== 'not login') loginCheck.value = true;
       product.value = res.data.product;
-      imagePath.value = 'http://localhost:3000/static/image/' + res.data.product.thumbnail;
-      infoImage.value = 'http://localhost:3000/static/image/' + res.data.product.infoImage;
+      imagePath.value = res.data.product.thumbnail;
+      infoImage.value = res.data.product.infoImage;
       relatedList.value = res.data.relatedList;
       reviews.value = res.data.reviews
       totalReview.value = res.data.totalReview;
@@ -562,7 +567,6 @@ export default {
         phoneNum.value === '' ||
         addressNum.value === '' ||
         address.value === '' ||
-        addressName.value === '' ||
         detailAddress.value === ''
       ) alert('배송지 정보를 모두 입력해 주십시오.');
       else {
@@ -614,7 +618,7 @@ export default {
         router.push({path:'/customer/login'});
       } else if(optionSelected.value === 0) {
         alert('옵션을 선택하여 주십시오.');
-      } else if(orderNum.value === 0) {
+      } else if(orderNum.value === '0') {
         alert('주문 개수를 선택하여 주십시오.')
       }else{
         let cartData = {

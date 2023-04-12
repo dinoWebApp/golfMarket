@@ -9,6 +9,10 @@ const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
+const curr = new Date();
+const utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+const KR_TIME_DIFF = 9*60*60*1000;
+const kr_curr = new Date(utc + KR_TIME_DIFF + 60 * 4 * 1000);
 let multer = require('multer');
 let storage = multer.diskStorage({
   destination : function(req, file, cb){
@@ -116,7 +120,7 @@ router.get('/logout', (req, res)=>{
   res.send('logout success');
 });
 
-router.get('/mypage', (req, res)=>{
+router.get('/mypage', loginCheck, (req, res)=>{
   console.log(req.query.nickName);
   let customer = req.query.nickName;
   let customerInfo = {
@@ -230,11 +234,12 @@ router.delete('/mypage/deleteCart', (req, res)=>{
 
 router.put('/mypage/reviewSubmit', (req, res)=>{
   let data = req.body;
-  let now = new Date();
-  let year = now.getFullYear();
-  let month = now.getMonth() + 1;
-  let date = now.getDate();
-  let today = year + '-' + month + '-' + date;
+  let year = kr_curr.getFullYear();
+  let month = kr_curr.getMonth() + 1;
+  let date = kr_curr.getDate();
+  let hours = kr_curr.getHours();
+  let minutes = kr_curr.getMinutes();
+  let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
   let reviewData = {
     stars : parseInt(data.star),
     comment : data.text,
@@ -262,11 +267,12 @@ router.put('/mypage/reviewSubmit', (req, res)=>{
 });
 
 router.post('/mypage/personalQna', (req, res)=>{
-  let now = new Date();
-  let year = now.getFullYear();
-  let month = now.getMonth() + 1;
-  let date = now.getDate();
-  let today = year + '-' + month + '-' + date;
+  let year = kr_curr.getFullYear();
+  let month = kr_curr.getMonth() + 1;
+  let date = kr_curr.getDate();
+  let hours = kr_curr.getHours();
+  let minutes = kr_curr.getMinutes();
+  let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
   db.collection('personalQnaId').findOne({name : 'personalQnaId'})
   .then(result=>{
     let data = {
@@ -319,6 +325,24 @@ router.put('/changePw', (req, res)=>{
     return db.collection('customers').updateOne({nickName : req.body.nickName}, {$set : {pw : hash}})
   })
   .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.delete('/out', (req, res)=>{
+  let nickName = req.query.nickName;
+  db.collection('personalQna').deleteMany({nickName : nickName})
+  .then(()=>{
+    return db.collection('purchaseData').deleteMany({nickName : nickName})
+  })
+  .then(()=>{
+    return db.collection('customers').deleteOne({nickName : nickName})
+  })
+  .then(()=>{
+    req.session.destroy();
     res.send('success');
   })
   .catch(err=>{

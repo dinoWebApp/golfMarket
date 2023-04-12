@@ -28,7 +28,7 @@
         <div class="col" v-for="item in products" :key="item">
           <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
             <div id="img-border">
-              <img id="image" :src='`http://localhost:3000/static/image/${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+              <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
             </div>
             <div class="d-flex">
               <span class="ms-1" style="font-size:11px;">상품 코드: </span>
@@ -38,18 +38,21 @@
             
             <div class="card-body">
               
-              <div id="text-border1" class="d-lg-none">
-                <p id="product-text" class="card-text" style="font-weight:600;"> {{item.productName}} </p>
+              <div id="text-border1" class="d-block d-sm-none">
+                <p id="product-text" class="card-text" style="font-weight:600; font-size: 13px;"> {{item.productName}} </p>
               </div>
-              <div id="text-border2" class="d-none d-lg-block">
-                <p id="product-text" class="card-text" style="font-weight:600;"> {{item.productName}} </p>
+              <div id="text-border2" class="d-none d-sm-block">
+                <p id="product-text" class="card-text" style="font-weight:600; font-size: 17px;"> {{item.productName}} </p>
               </div>
               
               <span class="text-decoration-line-through" style="font-weight:bold; color:gray">{{filter(item.beforeDiscount)}} 원</span>
-              <div>
+              <div class="d-block d-sm-none">
+                <span style="font-weight:900; font-size:24px; color:red;"> {{discount(item.beforeDiscount, item.productPrice)}}% </span>
+                <span style="font-weight:900; font-size:18px;"> {{filter(item.productPrice)}} 원 </span>
+              </div>
+              <div class="d-none d-sm-block">
                 <span style="font-weight:900; font-size:30px; color:red;"> {{discount(item.beforeDiscount, item.productPrice)}}% </span>
                 <span style="font-weight:900; font-size:22px;"> {{filter(item.productPrice)}} 원 </span>
-                
               </div>
             </div>
           </div>

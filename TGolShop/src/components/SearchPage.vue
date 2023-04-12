@@ -4,7 +4,8 @@
       <div class="col" v-for="item in searchedList" :key="item">
         <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
           <div id="img-border">
-            <img id="image" :src='`http://localhost:3000/static/image/${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+            <!-- 사진사용 -->
+            <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
           </div>
           <div class="d-flex">
             <span class="ms-1" style="font-size:11px;">상품 코드: </span>

@@ -1,5 +1,26 @@
 <template>
   <div class="container">
+    <div v-if="outModal" align="center" class="black-bg d-none d-sm-block">
+      <div class="white-bg border">
+        <h4>회원탈퇴를 하시겠습니까?</h4>
+        <p class="d-sm-block d-lg-none" style="font-size:15px">회원님의 모든 정보가 삭제됩니다.</p>
+        <p class="d-sm-none d-lg-block" style="font-size:20px">회원님의 모든 정보가 삭제됩니다</p>
+        <div align='center'>
+          <button @click="outOk" class="btn btn-light btn-sm border me-2">탈퇴하기</button>
+          <button @click="outNo" style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">취소</button>
+        </div>
+      </div>
+    </div>
+    <div v-if="outModal" align="center" class="black-bg2 d-block d-sm-none">
+      <div class="white-bg2 border">
+        <h4>회원탈퇴를 하시겠습니까?</h4>
+        <p  style="font-size:15px">회원님의 모든 정보가 삭제됩니다.</p>
+        <div align='center'>
+          <button @click="outOk" class="btn btn-light btn-sm border me-2">탈퇴하기</button>
+          <button @click="outNo" style="font-weight:bold;" class="btn btn-danger btn-sm ms-2">취소</button>
+        </div>
+      </div>
+    </div>
     <div align='left' class="mt-4">
       <h1>마이페이지</h1>
       <span style="color:darkgray">나의 주문 정보 및 개인 정보를 관리할 수 있습니다</span>
@@ -103,16 +124,16 @@
           </div>
           <div class="row" v-for="item in mypageData.cart" :key="item">
             <hr/>
-            <div class="col-5">
+            <div class="col-5" align="left">
               <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
-              <div class="d-block d-lg-none"> <h6>{{item.productName}}</h6> </div>
-              <div style="color:darkgray">{{item.productOption}}</div>
+              <div class="d-block d-lg-none" style="font-size: small;"> {{item.productName}} </div>
+              <div style="color:darkgray; font-size: 14px;">{{item.productOption}}</div>
             </div>
             <div class="col-2 d-none d-lg-block"><h5> {{item.productNum}} </h5></div>
             <div class="col-2 d-block d-lg-none"><h6> {{item.productNum}} </h6></div>
             <div class="col-3">
               <div class="d-none d-lg-block" style="font-weight:bold;"> <h5>{{filter(item.totalPrice)}} 원</h5>  </div>
-              <div class="d-block d-lg-none" style="font-weight:bold;"> <h6>{{filter(item.totalPrice)}} 원</h6>  </div>
+              <div class="d-block d-lg-none" style="font-weight:bold; font-size: 13px;"> {{filter(item.totalPrice)}} 원  </div>
             </div>
             <div class="col-2">
               <button @click="deleteCart" class="btn btn-danger btn-sm">삭제</button>
@@ -204,10 +225,16 @@
       </div>
       <hr/>
       <div class="mt-4 d-flex">
-        <h4 style="color:red; font-weight:bold;">결제 금액:</h4>
-        <h4 class="ms-3"> {{filter(leavedPrice)}} 원 </h4>
-        <button @click="clickFinal" class="btn btn-danger btn-sm ms-4 mb-2" style="font-weight:bold;">결제하기</button>
-        <button @click="clickBack" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 mb-2" style="font-weight:bold;" type="button">이전페이지</button>
+        <h3 class="d-none d-sm-block" style="color:red; font-weight:bold;">결제 금액:</h3>
+        <h5 class="d-block d-sm-none" style="color:red; font-weight:bold;">결제 금액:</h5>
+        <h3 class="ms-3 d-none d-sm-block"> {{filter(leavedPrice)}} 원 </h3>
+        <h5 class="ms-3 d-block d-sm-none"> {{filter(leavedPrice)}} 원 </h5>
+
+        <button @click="clickFinal" class="btn btn-danger btn-sm ms-2 d-block d-sm-none" style="font-weight:bold;">결제하기</button>
+        <button @click="clickBack" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 d-block d-sm-none" style="font-weight:bold;" type="button">이전페이지</button>
+        <button @click="clickFinal" class="btn btn-danger d-none d-sm-block ms-4 " style="font-weight:bold;">결제하기</button>
+        <button @click="clickBack" class="btn btn-outline-success d-none d-sm-block flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
+        
       </div>
     </div>
 
@@ -364,10 +391,12 @@
         </div>
       </div>
       <div align="left" class="ms-1">
-        <button @click="clickChange" style="font-weight: bold;" class="btn btn-danger mt-2 mb-2">변경하기</button>
+        <button @click="clickChange" style="font-weight: bold;" class="btn btn-success mt-2 mb-2">변경하기</button>
+        <button @click="clickOut" style="font-weight: bold;" class="btn btn-danger mt-2 mb-2 ms-1">회원탈퇴</button>
       </div>
       
     </div>
+    
   </div>
 </template>
 
@@ -398,6 +427,7 @@ export default {
     let reviewProductName = ref('');
     let qnaWrite = ref(false);
     let reviewWrite = ref(false);
+    let outModal = ref(false);
     let reviewText = ref('');
     let reviewLength = ref(0);
     let reviewGrade = ref(5);
@@ -420,29 +450,34 @@ export default {
 
     axios.get('/api/customer/mypage?nickName=' + route.query.nickName)
     .then(res=>{
-      mypageData.value = res.data;
-      phoneNum.value = res.data.phoneNum;
-      qnaList.value = res.data.qna;
-      changeData.value.name = res.data.name;
-      changePn.value = res.data.phoneNum;
-      changeData.value.addressNum = res.data.addressNum;
-      changeData.value.address = res.data.address;
-      changeData.value.addressName = res.data.addressName;
-      changeData.value.detailAddress = res.data.detailAddress;
-      changeData.value.phoneNum = res.data.phoneNum;
-      leavedPoint.value = res.data.point;
-      if(route.query.cart === '1') {
-        purchaseList.value = false;
-        cart.value = true;
-        reviews.value = false;
-        qna.value = false;
-        point.value = false;
-        info.value = false;
-        updateKey.value++;
-      }
-      for(let i = 0 ; i < res.data.cart.length; i++) {
-        totalPrice.value += res.data.cart[i].totalPrice;
-        leavedPrice.value += res.data.cart[i].totalPrice;
+      if(res.data === 'not login') {
+        alert('로그인이 필요합니다.');
+        router.push({path : '/'});
+      } else {
+        mypageData.value = res.data;
+        phoneNum.value = res.data.phoneNum;
+        qnaList.value = res.data.qna;
+        changeData.value.name = res.data.name;
+        changePn.value = res.data.phoneNum;
+        changeData.value.addressNum = res.data.addressNum;
+        changeData.value.address = res.data.address;
+        changeData.value.addressName = res.data.addressName;
+        changeData.value.detailAddress = res.data.detailAddress;
+        changeData.value.phoneNum = res.data.phoneNum;
+        leavedPoint.value = res.data.point;
+        if(route.query.cart === '1') {
+          purchaseList.value = false;
+          cart.value = true;
+          reviews.value = false;
+          qna.value = false;
+          point.value = false;
+          info.value = false;
+          updateKey.value++;
+        }
+        for(let i = 0 ; i < res.data.cart.length; i++) {
+          totalPrice.value += res.data.cart[i].totalPrice;
+          leavedPrice.value += res.data.cart[i].totalPrice;
+        }
       }
     })
     .catch(err=>{
@@ -631,6 +666,8 @@ export default {
       let blank_pattern = /[\s]/g;
       if (isNaN(newValue) || blank_pattern.test(newValue) ) {
         usePoint.value = oldValue;
+        leavedPoint.value = mypageData.value.point - oldValue;
+        leavedPrice.value = totalPrice.value - oldValue;
       } else if(newValue > mypageData.value.point) {
         alert('보유한 포인트까지만 사용가능합니다.');
         usePoint.value = oldValue;
@@ -645,7 +682,6 @@ export default {
         phoneNum.value === '' ||
         mypageData.value.addressNum === '' ||
         mypageData.value.address === '' ||
-        mypageData.value.addressName === '' ||
         mypageData.value.detailAddress === ''
       ) alert('배송지 정보를 모두 입력해 주십시오.');
       else {
@@ -840,7 +876,6 @@ export default {
         changeData.value.phoneNum === '' ||
         changeData.value.addressNum === '' ||
         changeData.value.address === '' ||
-        changeData.value.addressName === '' ||
         changeData.value.detailAddress === ''
       ) alert('정보를 모두 입력해 주십시오.');
       else {
@@ -855,6 +890,25 @@ export default {
       }
     }
 
+    function clickOut() {
+     outModal.value = true;
+    }
+
+    function outOk() {
+      axios.delete('/api/customer/out?nickName=' + nickName.value)
+      .then(()=>{
+        alert('회원탈퇴가 성공적으로 이루어졌습니다.');
+        router.replace({path : '/'});
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    }
+
+    function outNo() {
+      outModal.value = false;
+    }
+
     
     
   
@@ -862,7 +916,7 @@ export default {
     clickCart, clickReviews, clickQna, clickPoint, clickInfo, totalPrice, deleteCart, clickPurchase, purchaseDetail, inputName, inputPhoneNum,
     inputAddress, clickFinal, clickBack, clickDeliNum, clickReview, phoneNum, qnaWrite, reviewWrite, reviewProductName, reviewText, reviewLength,
     inputReview, reviewSubmit, selectGrade, qnaText, inputQna, qnaSubmit, qnaList, changeName, changePhoneNum, changeData, changeAddress, changePn,
-    clickChange, leavedPoint, leavedPrice, usePoint, inputPoint};
+    clickChange, leavedPoint, leavedPrice, usePoint, inputPoint, clickOut, outModal, outOk, outNo};
   }
 }
 </script>
@@ -872,4 +926,26 @@ export default {
   font-size: 15px !important;
   padding: 5px !important;
 }
+
+.black-bg {
+  width: 100%; height:100%;
+  position: fixed; padding: 20px;
+}
+.white-bg {
+  z-index: 8;
+  width: 50%; background: white;
+  border-radius: 8px;
+  padding: 20px;
+} 
+
+.black-bg2 {
+  width: 100%; height:100%;
+  position: fixed; padding: 20px;
+}
+.white-bg2 {
+  z-index: 8;
+  width: 80%; background: white;
+  border-radius: 8px;
+  padding: 20px;
+} 
 </style>

@@ -142,6 +142,7 @@ export default {
         loginInfo.value = false;
         myInfo.value = true;
       }
+      
     });
 
     function login() {
@@ -149,7 +150,6 @@ export default {
     }
 
     function signUp() {
-      document.getElementById('menuToggle').click();
       router.push({path:'/customer/sign-up'});
     }
 

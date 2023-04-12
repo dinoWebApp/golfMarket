@@ -3,11 +3,14 @@
   <div class="container d-flex justify-content-center">
     <div style="width:80%;" class="border mt-5">
       
-      <div style="font-size: x-large;" class="mt-5 mb-3">
+      <div style="font-size:large;" class="d-none d-sm-block mt-5 mb-3">
+        구매를 성공적으로 완료하였습니다.
+      </div>
+      <div style="font-size:medium;" class="d-block d-sm-none mt-5 mb-3">
         구매를 성공적으로 완료하였습니다.
       </div>
       <div class="mb-3" v-if="login === false">
-        <span>주문 번호: {{orderId}}</span> <span style="color:red">(비회원께서는 주문 조회를 위해 반드시 숙지하셔야 합니다.)</span>
+        <div style="font-size: small;">주문 번호: {{orderId}}</div> <div style="color:red; font-size: small;">(비회원께서는 주문 조회를 위해 반드시 숙지하셔야 합니다.)</div>
       </div>
       <button @click="clickHome" style="font-weight: bold; font-size: large;" class="btn btn-danger me-1 mb-5 mt-2">홈으로</button>
       <button v-if="login" @click="clickPurchaseList" style="font-weight: bold; font-size: large;" class="btn btn-success ms-1 mb-5 mt-2">주문목록</button>

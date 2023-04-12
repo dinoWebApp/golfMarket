@@ -420,7 +420,9 @@ export default {
       productPrice : productPrice,
       optionData : optionData.value,
       deliverKor : deliverKor,
-      deliverOut : deliverOut
+      deliverOut : deliverOut,
+      thumbnail : '',
+      infoImage : ''
     })
     let checkData = ref({
       pw : pw
@@ -559,18 +561,37 @@ export default {
     }
 
     function posting() {
-      const formData = new FormData();
+      const formData1 = new FormData();
+      const formData2 = new FormData();
       
-      formData.append('thumbnail', thumbnail.value);
-      formData.append('infoImage', infoImage.value);
-      formData.append('data', JSON.stringify(dataSet.value));
-      axios.post('/api/product/upload', formData, {
+      formData1.append("api_key", "557214385787327");
+      formData1.append("upload_preset", "tgolshop");
+      formData1.append("timestamp", (Date.now() / 1000) | 0);
+      formData1.append(`file`, thumbnail.value);
+      
+      axios.post('https://api.cloudinary.com/v1_1/doiglts2y/image/upload', formData1, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
+      .then((res)=>{
+        dataSet.value.thumbnail = res.data.url;
+        formData2.append("api_key", "557214385787327");
+        formData1.append("upload_preset", "tgolshop");
+        formData1.append("timestamp", (Date.now() / 1000) | 0);
+        formData1.append(`file`, infoImage.value);
+        return axios.post('https://api.cloudinary.com/v1_1/doiglts2y/image/upload', formData1, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });  
+      })
+      .then(res=>{
+        dataSet.value.infoImage = res.data.url;
+        return axios.post('/api/product/upload', dataSet.value);
+      })
       .then(()=>{
-        alert('상품이 등록되었습니다.');
+        alert('상품 등록이 완료되었습니다.');
         router.go(0);
       })
       .catch(err=>{
