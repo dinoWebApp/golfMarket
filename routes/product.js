@@ -181,6 +181,10 @@ router.post('/purchase', (req, res)=>{
   db.collection('orderId').findOne({name : 'orderId'})
   .then(result=>{
     let orderId = result.orderId;
+    let curr = new Date();
+    let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+    let KR_TIME_DIFF = 9*60*60*1000;
+    let kr_curr = new Date(utc + KR_TIME_DIFF);
     let year = kr_curr.getFullYear();
     let month = kr_curr.getMonth() + 1;
     let date = kr_curr.getDate();
@@ -236,6 +240,10 @@ router.post('/cartPurchase', (req, res)=>{
     db.collection('orderId').findOne({name : 'orderId'})
     .then(result=>{
       let orderId = result.orderId;
+      let curr = new Date();
+      let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+      let KR_TIME_DIFF = 9*60*60*1000;
+      let kr_curr = new Date(utc + KR_TIME_DIFF);
       let year = kr_curr.getFullYear();
       let month = kr_curr.getMonth() + 1;
       let date = kr_curr.getDate();
@@ -313,6 +321,10 @@ router.put('/addCart', (req, res)=>{
 
 router.post('/qnaSubmit',loginCheck, (req, res)=>{
   let nickName = req.user.nickName;
+  let curr = new Date();
+  let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+  let KR_TIME_DIFF = 9*60*60*1000;
+  let kr_curr = new Date(utc + KR_TIME_DIFF);
   let year = kr_curr.getFullYear();
   let month = kr_curr.getMonth() + 1;
   let date = kr_curr.getDate();

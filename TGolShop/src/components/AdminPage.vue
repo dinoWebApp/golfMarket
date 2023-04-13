@@ -54,15 +54,14 @@
               </button>
               <ul class="dropdown-menu">
                 <li><a @click="brandChoice" class="dropdown-item" href="#">핑</a></li>
+                <li><a @click="brandChoice" class="dropdown-item" href="#">캘러웨이</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">테일러메이드</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">PXG</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">타이틀리스트</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">혼마</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">젝시오</a></li>
-                <li><a @click="brandChoice" class="dropdown-item" href="#">야마하</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">미즈노</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">포틴</a></li>
-                <li><a @click="brandChoice" class="dropdown-item" href="#">마제스티</a></li>
               </ul>
             </div>
           </div>
@@ -188,6 +187,7 @@
             <select id="selectedBrand" @change="selectBrand" class="form-select" aria-label="Default select example">
               <option selected value="0">브랜드</option>
               <option value="ping">핑</option>
+              <option value="callaway">캘러웨이</option>
               <option value="taylormade">테일러메이드</option>
               <option value="pxg">PXG</option>
               <option value="titleist">타이틀리스트</option>
@@ -196,7 +196,6 @@
               <option value="yamaha">야마하</option>
               <option value="mizuno">미즈노</option>
               <option value="fourteen">포틴</option>
-              <option value="majesty">마제스티</option>
             </select>
           </div>
           <div class="col-5">
@@ -480,6 +479,9 @@ export default {
       switch(e.target.innerHTML) {
         case '핑':
           brand.value = 'ping';
+          break;
+        case '캘러웨이':
+          brand.value = 'callaway';
           break;
         case '테일러메이드':
           brand.value = 'taylormade';

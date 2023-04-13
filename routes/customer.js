@@ -9,10 +9,6 @@ const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo');
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
-const curr = new Date();
-const utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
-const KR_TIME_DIFF = 9*60*60*1000;
-const kr_curr = new Date(utc + KR_TIME_DIFF + 60 * 4 * 1000);
 let multer = require('multer');
 let storage = multer.diskStorage({
   destination : function(req, file, cb){
@@ -233,6 +229,10 @@ router.delete('/mypage/deleteCart', (req, res)=>{
 });
 
 router.put('/mypage/reviewSubmit', (req, res)=>{
+  let curr = new Date();
+  let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+  let KR_TIME_DIFF = 9*60*60*1000;
+  let kr_curr = new Date(utc + KR_TIME_DIFF);
   let data = req.body;
   let year = kr_curr.getFullYear();
   let month = kr_curr.getMonth() + 1;
@@ -267,6 +267,10 @@ router.put('/mypage/reviewSubmit', (req, res)=>{
 });
 
 router.post('/mypage/personalQna', (req, res)=>{
+  let curr = new Date();
+  let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+  let KR_TIME_DIFF = 9*60*60*1000;
+  let kr_curr = new Date(utc + KR_TIME_DIFF);
   let year = kr_curr.getFullYear();
   let month = kr_curr.getMonth() + 1;
   let date = kr_curr.getDate();

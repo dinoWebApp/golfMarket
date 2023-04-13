@@ -5,6 +5,7 @@
         <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
           <button @click="clickedTotal" class="nav-link check active" data-bs-toggle="tab" type="button" role="tab"  aria-selected="true">전체 보기</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">핑</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">캘러웨이</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">테일러메이드</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">PXG</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">타이틀리스트</button>
@@ -13,7 +14,7 @@
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">야마하</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">미즈노</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">포틴</button>
-          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">마제스티</button>
+          
         </div>
       </nav>
     </div>
@@ -101,6 +102,9 @@ export default {
       switch(brandName) {
         case '핑':
           brandEng = 'ping';
+          break;
+        case '캘러웨이':
+          brandEng = 'callaway';
           break;
         case '테일러메이드':
           brandEng = 'taylormade';
