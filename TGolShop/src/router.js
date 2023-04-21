@@ -10,6 +10,11 @@ import PurchaseComplete from './components/PurchaseComplete.vue'
 import SearchPage from './components/SearchPage.vue'
 import ProductsPage from './components/ProductsPage.vue'
 import NonMemberPage from './components/NonMemberPage.vue'
+import PurchaseFail from './components/PurchaseFail.vue'
+import TermsOfUse from './components/TermsOfUse.vue'
+import PrivateInfo from './components/PrivateInfo.vue'
+import FittingPage from './components/FittingPage.vue'
+import CustomerCenter from './components/CustomerCenter.vue'
 
 const routes = [
   {
@@ -61,6 +66,32 @@ const routes = [
         path:'/nonMemberOrder',
         component : NonMemberPage,
         name : 'NonMemberPage'
+      },
+     
+      {
+        path:'product/submitFail',
+        component : PurchaseFail,
+        name : 'PurchaseFail'
+      },
+      {
+        path:'/termsofuse',
+        component : TermsOfUse,
+        name : 'TermsOfUse'
+      },
+      {
+        path:'/privateinfo',
+        component : PrivateInfo,
+        name : 'PrivateInfo'
+      },
+      {
+        path:'/fitting',
+        component : FittingPage,
+        name: 'FittingPage'
+      },
+      {
+        path:'/customerCenter',
+        component : CustomerCenter,
+        name : "CustomerCenter"
       }
     ]
   },

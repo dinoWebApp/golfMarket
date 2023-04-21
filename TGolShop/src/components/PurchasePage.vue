@@ -41,13 +41,13 @@
           <div class="mb-3" align="left">
             <div class="mb-1" style="font-size:19px">무료 배송</div>
             <div v-if="product.deliverKor" style="font-size:19px">당일 배송 (16시 이전 주문 건)</div> 
-            <div v-if="product.deliverOut" style="font-size:19px">발송 완료까지 최대 2주 소요</div>
+            <div v-if="product.deliverOut" style="font-size:19px">배송 완료까지 최대 2주 소요</div>
           </div>
         
           <select id="optionText" @change="selectOption" class="form-select mb-2" aria-label="Default select example">
             <option selected>옵션 선택</option>
             <option v-for="(item, index) in product.optionData" :key="index" :value="item.optionPrice"> 
-              {{item.optionText}}(+{{item.optionPrice}}원)
+              {{item.optionText}}({{item.optionPrice}}원 추가)
             </option>
           </select>
           <select id="orderNum" @change="selectNum" class="form-select mb-4" aria-label="Default select example">
@@ -298,7 +298,10 @@
             <div class="col-12">
               <input type="text" class="form-control mb-2" id="detailAddress" v-model="detailAddress" placeholder="상세주소" maxlength="25">
             </div>
-            
+          </div>
+          <div v-if="product.deliverOut" class="mt-2">
+            <div align='left' class="ms-1 mb-1">개인통관고유부호</div>
+            <input v-model="personalNum" type="text" class="form-control mb-2" id="personalNum" placeholder="개인통관고유부호" maxlength="13">
           </div>
         </div>
       </div>
@@ -327,15 +330,43 @@
           </div>
         </div>
       </div>
-      <div class="mt-4" align="left">
-        <span>보유 중인 포인트 : {{ leavedPoint }} P</span>
+      <div v-if="tossModal === false">
+        <div class="mt-4" align="left">
+          <span>보유 중인 포인트 : {{ leavedPoint }} P</span>
+        </div>
+        <div class="mt-2" align="left">
+          <span>사용할 포인트 : </span>
+          <input v-bind:value="usePoint" @input="inputPoint" type="text">
+        </div>
       </div>
-      <div class="mt-2" align="left">
-        <span>사용할 포인트 : </span>
-        <input v-bind:value="usePoint" @input="inputPoint" type="text">
+
+      <div class="mt-2 d-flex" v-if="payMethodModal">
+        <div align="left" class="me-2">
+          <span>결제 방식 : </span> 
+        </div>
+        <div align="left">
+          <select id="payMethod" @change="selectPay" aria-label="Default select example">
+            <option selected value="선택">선택</option>
+            <option value="무통장입금">무통장입금</option>
+            <option value="일반결제">일반결제</option>
+          </select>
+        </div>
+      </div>
+      
+      
+      <div class="d-flex mt-4" v-if="tossModal === false">
+        <h3 class="d-none d-sm-block" style="color:red; font-weight:bold;">결제 금액:</h3>
+        <h5 class="d-block d-sm-none" style="color:red; font-weight:bold;">결제 금액:</h5>
+        <h3 class="ms-3 d-none d-sm-block"> {{filter(leavedPrice)}} 원 </h3>
+        <h5 class="ms-3 d-block d-sm-none"> {{filter(leavedPrice)}} 원 </h5>
+        <button @click="clickToss" class="btn btn-danger btn-sm ms-4 d-block d-sm-none" style="font-weight:bold;">결제하기</button>
+        <button @click="backPage" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 d-block d-sm-none" style="font-weight:bold;" type="button">이전페이지</button>
+        <button @click="clickToss" class="btn btn-danger d-none d-sm-block ms-4 " style="font-weight:bold;">결제하기</button>
+        <button @click="backPage" class="btn btn-outline-success d-none d-sm-block flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
       <hr/>
-      <div class="mt-4 d-flex">
+      <div id="payment-method"></div>
+      <div class="mt-2 d-flex" v-if="tossModal">
         <h3 class="d-none d-sm-block" style="color:red; font-weight:bold;">결제 금액:</h3>
         <h5 class="d-block d-sm-none" style="color:red; font-weight:bold;">결제 금액:</h5>
         <h3 class="ms-3 d-none d-sm-block"> {{filter(leavedPrice)}} 원 </h3>
@@ -358,6 +389,7 @@ import { useRoute, useRouter, } from 'vue-router'
 import { ref } from '@vue/reactivity'
 import StarRating from 'vue-star-rating'
 import { watch } from 'vue';
+import { loadPaymentWidget, ANONYMOUS } from '@tosspayments/payment-widget-sdk'
 
 export default {
   name: 'PurchasePage',
@@ -367,6 +399,8 @@ export default {
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const paymentMethod = ref(null);
+    let paymentWidget = ref(null);
     let imagePath = ref('');
     let infoImage = ref('');
     let product = ref({});
@@ -383,6 +417,7 @@ export default {
     let reviews = ref([]);
     let totalReview = ref({});
     let purchaseDetail = ref(false);
+    let id = ref('');
     let nickName = ref('');
     let name = ref('');
     let phoneNum = ref('');
@@ -399,6 +434,11 @@ export default {
     let usePoint = ref(0);
     let leavedPoint = ref(0);
     let leavedPrice = ref(0);
+    let tossModal = ref(false);
+    let payMethod = ref('선택');
+    let payMethodModal = ref(true);
+    let personalNum = ref('');
+    
 
 
     axios.get('/api/product/purchase/' + route.params.id)
@@ -415,7 +455,9 @@ export default {
     })
     .catch(err=>{
       console.log(err);
-    })
+    });
+
+    
 
 
     function filter(val) {
@@ -433,20 +475,15 @@ export default {
         optionText.value = '';
         optionPrice.value = 0;
         optionSelected.value = 0;
-        console.log(optionText.value);
-        console.log(optionPrice.value);
       } else {
         optionText.value = optionSelect.options[document.getElementById('optionText').selectedIndex].text;
         optionPrice.value = optionSelect.options[document.getElementById('optionText').selectedIndex].value;
         optionSelected.value = 1;
-        console.log(optionText.value);
-        console.log(optionPrice.value);
       }
     }
 
     function selectNum() {
       let numberSelect = document.getElementById('orderNum');
-      console.log(numberSelect.options[document.getElementById('orderNum').selectedIndex].value)
       orderNum.value = numberSelect.options[document.getElementById('orderNum').selectedIndex].value;
     }
 
@@ -478,7 +515,6 @@ export default {
 
     function clickCard(e) {
       let productId = e.currentTarget.children[1].children[1].innerText;
-      console.log(productId);
       router.push({name : 'PurchasePage', params : {id : productId}});
     }
 
@@ -491,6 +527,7 @@ export default {
         axios.get('/api/product/purchase-detail')
         .then(res=>{
           if(res.data !== 'need login') {
+            id.value = res.data.id;
             nickName.value = res.data.nickName;
             name.value = res.data.name;
             phoneNum.value = res.data.phoneNum;
@@ -561,6 +598,95 @@ export default {
       }).open();
     }
 
+  
+
+    function selectPay() {
+      let numberSelect = document.getElementById('payMethod');
+      payMethod.value = numberSelect.options[document.getElementById('payMethod').selectedIndex].value;
+    }
+    function clickToss() {
+      if(payMethod.value === '선택') {
+        alert('결제 방식을 선택해 주십시오.');
+      } else if(payMethod.value === '무통장입금') {
+        if(
+          name.value === '' ||
+          phoneNum.value === '' ||
+          addressNum.value === '' ||
+          address.value === '' ||
+          detailAddress.value === ''
+        ) alert('배송지 정보를 모두 입력해 주십시오.');
+        else if(product.value.deliverOut === true && personalNum.value === '') alert('해외직구 상품 주문 시 개인통관고유부호를 필히 입력하셔야 합니다.');
+        else {
+          
+          let date = new Date()
+          let year = date.getFullYear();
+          let month = date.getMonth() + 1;
+          let day = date.getDate();
+          let hour = date.getHours();
+          let minuite = date.getMinutes();
+          let second = date.getSeconds();
+          let orderId = year.toString() 
+            + (("00" + month.toString()).slice(-2)) 
+            + (("00" + day.toString()).slice(-2))
+            + (("00" + hour.toString()).slice(-2)) 
+            + (("00" + minuite.toString()).slice(-2)) 
+            + (("00" + second.toString()).slice(-2));
+          
+          let purchaseInfo = {
+            nickName : nickName.value,
+            name : name.value,
+            phoneNum : phoneNum.value,
+            addressNum : addressNum.value,
+            address : address.value,
+            addressName : addressName.value,
+            detailAddress : detailAddress.value,
+            productId : product.value.id,
+            productName : product.value.productName,
+            orderNum : orderNum.value,
+            optionText : optionText.value,
+            totalPrice : totalPrice.value,
+            payPrice : leavedPrice.value,
+            payMethod : payMethod.value,
+            leavedPoint : leavedPoint.value,
+            orderId : orderId,
+            personalNum : personalNum.value,
+            deliverOut : product.value.deliverOut
+          }
+          axios.post('/api/product/purchase', purchaseInfo)
+          .then(()=>{
+            router.push({name : 'PurchaseComplete', query : {payMethod : payMethod.value, price : leavedPrice.value, cashOrderId : orderId}});
+          })
+          .catch(err=>{
+            console.log(err);
+          });
+        }
+        
+      } else if(payMethod.value === '일반결제') {
+        payMethodModal.value = false;
+        tossModal.value = true;
+
+        if(loginCheck.value === true) {
+          loadPaymentWidget(process.env.VUE_APP_CLIENT_KEY, id.value)
+          .then(payment=>{
+            paymentWidget.value = payment;
+            paymentWidget.value.renderPaymentMethods('#payment-method', leavedPrice.value);
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+        } else {
+          loadPaymentWidget(process.env.VUE_APP_CLIENT_KEY, ANONYMOUS)
+          .then(payment=>{
+            paymentWidget.value = payment;
+            paymentWidget.value.renderPaymentMethods('#payment-method', leavedPrice.value);
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+        }
+      }
+    }
+
     function clickFinal() {
       if(
         name.value === '' ||
@@ -569,7 +695,24 @@ export default {
         address.value === '' ||
         detailAddress.value === ''
       ) alert('배송지 정보를 모두 입력해 주십시오.');
+      else if(product.value.deliverOut === true && personalNum.value === '') alert('해외직구 상품 주문 시 개인통관고유부호를 필히 입력하셔야 합니다.');
       else {
+        
+        
+        let date = new Date()
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minuite = date.getMinutes();
+        let second = date.getSeconds();
+        let orderId = year.toString() 
+          + (("00" + month.toString()).slice(-2)) 
+          + (("00" + day.toString()).slice(-2))
+          + (("00" + hour.toString()).slice(-2)) 
+          + (("00" + minuite.toString()).slice(-2)) 
+          + (("00" + second.toString()).slice(-2));
+        
         let purchaseInfo = {
           nickName : nickName.value,
           name : name.value,
@@ -584,17 +727,23 @@ export default {
           optionText : optionText.value,
           totalPrice : totalPrice.value,
           payPrice : leavedPrice.value,
-          leavedPoint : leavedPoint.value
+          payMethod : payMethod.value,
+          leavedPoint : leavedPoint.value,
+          personalNum : personalNum.value,
+          deliverOut : product.value.deliverOut
         }
-        
-        axios.post('/api/product/purchase', purchaseInfo)
-        .then(result=>{
-          
-          router.push({name: 'PurchaseComplete', query : {orderId : result.data.orderId}});
-        })
-        .catch(err=>{
-          console.log(err);
-        })
+        let data = 'info=' + encodeURIComponent(JSON.stringify(purchaseInfo));
+
+        const redirectUrl = process.env.VUE_APP_LOCAL_URL + '/product/submit?' + data;
+
+        paymentWidget.value.requestPayment({
+          orderId: orderId,
+          orderName: product.value.productName,
+          successUrl: redirectUrl,
+          failUrl: process.env.VUE_APP_LOCAL_URL + '/product/submitFail',
+          customerName: name.value
+        });
+      
       }
     }
 
@@ -625,6 +774,7 @@ export default {
           productId : product.value.id,
           productName : product.value.productName,
           option : optionText.value,
+          deliverOut : product.value.deliverOut,
           orderNum : orderNum.value,
           totalPrice : totalPrice.value
         }
@@ -715,9 +865,9 @@ export default {
 
     return{productId, product, filter, discount, selectOption, imagePath, optionPrice, optionText, selectNum, optionSelected, orderNum, infoImage,
     productInfo, relatedProduct, review, qna, clickProdInfo, clickRelProd,clickReview, clickQna, relatedList, clickCard, reviews,
-    totalReview, purchaseDetail, clickPurchase, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
+    totalReview, purchaseDetail, clickPurchase, id, name, phoneNum, addressNum, address, addressName, detailAddress, calTotal, totalPrice, backPage, loginCheck,
     clickFinal, inputName, inputPhoneNum, cartModal, deleteCart, addCart, mypage, moveCart, inputAddress, inputQna, qnaText, qnaSubmit, qnaList,
-    point, usePoint, inputPoint, leavedPoint, leavedPrice};
+    point, usePoint, inputPoint, leavedPoint, leavedPrice, paymentMethod, tossModal, clickToss, payMethod, selectPay, payMethodModal, personalNum};
   }
 }
 </script>

@@ -61,39 +61,26 @@
       <div class="collapse navbar-collapse justify-content-center" id="navbarsExample07">
         <ul class="navbar-nav mb-2 mb-lg-0 " style="align-items : center;">
           <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active" aria-current="page" >드라이버</a>
+            <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page" >전체 상품</a>
           </li>
-          <div class="updown d-none d-lg-block"></div>
+          <!-- <div class="updown d-none d-lg-block"></div> -->
           <li class="nav-item">
-            <a @click="clickDivide"  class="menu nav-link active" aria-current="page">우드/유틸</a>
+            <a @click="clickDivide"  class="menu nav-link active me-3 ms-3" aria-current="page">골프클럽</a>
           </li>
-          <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active" aria-current="page">아이언</a>
+            <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page">헤드</a>
           </li>
-          <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active" aria-current="page">웨지</a>
+            <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page">샤프트</a>
           </li>
-          <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active" aria-current="page">퍼터</a>
+            <a class="menu nav-link active me-3 ms-3" href="/fitting" aria-current="page">피팅문의</a>
           </li>
-          <div class="updown d-none d-lg-block"></div>
           <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active" aria-current="page">골프백/볼/기타</a>
+            <a @click="clickDivide" class="menu nav-link active me-3 ms-3" href="/customerCenter" aria-current="page">고객센터</a>
           </li>
-          <div class="updown d-none d-lg-block"></div>
-          <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active" aria-current="page">헤드/샤프트</a>
-          </li>
-          <div class="updown d-none d-lg-block"></div>
-          <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active" aria-current="page">풀세트</a>
-          </li>
-          <div class="updown d-none d-lg-block"></div>
           <li class="nav-item ms-2">
-            <a @click="nonMemberOrder" style="font-size:14px" class="menu nav-link active" aria-current="page">비회원 주문조회</a>
+            <a @click="nonMemberOrder" style="font-size:14px" class="nav-link active ms-3 me-3" aria-current="page">비회원 주문조회</a>
           </li>
           
         </ul>
@@ -244,31 +231,18 @@ export default {
       navbarToggler.value.classList.remove('show');
       navbarContent.value.classList.remove('show');
       switch(e.target.innerText) {
-        case '드라이버' :
-          engDivide = 'driver';
+        case '전체 상품' :
+          engDivide = 'totalProducts';
           break;
-        case '우드/유틸' :
-          engDivide = 'wu';
+        case 'club' :
+          engDivide = 'club';
           break;
-        case '아이언' :
-          engDivide = 'iron';
+        case '헤드' :
+          engDivide = 'head';
           break;
-        case '웨지' :
-          engDivide = 'wedge';
+        case '샤프트' :
+          engDivide = 'shaft';
           break;
-        case '퍼터' :
-          engDivide = 'putter';
-          break;
-        case '골프백/볼/기타' :
-          engDivide = 'etc';
-          break;
-        case '헤드/샤프트' :
-          engDivide = 'headShaft';
-          break;
-        case '풀세트' :
-          engDivide = 'fullSet';
-          break;
-
       }
       router.push({name : 'ProductsPage', query : {korDivide : korDivide, engDivide : engDivide}});
 
@@ -323,17 +297,13 @@ export default {
   color:darkgrey;
   font-size:40px;
   cursor: pointer;
-  /* float:right; */
 }
 
-/* #mypage-click:active{
-  border-style: none !important;
-} */
 
 .nav-item .menu {
   color:white;
   font-weight:bold;
-  font-size:18px;
+  font-size:19px;
 }
 
 .nav-item:hover a{

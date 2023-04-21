@@ -133,8 +133,10 @@ router.get('/mypage', loginCheck, (req, res)=>{
     detailAddress : '',
     point : 0
   }
+  console.log()
   db.collection('customers').findOne({nickName : customer})
   .then(result=>{
+    console.log(result);
     customerInfo.cart = result.cart;
     customerInfo.id = result.id;
     customerInfo.nickName = result.nickName;

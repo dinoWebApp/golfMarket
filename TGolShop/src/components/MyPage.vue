@@ -91,15 +91,20 @@
           <div class="row" v-for="item in mypageData.purchaseData" :key="item">
             <hr/>
             <div class="col-5" align="left">
-              <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
+              <div class="d-none d-lg-block"> <h6>{{item.productName}}</h6> </div>
               <div class="d-block d-lg-none" style="font-size: small;"> {{item.productName}} </div>
-              <div style="color:darkgray; font-size: 14px;">{{item.optionText}}</div>
+              <div class="mb-2" style="color:darkgray; font-size: 13px;">{{item.optionText}}</div>
+              <div v-if="item.deliverOut" style="color:red; font-size: 13px;">[해외직구]</div>
             </div>
-            <div class="col-2 d-none d-lg-block"><h5> {{item.orderNum}} </h5></div>
-            <div class="col-2 d-block d-lg-none"><h6> {{item.orderNum}} </h6></div>
+            <div class="col-2">
+                <div class="d-none d-lg-block mb-4"><h5> {{item.orderNum}} </h5></div>
+                <div class="d-block d-lg-none mb-4"><h6> {{item.orderNum}} </h6></div>
+            </div>
+            
             <div class="col-3">
-              <div class="d-none d-lg-block" style="font-weight:bold;"> <h5>{{filter(item.totalPrice)}} 원</h5>  </div>
-              <div class="d-block d-lg-none" style="font-weight:bold; font-size: 13px;"> {{filter(item.totalPrice)}} 원 </div>
+              <div class="d-none d-lg-block" style="font-weight:bold;"> <h5>{{filter(item.payPrice)}} 원</h5>  </div>
+              <div class="d-block d-lg-none" style="font-weight:bold; font-size: 13px;"> {{filter(item.payPrice)}} 원 </div>
+              <div v-if="item.cartBool" style="font-size: 13px;">(장바구니 결제)</div>
             </div>
             <div v-if="item.currentState !== '배송시작'" class="col-2">
               <div style="font-size: small;" class="d-block d-md-none"> {{ item.currentState }} </div>
@@ -128,6 +133,7 @@
               <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
               <div class="d-block d-lg-none" style="font-size: small;"> {{item.productName}} </div>
               <div style="color:darkgray; font-size: 14px;">{{item.productOption}}</div>
+              <div v-if="item.deliverOut" style="color:red; font-size: 13px;">[해외직구]</div>
             </div>
             <div class="col-2 d-none d-lg-block"><h5> {{item.productNum}} </h5></div>
             <div class="col-2 d-block d-lg-none"><h6> {{item.productNum}} </h6></div>
@@ -187,7 +193,10 @@
             <div class="col-12">
               <input type="text" class="form-control mb-2" id="detailAddress" v-model="mypageData.detailAddress" placeholder="상세주소" maxlength="25">
             </div>
-            
+          </div>
+          <div v-if="deliverOut" class="mt-2">
+            <div align='left' class="ms-1 mb-1">개인통관고유부호</div>
+            <input v-model="personalNum" type="text" class="form-control mb-2" id="personalNum" placeholder="개인통관고유부호" maxlength="13">
           </div>
         </div>
       </div>
@@ -216,25 +225,48 @@
           </div>
         </div>
       </div>
-      <div class="mt-4" align="left">
-        <span>보유 중인 포인트 : {{ leavedPoint }} P</span>
+      <div v-if="tossModal === false">
+        <div class="mt-4" align="left">
+          <span>보유 중인 포인트 : {{ leavedPoint }} P</span>
+        </div>
+        <div class="mt-2" align="left">
+          <span>사용할 포인트 : </span>
+          <input v-bind:value="usePoint" @input="inputPoint" type="text">
+        </div>
       </div>
-      <div class="mt-2" align="left">
-        <span>사용할 포인트 : </span>
-        <input v-bind:value="usePoint" @input="inputPoint" type="text">
+      <div class="mt-2 d-flex" v-if="payMethodModal">
+        <div align="left" class="me-2">
+          <span>결제 방식 : </span> 
+        </div>
+        <div align="left">
+          <select id="payMethod" @change="selectPay" aria-label="Default select example">
+            <option selected value="선택">선택</option>
+            <option value="무통장입금">무통장입금</option>
+            <option value="일반결제">일반결제</option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex mt-4" v-if="tossModal === false">
+        <h3 class="d-none d-sm-block" style="color:red; font-weight:bold;">결제 금액:</h3>
+        <h6 class="d-block d-sm-none" style="color:red; font-weight:bold;">결제 금액:</h6>
+        <h3 class="ms-3 d-none d-sm-block"> {{filter(leavedPrice)}} 원 </h3>
+        <h5 class="ms-3 d-block d-sm-none"> {{filter(leavedPrice)}} 원 </h5>
+        <button @click="clickToss" class="btn btn-danger btn-sm ms-4 d-block d-sm-none" style="font-weight:bold;">결제하기</button>
+        <button @click="clickBack" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 d-block d-sm-none" style="font-weight:bold;" type="button">이전페이지</button>
+        <button @click="clickToss" class="btn btn-danger d-none d-sm-block ms-4 " style="font-weight:bold;">결제하기</button>
+        <button @click="clickBack" class="btn btn-outline-success d-none d-sm-block flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
       <hr/>
-      <div class="mt-4 d-flex">
+      <div id="payment-method"></div>
+      <div class="mt-2 d-flex" v-if="tossModal">
         <h3 class="d-none d-sm-block" style="color:red; font-weight:bold;">결제 금액:</h3>
         <h5 class="d-block d-sm-none" style="color:red; font-weight:bold;">결제 금액:</h5>
         <h3 class="ms-3 d-none d-sm-block"> {{filter(leavedPrice)}} 원 </h3>
         <h5 class="ms-3 d-block d-sm-none"> {{filter(leavedPrice)}} 원 </h5>
-
-        <button @click="clickFinal" class="btn btn-danger btn-sm ms-2 d-block d-sm-none" style="font-weight:bold;">결제하기</button>
-        <button @click="clickBack" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 d-block d-sm-none" style="font-weight:bold;" type="button">이전페이지</button>
+        <button @click="clickFinal" class="btn btn-danger btn-sm ms-4 d-block d-sm-none" style="font-weight:bold;">결제하기</button>
+        <button @click="backPage" class="btn btn-outline-success btn-sm flex-shrink-0 ms-1 d-block d-sm-none" style="font-weight:bold;" type="button">이전페이지</button>
         <button @click="clickFinal" class="btn btn-danger d-none d-sm-block ms-4 " style="font-weight:bold;">결제하기</button>
-        <button @click="clickBack" class="btn btn-outline-success d-none d-sm-block flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
-        
+        <button @click="backPage" class="btn btn-outline-success d-none d-sm-block flex-shrink-0 ms-1" style="font-weight:bold;" type="button">이전페이지</button>
       </div>
     </div>
 
@@ -249,20 +281,22 @@
             <div class="col-4"><h6>구매 날짜</h6></div>
             <div class="col-3"> <h6></h6></div>
           </div>
-          <div class="row" v-for="item in mypageData.purchaseData" :key="item">
-            <hr/>
-            <div class="col-5" align="left">
-              <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
-              <div class="d-block d-lg-none" style="font-size: small;"> {{item.productName}} </div>
-              <div style="color:darkgray; font-size: 14px;">{{item.optionText}}</div>
-            </div>
-            <div class="col-4 d-none d-lg-block"><h5> {{item.purchaseDate}} </h5></div>
-            <div class="col-4 d-block d-lg-none"><h6> {{item.purchaseDate}} </h6></div>
-            <div v-if="item.review === false" class="col-3">
-              <button @click="clickReview" class="btn btn-light btn-sm border">후기작성</button>
-            </div>
-            <div v-if="item.review" class="col-3">
-              작성완료
+          <div v-for="item in mypageData.purchaseData" :key="item">
+            <div v-if="item.currentState !== '입금대기'" class="row">
+              <hr/>
+              <div class="col-5" align="left">
+                <div class="d-none d-lg-block"> <h5>{{item.productName}}</h5> </div>
+                <div class="d-block d-lg-none" style="font-size: small;"> {{item.productName}} </div>
+                <div style="color:darkgray; font-size: 14px;">{{item.optionText}}</div>
+              </div>
+              <div class="col-4 d-none d-lg-block"><h5> {{item.purchaseDate}} </h5></div>
+              <div class="col-4 d-block d-lg-none"><h6> {{item.purchaseDate}} </h6></div>
+              <div v-if="item.review === false" class="col-3">
+                <button @click="clickReview" class="btn btn-light btn-sm border">후기작성</button>
+              </div>
+              <div v-if="item.review" class="col-3">
+                작성완료
+              </div>
             </div>
           </div>
         </div>
@@ -405,13 +439,17 @@ import { ref } from '@vue/reactivity';
 import { useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
 import { watch } from 'vue';
+import { loadPaymentWidget } from '@tosspayments/payment-widget-sdk'
 export default {
   name: 'MyPage',
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const paymentMethod = ref(null);
+    let paymentWidget = ref(null);
     let nickName = ref(route.query.nickName);
     let mypageData = ref({});
+    let deliverOut = ref(false);
     let phoneNum = ref('');
     let updateKey = ref(0);
     let purchaseList = ref(true);
@@ -445,6 +483,10 @@ export default {
     let leavedPoint = ref(0);
     let leavedPrice = ref(0);
     let usePoint = ref(0);
+    let tossModal = ref(false);
+    let payMethod = ref('선택');
+    let payMethodModal = ref(true);
+    let personalNum = ref('');
    
 
 
@@ -475,6 +517,9 @@ export default {
           updateKey.value++;
         }
         for(let i = 0 ; i < res.data.cart.length; i++) {
+          if(res.data.cart[i].deliverOut) {
+            deliverOut.value = true;
+          }
           totalPrice.value += res.data.cart[i].totalPrice;
           leavedPrice.value += res.data.cart[i].totalPrice;
         }
@@ -675,20 +720,43 @@ export default {
         leavedPrice.value = totalPrice.value - oldValue;
       }
     });
-
-    function clickFinal() {
-      if(
-        mypageData.value.name === '' ||
-        phoneNum.value === '' ||
-        mypageData.value.addressNum === '' ||
-        mypageData.value.address === '' ||
-        mypageData.value.detailAddress === ''
-      ) alert('배송지 정보를 모두 입력해 주십시오.');
-      else {
-        let purchaseInfo = [];
-        for(let i = 0; i < mypageData.value.cart.length; i++) {
-          purchaseInfo.push(
-            {
+    function selectPay() {
+      let numberSelect = document.getElementById('payMethod');
+      payMethod.value = numberSelect.options[document.getElementById('payMethod').selectedIndex].value;
+    }
+    function clickToss() {
+      if(payMethod.value === '선택') {
+        alert('결제 방식을 선택해 주십시오.');
+      } else if(payMethod.value === '무통장입금') {
+        if(
+          mypageData.value.name === '' ||
+          phoneNum.value === '' ||
+          mypageData.value.addressNum === '' ||
+          mypageData.value.address === '' ||
+          mypageData.value.detailAddress === ''
+        ) alert('배송지 정보를 모두 입력해 주십시오.');
+        else if(deliverOut.value === true && personalNum.value === '') alert('해외직구 상품 주문 시 개인통관고유부호를 필히 입력하셔야 합니다.');
+        else {
+          
+          let date = new Date()
+          let year = date.getFullYear();
+          let month = date.getMonth() + 1;
+          let day = date.getDate();
+          let hour = date.getHours();
+          let minuite = date.getMinutes();
+          let second = date.getSeconds();
+          let orderId = year.toString() 
+            + (("00" + month.toString()).slice(-2)) 
+            + (("00" + day.toString()).slice(-2))
+            + (("00" + hour.toString()).slice(-2)) 
+            + (("00" + minuite.toString()).slice(-2)) 
+            + (("00" + second.toString()).slice(-2));
+          
+          let purchaseInfo = [];
+          
+          for(let i = 0; i < mypageData.value.cart.length; i++) {
+            purchaseInfo.push({
+              cartBool : true,
               nickName : mypageData.value.nickName,
               name : mypageData.value.name,
               phoneNum :phoneNum.value,
@@ -702,27 +770,111 @@ export default {
               optionText : mypageData.value.cart[i].productOption,
               totalPrice : mypageData.value.cart[i].totalPrice,
               payPrice : leavedPrice.value,
+              payMethod : payMethod.value,
+              orderId : orderId,
+              personalNum : personalNum.value,
+              deliverOut : mypageData.value.cart[i].deliverOut,
               cartId : mypageData.value.cart[i].cartId, 
               leavedPoint : leavedPoint.value
-            }
-          )
-        }
-        console.log(purchaseInfo);
-        axios.post('/api/product/cartPurchase', purchaseInfo)
-        .then(()=>{
+            });
+          }
           
-          router.push({name: 'PurchaseComplete'});
+          
+            
+          axios.post('/api/product/cartPurchase', purchaseInfo)
+          .then(()=>{
+            router.push({name: 'PurchaseComplete', query : {payMethod : payMethod.value, price : leavedPrice.value, cashOrderId : orderId}});
+          })
+          .catch(err=>{
+            console.log(err);
+          })
+        }
+        
+      } else if(payMethod.value === '일반결제') {
+        payMethodModal.value = false;
+        tossModal.value = true;
+        loadPaymentWidget(process.env.VUE_APP_CLIENT_KEY, mypageData.value.id)
+        .then(payment=>{
+          paymentWidget.value = payment;
+          paymentWidget.value.renderPaymentMethods('#payment-method', leavedPrice.value);
         })
         .catch(err=>{
           console.log(err);
-        })
+        });
       }
+    }
+
+    function clickFinal() {
+      if(
+        mypageData.value.name === '' ||
+        phoneNum.value === '' ||
+        mypageData.value.addressNum === '' ||
+        mypageData.value.address === '' ||
+        mypageData.value.detailAddress === ''
+      ) alert('배송지 정보를 모두 입력해 주십시오.');
+      else if(deliverOut.value === true && personalNum.value === '') alert('해외직구 상품 주문 시 개인통관고유부호를 필히 입력하셔야 합니다.');
+      else {
+        let date = new Date()
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minuite = date.getMinutes();
+        let second = date.getSeconds();
+        let orderId = year.toString() 
+          + (("00" + month.toString()).slice(-2)) 
+          + (("00" + day.toString()).slice(-2))
+          + (("00" + hour.toString()).slice(-2)) 
+          + (("00" + minuite.toString()).slice(-2)) 
+          + (("00" + second.toString()).slice(-2));
+        
+        let purchaseInfo = [];
+        
+        for(let i = 0; i < mypageData.value.cart.length; i++) {
+          purchaseInfo.push({
+            cartBool : true,
+            nickName : mypageData.value.nickName,
+            name : mypageData.value.name,
+            phoneNum :phoneNum.value,
+            addressNum : mypageData.value.addressNum,
+            address : mypageData.value.address,
+            addressName : mypageData.value.addressName,
+            detailAddress : mypageData.value.detailAddress,
+            productName : mypageData.value.cart[i].productName,
+            productId : mypageData.value.cart[i].productId,
+            orderNum : mypageData.value.cart[i].productNum,
+            optionText : mypageData.value.cart[i].productOption,
+            totalPrice : mypageData.value.cart[i].totalPrice,
+            payPrice : leavedPrice.value,
+            payMethod : payMethod.value,
+            orderId : orderId,
+            personalNum : personalNum.value,
+            deliverOut : mypageData.value.cart[i].deliverOut,
+            cartId : mypageData.value.cart[i].cartId, 
+            leavedPoint : leavedPoint.value
+          });
+        }
+        let data = 'info=' + encodeURIComponent(JSON.stringify(purchaseInfo));
+
+        const redirectUrl = process.env.VUE_APP_LOCAL_URL + '/product/submit?' + data;
+
+        paymentWidget.value.requestPayment({
+          orderId: orderId,
+          orderName: purchaseInfo[0].productName + ' 외',
+          successUrl: redirectUrl,
+          failUrl: process.env.VUE_APP_LOCAL_URL + '/product/submitFail',
+          customerName: mypageData.value.name
+        });
+      }
+    }
+
+    function backPage() {
+      router.go(0);
     }
 
     function clickDeliNum(e) {
       const nodes = [...e.target.parentElement.parentElement.parentElement.children];
       let cartIndex = nodes.indexOf(e.target.parentElement.parentElement) - 2;
-      console.log(cartIndex);
       let deliNum = mypageData.value.purchaseData[cartIndex].deliNum;
       if(deliNum === 0) {
         alert('아직 운송장 정보가 등록되지 않았습니다.');
@@ -732,13 +884,12 @@ export default {
     }
 
     function clickReview(e) {
-      const nodes = [...e.target.parentElement.parentElement.parentElement.children];
-      let cartIndex = nodes.indexOf(e.target.parentElement.parentElement) - 1;
+      const nodes = [...e.target.parentElement.parentElement.parentElement.parentElement.children];
+      let cartIndex = nodes.indexOf(e.target.parentElement.parentElement.parentElement) -1;
       
       reviewOrderId.value = mypageData.value.purchaseData[cartIndex].orderId;
       reviewProductId.value = mypageData.value.purchaseData[cartIndex].productId;
       reviewProductName.value = mypageData.value.purchaseData[cartIndex].productName;
-      console.log(reviewOrderId.value);
 
       reviewWrite.value = true;
       purchaseDetail.value = false;
@@ -916,7 +1067,8 @@ export default {
     clickCart, clickReviews, clickQna, clickPoint, clickInfo, totalPrice, deleteCart, clickPurchase, purchaseDetail, inputName, inputPhoneNum,
     inputAddress, clickFinal, clickBack, clickDeliNum, clickReview, phoneNum, qnaWrite, reviewWrite, reviewProductName, reviewText, reviewLength,
     inputReview, reviewSubmit, selectGrade, qnaText, inputQna, qnaSubmit, qnaList, changeName, changePhoneNum, changeData, changeAddress, changePn,
-    clickChange, leavedPoint, leavedPrice, usePoint, inputPoint, clickOut, outModal, outOk, outNo};
+    clickChange, leavedPoint, leavedPrice, usePoint, inputPoint, clickOut, outModal, outOk, outNo, tossModal, payMethod, payMethodModal, selectPay,
+    clickToss, paymentMethod, backPage, personalNum, deliverOut};
   }
 }
 </script>

@@ -50,10 +50,17 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
 
 
 router.get('/', (req, res)=>{
-  db.collection('products').find({divide : req.query.korDivide}).toArray((err, result)=>{
-    console.log(result);
-    res.send(result);
-  })
+  if(req.query.engDivide === 'totalProducts') {
+    db.collection('products').find().toArray((err, result)=>{
+      console.log(result);
+      res.send(result);
+    });
+  } else {
+    db.collection('products').find({divide : req.query.korDivide}).toArray((err, result)=>{
+      console.log(result);
+      res.send(result);
+    });
+  }
 });
 
 
@@ -130,6 +137,7 @@ router.get('/purchase/:id', (req, res)=>{
 
 router.get('/purchase-detail', loginCheck, (req, res)=>{
   let userData = {
+    id : req.user.id,
     nickName: req.user.nickName,
     name: req.user.name,
     phoneNum: req.user.phoneNum,
@@ -175,119 +183,122 @@ router.post('/upload', (req, res)=>{
   });
 });
 
+
 router.post('/purchase', (req, res)=>{
   let data = req.body;
   console.log(data);
-  db.collection('orderId').findOne({name : 'orderId'})
-  .then(result=>{
-    let orderId = result.orderId;
-    let curr = new Date();
-    let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
-    let KR_TIME_DIFF = 9*60*60*1000;
-    let kr_curr = new Date(utc + KR_TIME_DIFF);
-    let year = kr_curr.getFullYear();
-    let month = kr_curr.getMonth() + 1;
-    let date = kr_curr.getDate();
-    let hours = kr_curr.getHours();
-    let minutes = kr_curr.getMinutes();
-    let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
-    let purchaseData = {
-      cartBool : false,
-      nickName : data.nickName,
-      name : data.name,
-      phoneNum : data.phoneNum,
-      addressNum : data.addressNum,
-      address : data.address,
-      addressName : data.addressName,
-      detailAddress : data.detailAddress,
-      productId : data.productId,
-      productName : data.productName,
-      orderNum : data.orderNum,
-      optionText : data.optionText,
-      totalPrice : data.totalPrice,
-      payPrice : data.payPrice,
-      orderId : orderId + 1,
-      purchaseDate : today,
-      deliNum : 0,
-      review : false,
-      currentState : '결제완료'
-    }
-    return db.collection('purchaseData').insertOne(purchaseData)
-  })
-  .then(()=>{
-    return db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}})
-  })
+  let curr = new Date();
+  let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+  let KR_TIME_DIFF = 9*60*60*1000;
+  let kr_curr = new Date(utc + KR_TIME_DIFF);
+  let year = kr_curr.getFullYear();
+  let month = kr_curr.getMonth() + 1;
+  let date = kr_curr.getDate();
+  let hours = kr_curr.getHours();
+  let minutes = kr_curr.getMinutes();
+  let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
+  let purchaseData = {
+    cartBool : false,
+    nickName : data.nickName,
+    name : data.name,
+    phoneNum : data.phoneNum,
+    addressNum : data.addressNum,
+    address : data.address,
+    addressName : data.addressName,
+    detailAddress : data.detailAddress,
+    productId : data.productId,
+    productName : data.productName,
+    orderNum : data.orderNum,
+    optionText : data.optionText,
+    totalPrice : data.totalPrice,
+    payPrice : data.payPrice,
+    realPay : data.realPay,
+    payMethod : data.payMethod,
+    orderId : parseInt(data.orderId),
+    personalNum : data.personalNum,
+    deliverOut : data.deliverOut,
+    purchaseDate : today,
+    deliNum : 0,
+    review : false,
+    currentState : '결제완료'
+  }
+  if(req.body.payMethod === '무통장입금') purchaseData.currentState = '입금대기';
+
+  db.collection('purchaseData').insertOne(purchaseData)
   .then(()=>{
     let point = parseInt(data.leavedPoint);
     return db.collection('customers').updateOne({nickName : data.nickName}, {$set : {point : point}});
   })
   .then(()=>{
-    return db.collection('orderId').findOne({name : 'orderId'});
-  })
-  .then((result)=>{
-    res.send(result);
+    res.send('success');
   })
   .catch(err=>{
     console.log(err);
   });
 });
 
+router.post('/submitReport', (req, res)=>{
+  let data = req.body;
+  db.collection('purchaseReport').insertOne(data)
+  .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err)
+  });
+})
 router.post('/cartPurchase', (req, res)=>{
   let data = req.body;
-  let point = parseInt(data[0].leavedPoint);
-  console.log(point);
+  let curr = new Date();
+  let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+  let KR_TIME_DIFF = 9*60*60*1000;
+  let kr_curr = new Date(utc + KR_TIME_DIFF);
+  let year = kr_curr.getFullYear();
+  let month = kr_curr.getMonth() + 1;
+  let date = kr_curr.getDate();
+  let hours = kr_curr.getHours();
+  let minutes = kr_curr.getMinutes();
+  let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
   for(let i = 0; i < data.length; i++) {
-    db.collection('orderId').findOne({name : 'orderId'})
-    .then(result=>{
-      let orderId = result.orderId;
-      let curr = new Date();
-      let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
-      let KR_TIME_DIFF = 9*60*60*1000;
-      let kr_curr = new Date(utc + KR_TIME_DIFF);
-      let year = kr_curr.getFullYear();
-      let month = kr_curr.getMonth() + 1;
-      let date = kr_curr.getDate();
-      let hours = kr_curr.getHours();
-      let minutes = kr_curr.getMinutes();
-      let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
-      let purchaseData = {
-        cartBool : true,
-        nickName : data[i].nickName,
-        name : data[i].name,
-        phoneNum : data[i].phoneNum,
-        addressNum : data[i].addressNum,
-        address : data[i].address,
-        addressName : data[i].addressName,
-        detailAddress : data[i].detailAddress,
-        productId : data[i].productId,
-        productName : data[i].productName,
-        orderNum : data[i].orderNum,
-        optionText : data[i].optionText,
-        totalPrice : data[i].totalPrice,
-        payPrice : data[i].payPrice,
-        orderId : orderId + 1,
-        purchaseDate : today,
-        deliNum : 0,
-        review : false,
-        currentState : '결제완료'
-      }
-      console.log(purchaseData);
-      return db.collection('purchaseData').insertOne(purchaseData)
-    })
+    let purchaseData = {
+      cartBool : data[i].cartBool,
+      nickName : data[i].nickName,
+      name : data[i].name,
+      phoneNum : data[i].phoneNum,
+      addressNum : data[i].addressNum,
+      address : data[i].address,
+      addressName : data[i].addressName,
+      detailAddress : data[i].detailAddress,
+      productId : data[i].productId,
+      productName : data[i].productName,
+      orderNum : data[i].orderNum,
+      optionText : data[i].optionText,
+      totalPrice : data[i].totalPrice,
+      payPrice : data[i].payPrice,
+      realPay : data[i].realPay,
+      payMethod : data[i].payMethod,
+      orderId : parseInt(data[i].orderId),
+      personalNum : data[i].personalNum,
+      deliverOut : data[i].deliverOut,
+      purchaseDate : today,
+      deliNum : 0,
+      review : false,
+      currentState : '결제완료'
+    }
+    if(data[i].payMethod === '무통장입금') purchaseData.currentState = '입금대기';
+    db.collection('purchaseData').insertOne(purchaseData)
     .then(()=>{
-      return db.collection('customers').updateOne({nickName : data[i].nickName}, {$pull : {cart : {cartId : data[i].cartId}}});
-    })
-    .then(()=>{
-      return db.collection('orderId').updateOne({name : 'orderId'}, {$inc : {orderId : 1}});
-    })
-    .then(()=>{
+      let point = parseInt(data[i].leavedPoint);
       return db.collection('customers').updateOne({nickName : data[i].nickName}, {$set : {point : point}});
     })
+    .then(()=>{
+      db.collection('customers').updateOne({nickName : data[i].nickName}, {$pull : {cart : {cartId : data[i].cartId}}})
+    })
     .catch(err=>{
-      console.log(err);
+      console.log(err)
     });
   }
-  res.send('purchase success');
+  res.send('success');
   
 });
 
@@ -303,6 +314,7 @@ router.put('/addCart', (req, res)=>{
         productOption : req.body.option,
         productNum : req.body.orderNum,
         totalPrice : req.body.totalPrice,
+        deliverOut : req.body.deliverOut,
         cartId : cartId + 1
       }
     }});
@@ -317,6 +329,26 @@ router.put('/addCart', (req, res)=>{
   .catch(err=>{
     console.log(err);
   });
+});
+
+router.put('/edit', (req, res)=>{
+  let data = req.body
+  db.collection('products').updateOne({id : parseInt(data.id)}, {$set : {
+    productName : data.productName,
+    beforeDiscount : data.beforeDiscount,
+    productPrice : data.productPrice,
+    optionData : data.optionData,
+    deliverKor : data.deliverKor,
+    deliverOut : data.deliverOut,
+    thumbnail : data.thumbnail,
+    infoImage : data.infoImage
+  }})
+  .then(()=>{
+    res.send('edit success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
 });
 
 router.post('/qnaSubmit',loginCheck, (req, res)=>{

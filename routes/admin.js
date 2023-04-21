@@ -95,6 +95,37 @@ router.get('/personalQna', (req, res)=>{
   .catch(err=>{
     console.log(err);
   })
+});
+
+router.get('/allProducts', (req, res)=>{
+  
+  db.collection('products').find().toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.get('/fittingQna', (req, res)=>{
+  db.collection('fitting').find().sort({id : -1}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.get('/nonMemberQna', (req, res)=>{
+  db.collection('nonMemberQna').find().sort({id : -1}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
 })
 
 router.put('/changePoint', (req, res)=>{
@@ -161,6 +192,30 @@ router.put('/submitPersonalReply', (req, res)=>{
   let adminText = req.body.adminText;
   console.log(adminText);
   db.collection('personalQna').updateOne({id : id}, {$set : {adminText : adminText, reply : true}})
+  .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/fitting/submit', (req, res)=>{
+  let id = req.body.id;
+  let adminText = req.body.adminText;
+  db.collection('fitting').updateOne({id : id}, {$set : {adminText : adminText, reply : true}})
+  .then(()=>{
+    res.send('success');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/nonMemberQna/submit', (req, res)=>{
+  let id = req.body.id;
+  let adminText = req.body.adminText;
+  db.collection('nonMemberQna').updateOne({id : id}, {$set : {adminText : adminText, reply : true}})
   .then(()=>{
     res.send('success');
   })

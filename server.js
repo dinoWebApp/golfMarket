@@ -93,12 +93,107 @@ app.get('/api/nonMemberOrder', (req, res)=>{
     if(!result) {
       res.send("wrong");
     } else res.send(result);
-    
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+app.get('/api/fitting', loginCheck, (req, res)=>{
+  db.collection('fitting').find().sort({id : -1}).toArray()
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+app.get('/api/customerCenter/nonMemberQna', (req, res)=>{
+  db.collection('nonMemberQna').find().sort({id : -1}).toArray()
+  .then(result=>{
+    res.send(result);
   })
   .catch(err=>{
     console.log(err);
   })
 })
+
+app.post('/api/fitting/submit', (req, res)=>{
+  let nickName = req.user.nickName;
+  let curr = new Date();
+  let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+  let KR_TIME_DIFF = 9*60*60*1000;
+  let kr_curr = new Date(utc + KR_TIME_DIFF);
+  let year = kr_curr.getFullYear();
+  let month = kr_curr.getMonth() + 1;
+  let date = kr_curr.getDate();
+  let hours = kr_curr.getHours();
+  let minutes = kr_curr.getMinutes();
+  let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
+  db.collection('fittingId').findOne({name : 'fittingId'})
+  .then(result=>{
+    let data = {
+      id : result.id + 1,
+      nickName : nickName,
+      text : req.body.text,
+      adminText : '',
+      reply : false,
+      date : today
+    }
+    return db.collection('fitting').insertOne(data)
+  })
+  .then(()=>{
+    return db.collection('fittingId').updateOne({name : 'fittingId'}, {$inc : {id : 1}});
+  })
+  .then(()=>{
+    return db.collection('fitting').find().sort({id : -1}).toArray()
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+app.post('/api/customerCenter/qnaSubmit', (req, res)=>{
+  let curr = new Date();
+  let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
+  let KR_TIME_DIFF = 9*60*60*1000;
+  let kr_curr = new Date(utc + KR_TIME_DIFF);
+  let year = kr_curr.getFullYear();
+  let month = kr_curr.getMonth() + 1;
+  let date = kr_curr.getDate();
+  let hours = kr_curr.getHours();
+  let minutes = kr_curr.getMinutes();
+  let today = (year + '-' + month + '-' + date  + ' ' + hours + ':' + minutes );
+  db.collection('nonMemberQnaId').findOne({name : 'nonMemberQnaId'})
+  .then(result=>{
+    let data = {
+      id : result.id + 1,
+      nickName : req.body.nickName,
+      text : req.body.text,
+      adminText : '',
+      reply : false,
+      date : today
+    }
+    return db.collection('nonMemberQna').insertOne(data)
+  })
+  .then(()=>{
+    return db.collection('nonMemberQnaId').updateOne({name : 'nonMemberQnaId'}, {$inc : {id : 1}});
+  })
+  .then(()=>{
+    return db.collection('nonMemberQna').find().sort({id : -1}).toArray()
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+})
+
 
 app.post('/api/admin-pw', (req, res)=>{
   db.collection('admin').findOne({id : 'admin'}, (err, result)=>{

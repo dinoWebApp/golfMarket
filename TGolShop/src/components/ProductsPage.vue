@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="container">
+  <div >
+    <div class="container" v-if="korDivide === '골프클럽'">
       <nav>
         <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
           <button @click="clickedTotal" class="nav-link check active" data-bs-toggle="tab" type="button" role="tab"  aria-selected="true">전체 보기</button>
@@ -8,22 +8,16 @@
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">캘러웨이</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">테일러메이드</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">PXG</button>
-          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">타이틀리스트</button>
-          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">혼마</button>
-          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">젝시오</button>
-          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">야마하</button>
-          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">미즈노</button>
-          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">포틴</button>
-          
         </div>
       </nav>
     </div>
 
-  <div class="container">
-    <h3 class="mt-3 mb-3" style="text-align:left;">{{ korDivide }}</h3>
-  </div>
+    <div class="container">
+      <h2 class="mt-3 mb-3" style="text-align:left;">{{ korDivide }}</h2>
+      <hr/>
+    </div>
   
-
+    
     <div class="container">
       <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-4">
         <div class="col" v-for="item in products" :key="item">
@@ -80,7 +74,6 @@ export default {
     let korDivide = ref(route.query.korDivide);
     let engDivide = ref(route.query.engDivide);
     axios.get('/api/product/?engDivide=' + engDivide.value + '&korDivide=' + korDivide.value).then(res=>{
-      
       products.value = res.data;
     }). catch(err=>{
       console.log(err);
@@ -112,32 +105,9 @@ export default {
         case 'PXG':
           brandEng = 'pxg';
           break;
-        case '타이틀리스트':
-          brandEng = 'titleist';
-          break;
-        case '혼마':
-          brandEng = 'honma';
-          break;
-        case '젝시오':
-          brandEng = 'xxio';
-          break;
-        case '야마하':
-          brandEng = 'yamaha';
-          break;
-        case '미즈노':
-          brandEng = 'mizuno';
-          break;  
-        case '포틴':
-          brandEng = 'fourteen';
-          break;
-        case '마제스티':
-          brandEng = 'majesty';
-          break;
       }
-      console.log(brandEng);
       axios.get('/api/product/brand?brandName=' + brandEng + '&divide=' + korDivide.value)
       .then(res=>{
-        
         products.value = res.data;
       })
       .catch(err=>{
@@ -179,7 +149,7 @@ export default {
 
 .nav-link.check {
   color:darkgray ;
-  
+  font-size: large;
 }
 
 

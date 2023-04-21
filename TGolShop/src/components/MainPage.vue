@@ -9,13 +9,13 @@
         </div> -->
         <div class="carousel-inner">
           <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/g430-banner.jpeg" class="d-block w-100" alt="...">
+            <img src="../assets/stealthDriver.png" class="d-block w-100" alt="...">
           </div>
-          <div class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/i230-banner.jpeg" class="d-block w-100" alt="...">
+          <div @click="clickMavrik" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/mavrik.png" class="d-block w-100" alt="...">
           </div>
-          <div class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/i525-banner.jpeg" class="d-block w-100" alt="...">
+          <div @click="clickG410" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/g410Plus.png" class="d-block w-100" alt="...">
           </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -128,6 +128,14 @@ export default {
       router.push({path:'/product/purchase/15'});
     }
 
+    function clickG410() {
+      router.push({path : '/product/purchase/18'});
+    }
+
+    function clickMavrik() {
+      router.push({path : '/product/purchase/20'});
+    }
+
     function clickCard(e) {
       let productId = e.currentTarget.children[1].children[1].innerText;
       
@@ -142,7 +150,7 @@ export default {
       let answer = 100 * (1 - (after*1 + optionPrice*1) / (before*1 + optionPrice*1));
       return Math.round(answer);
     }
-    return {clickG430, productList, clickCard, filter, discount};
+    return {clickG430, productList, clickCard, filter, discount, clickG410, clickMavrik};
   }
 }
 </script>
