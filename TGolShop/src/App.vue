@@ -7,7 +7,7 @@
       <ul class="nav justify-content-center border-bottom pb-3 mb-3">
         <li class="nav-item"><a href="#" @click="termsOfUse" class="nav-link px-2 text-muted">이용약관</a></li>
         <li class="nav-item"><a href="#" @click="privateinfo" class="nav-link px-2 text-muted">개인정보처리방침</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">고객센터</a></li>
+        <li class="nav-item"><a href="#" @click="customerCenter" class="nav-link px-2 text-muted">고객센터</a></li>
       </ul>
       <p style="font-size: 11px;" class="text-center text-muted">©TGOLSHOP,ALL RIGHTS RESERVED.티골프 피팅/대구광역시 동구 신서로22길 2, 1층 102호/대표:김수환/사업자등록번호:874-18-01201 소매업/통신판매업신고번호:2023-대구동구-0516/개인정보관리자:김수환/대표메일:sh7633@daum.net/대표전화:010-9184-1077</p>
     </footer>
@@ -31,7 +31,11 @@ export default {
       router.push({path:'/privateinfo'});
     }
 
-    return {termsOfUse, privateinfo};
+    function customerCenter() {
+      router.push({path:'/customerCenter'});
+    }
+
+    return {termsOfUse, privateinfo, customerCenter};
   },
   components: {
 
