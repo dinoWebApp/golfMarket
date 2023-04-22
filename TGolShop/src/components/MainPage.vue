@@ -8,7 +8,7 @@
           <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
         </div> -->
         <div class="carousel-inner">
-          <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+          <div @click="clickStealth" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/stealthDriver.png" class="d-block w-100" alt="...">
           </div>
           <div @click="clickMavrik" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
@@ -136,6 +136,10 @@ export default {
       router.push({path : '/product/purchase/20'});
     }
 
+    function clickStealth() {
+      router.push({path : '/product/purchase/23'})
+    }
+
     function clickCard(e) {
       let productId = e.currentTarget.children[1].children[1].innerText;
       
@@ -150,7 +154,7 @@ export default {
       let answer = 100 * (1 - (after*1 + optionPrice*1) / (before*1 + optionPrice*1));
       return Math.round(answer);
     }
-    return {clickG430, productList, clickCard, filter, discount, clickG410, clickMavrik};
+    return {clickG430, productList, clickCard, filter, discount, clickG410, clickMavrik, clickStealth};
   }
 }
 </script>

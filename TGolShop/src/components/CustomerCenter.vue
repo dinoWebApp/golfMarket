@@ -4,7 +4,7 @@
       <h2 class="mt-3 mb-3" style="text-align:left;">고객센터</h2>
       <hr/>
     </div>
-    <div class="border mt-3 container">
+    <div class="border mt-3 container d-none d-sm-block">
       <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
           <button @click="clickAbout" class="nav-link mypage-option active" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">매장 소개</button>
@@ -17,6 +17,23 @@
         </li>
         <li class="nav-item" role="presentation">
           <button @click="clickQna" class="nav-link mypage-option" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">비회원 문의</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="border mt-3 container d-block d-sm-none">
+      <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button style="font-size: small !important;" @click="clickAbout" class="nav-link mypage-option active" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">매장 소개</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button style="font-size: small !important;" @click="clickRule" class="nav-link mypage-option" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">배송/환불/수리 규정</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button style="font-size: small !important;" @click="clickCredit" class="nav-link mypage-option" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">무통장 입금 계좌</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button style="font-size: small !important;" @click="clickQna" class="nav-link mypage-option" data-bs-toggle="pill" type="button" role="tab" aria-selected="false">비회원 문의</button>
         </li>
       </ul>
     </div>
