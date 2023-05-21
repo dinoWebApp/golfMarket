@@ -70,7 +70,7 @@
 
     <div v-if="rule" class="container border">
       <div class="col-12">
-        <img src="../assets/rule.png" alt="rule" class="img-fluid mt-2">
+        <img src="../assets/edittedRule.png" alt="rule" class="img-fluid mt-2">
       </div>
     </div>
 

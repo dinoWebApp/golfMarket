@@ -856,13 +856,13 @@ export default {
         }
         let data = 'info=' + encodeURIComponent(JSON.stringify(purchaseInfo));
 
-        const redirectUrl = process.env.VUE_APP_LOCAL_URL + '/product/submit?' + data;
+        const redirectUrl = process.env.VUE_APP_TGOLSHOP + '/product/submit?' + data;
 
         paymentWidget.value.requestPayment({
           orderId: orderId,
           orderName: purchaseInfo[0].productName + ' 외',
           successUrl: redirectUrl,
-          failUrl: process.env.VUE_APP_LOCAL_URL + '/product/submitFail',
+          failUrl: process.env.VUE_APP_TGOLSHOP + '/product/submitFail',
           customerName: mypageData.value.name
         });
       }

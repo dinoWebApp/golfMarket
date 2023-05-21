@@ -40,7 +40,7 @@
               <ul class="dropdown-menu">
                 <li><a @click="productDivide" class="dropdown-item" href="#">골프클럽</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">헤드</a></li>
-                <li><a @click="productDivide" class="dropdown-item" href="#">샤프트</a></li>
+                <li><a @click="productDivide" class="dropdown-item" href="#">샤프트/그립</a></li>
               </ul>
             </div>
             
@@ -139,27 +139,59 @@
           <div class="row justify-content-center">
             <div class="col-9 mt-2">
               상품명
-              <input v-bind:value="editProductName" @input="inputEditProductName" type="text" class="form-control mb-2" id="productName" placeholder="브랜드와 모델명 모두 입력해주세요.">
-              원가
-              <input v-bind:value="beforeDiscount" @input="inputBeforeDiscount" type="text" class="form-control mb-2" placeholder="원가">
-              할인가
-              <input v-bind:value="productPrice" @input="inputProductPrice" type="text" class="form-control mb-2" placeholder="할인가">
-              <div class="d-flex mt-4">
-                옵션 (추가된 옵션은 수정이 불가합니다.)
-                <button @click="addOption" class="btn btn-sm btn-outline-secondary ms-3">추가</button>
+              <div class="d-flex">
+                <div class="col-10">
+                  <input v-bind:value="editProductName" @input="inputEditProductName" type="text" class="form-control col-10 mb-2" id="productName" placeholder="브랜드와 모델명 모두 입력해주세요.">
+                </div>
+                <div class="col-2">
+                  <button @click="editProductNameApi" class="btn btn-danger">수정</button>
+                </div>
               </div>
-              <div v-for="i in optionNumber" :key="i">
+              원가
+              <div class="d-flex">
+                <div class="col-10">
+                  <input v-bind:value="beforeDiscount" @input="inputBeforeDiscount" type="text" class="form-control mb-2" placeholder="원가">
+                </div>
+                <div class="col-2">
+                  <button @click="editBeforeDiscount" class="btn btn-danger">수정</button>
+                </div>
+              </div>
+              할인가
+              <div class="d-flex">
+                <div class="col-10">
+                  <input v-bind:value="productPrice" @input="inputProductPrice" type="text" class="form-control mb-2" placeholder="할인가">
+                </div>
+                <div class="col-2">
+                  <button @click="editProductPrice" class="btn btn-danger">수정</button>
+                </div>
+              </div>
+              <div class="d-flex mt-4">
+                옵션
+              </div>
+              <div v-for="(item, i) in optionData" :key="i">
                 <div class="d-flex">
-                  <div class="col-10 mt-2">
-                    <input @input="inputOptionText" type="text" class="form-control mb-2" placeholder="옵션 내용">
+                  <div class="col-8 mt-2">
+                    <input v-bind:value="item.optionText" type="text" class="form-control mb-2" placeholder="옵션 내용">
                   </div>
                   <div class="col-2 mt-2">
-                    <input @input="inputOptionPrice" type="text" class="form-control mb-2" placeholder="가격">
+                    <input v-bind:value="item.optionPrice" type="text" class="form-control mb-2" placeholder="가격">
+                  </div>
+                  <div class="col-2 mt-2">
+                    <button @click="optionDelete" v-bind:value="i" class="btn btn-danger">삭제</button>
                   </div>
                 </div>
               </div>
-              
-              
+              <div class="d-flex">
+                <div class="col-8 mt-2">
+                  <input v-bind:value="addOptionText" @input="inputEditOptionText" type="text" class="form-control mb-2" placeholder="옵션 내용">
+                </div>
+                <div class="col-2 mt-2">
+                  <input v-bind:value="addOptionPrice" @input="inputEditOptionPrice" type="text" class="form-control mb-2" placeholder="가격">
+                </div>
+                <div class="col-2 mt-2">
+                  <button @click="addOptionApi" class="btn btn-danger">추가</button>
+                </div>
+              </div>
             </div>
             <div class="col-9 mt-2">
               
@@ -167,28 +199,41 @@
             
             <div class="col-9 mt-2">
               배송 방법
-              <div class="border mb-3">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" @click="selectKor">
-                  <label class="form-check-label" for="inlineRadio1">국내 배송</label>
+              <div class="d-flex">
+                <div class="border mb-1 col-10">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" @click="selectKor">
+                    <label class="form-check-label" for="inlineRadio1">국내 배송</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" @click="selectOut">
+                    <label class="form-check-label" for="inlineRadio2">해외 배송</label>
+                  </div>
                 </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" @click="selectOut">
-                  <label class="form-check-label" for="inlineRadio2">해외 배송</label>
+                <div class="col-2">
+                  <button @click="editDeliMethod" class="btn btn-danger mb-3">수정</button>
                 </div>
               </div>
-
               제품 사진
-              <div class="input-group mb-3">           
-                <input type="file" class="form-control" id="inputGroupFile01" accept="image/*" @change="selectThum">
-                <label class="input-group-text" for="inputGroupFile01">썸네일</label>
+              <div class="d-flex">
+                <div class="input-group mb-3 col-10">           
+                  <input type="file" class="form-control" id="inputGroupFile01" accept="image/*" @change="selectThum">
+                  <label class="input-group-text" for="inputGroupFile01">썸네일</label>
+                </div>
+                <div class="col-2">
+                  <button @click="editThumb" class="btn btn-danger mb-3">수정</button>
+                </div>
               </div>
-              <div class="input-group mb-3">
-                <input type="file" class="form-control" id="inputGroupFile02" accept="image/*" @change="selectInfo">
-                <label class="input-group-text" for="inputGroupFile02">상품 정보</label>
+              <div class="d-flex">
+                <div class="input-group col-10 mb-3">
+                  <input type="file" class="form-control" id="inputGroupFile02" accept="image/*" @change="selectInfo">
+                  <label class="input-group-text" for="inputGroupFile02">상품 정보</label>
+                </div>
+                <div class="col-2">
+                  <button @click="editInfo" class="btn btn-danger mb-3">수정</button>
+                </div>
               </div>
               
-              <button @click="editPosting" type="button" class="btn btn-danger col-5 mt-3 mb-3 me-1" style="font-weight:bold;">수정</button>
               <button @click="backEdit" style="font-weight:bold;" class="btn btn-success col-5 mt-3 mb-3">목록으로</button>
             </div>
           </div>
@@ -262,7 +307,7 @@
               <option selected value="0">종류</option>
               <option value="골프클럽">골프클럽</option>
               <option value="헤드">헤드</option>
-              <option value="샤프트">샤프트</option>
+              <option value="샤프트/그립">샤프트/그립</option>
             </select>
           </div>
           <div class="col-5" v-if="selectedDivide === '골프클럽'">
@@ -334,6 +379,10 @@
             <div class="col-auto"> {{item.purchaseDate}} </div>
           </div>
           <div class="row">
+            <div class="col-4"> 결제 수단: </div>
+            <div class="col-auto"> {{item.payMethod}} </div>
+          </div>
+          <div class="row">
             <div class="col-4"> 성명: </div>
             <div class="col-auto"> {{item.name}} </div>
           </div>
@@ -391,6 +440,9 @@
             <div class="col-auto">
               <button @click="changeDeliNum">수정</button>
             </div>
+          </div>
+          <div class="container">
+            <button @click="cancel" style="font-weight: bold;" class="btn btn-danger">결제 취소</button>
           </div>
         </div>
       </div>
@@ -563,6 +615,9 @@ export default {
     let editProductName = ref('');
     let fittingData = ref([]);
     let nonMemberQnaData = ref([]);
+    let addOptionText = ref('');
+    let addOptionPrice = ref('');
+    let editProductNameCopy = ref('');
     
 
     const router = useRouter();
@@ -695,7 +750,7 @@ export default {
         }
       })
       .then((res)=>{
-        dataSet.value.thumbnail = res.data.url;
+        dataSet.value.thumbnail = 'https' + res.data.url.substr(4);
         formData2.append("api_key", "557214385787327");
         formData1.append("upload_preset", "tgolshop");
         formData1.append("timestamp", (Date.now() / 1000) | 0);
@@ -707,7 +762,7 @@ export default {
         });  
       })
       .then(res=>{
-        dataSet.value.infoImage = res.data.url;
+        dataSet.value.infoImage = 'https' + res.data.url.substr(4);
         return axios.post('/api/product/upload', dataSet.value);
       })
       .then(()=>{
@@ -723,59 +778,15 @@ export default {
       const nodes = [...e.target.parentElement.parentElement.parentElement.children];
       let index = nodes.indexOf(e.target.parentElement.parentElement);
       editProductName.value = allProducts.value[index].productName;
+      editProductNameCopy.value = allProducts.value[index].productName;
+      beforeDiscount.value = allProducts.value[index].beforeDiscount;
+      productPrice.value = allProducts.value[index].productPrice;
+      optionData.value = allProducts.value[index].optionData;
       editId.value = allProducts.value[index].id;
       editProductModal.value = true;
     }
 
-    function editPosting() {
-      let editDataSet = ref({
-        id : editId.value,
-        productName : editProductName.value,
-        beforeDiscount : beforeDiscount.value,
-        productPrice : productPrice.value,
-        optionData : optionData.value,
-        deliverKor : deliverKor.value,
-        deliverOut : deliverOut.value,
-        thumbnail : '',
-        infoImage : ''
-      })
-      const formData1 = new FormData();
-      const formData2 = new FormData();
-      
-      formData1.append("api_key", "557214385787327");
-      formData1.append("upload_preset", "tgolshop");
-      formData1.append("timestamp", (Date.now() / 1000) | 0);
-      formData1.append(`file`, thumbnail.value);
-      
-      axios.post('https://api.cloudinary.com/v1_1/doiglts2y/image/upload', formData1, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then((res)=>{
-        editDataSet.value.thumbnail = res.data.url;
-        formData2.append("api_key", "557214385787327");
-        formData1.append("upload_preset", "tgolshop");
-        formData1.append("timestamp", (Date.now() / 1000) | 0);
-        formData1.append(`file`, infoImage.value);
-        return axios.post('https://api.cloudinary.com/v1_1/doiglts2y/image/upload', formData1, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });  
-      })
-      .then(res=>{
-        editDataSet.value.infoImage = res.data.url;
-        return axios.put('/api/product/edit', editDataSet.value);
-      })
-      .then(()=>{
-        alert('상품 수정이 완료되었습니다.');
-        router.go(0);
-      })
-      .catch(err=>{
-        console.log(err);
-      });
-    }
+    
 
     function backEdit() {
       editProductModal.value = false;
@@ -862,6 +873,9 @@ export default {
       orderControl.value = false;
       qna.value = false;
       personalQna.value = false;
+      productPrice.value = '';
+      beforeDiscount.value = '';
+      optionData.value = [];
     }
 
     function clickMemberControl() {
@@ -1089,6 +1103,211 @@ export default {
       })
     }
 
+    function editProductNameApi() {
+      let editPn = editProductName.value;
+      let productName = editProductNameCopy.value;
+      let editData = {
+        productName : productName,
+        editProductName : editPn
+      }
+      axios.put('/api/admin/editProductName', editData)
+      .then(()=>{
+        alert('수정 완료');
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    }
+
+    function editBeforeDiscount() {
+      let productName = editProductName.value;
+      let editData = {
+        beforeDiscount : beforeDiscount.value,
+        productName : productName,
+      };
+      axios.put('/api/admin/editBeforeDiscount', editData)
+      .then(()=>{
+        alert('수정 완료');
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    }
+
+    function editProductPrice() {
+      let pPrice = productPrice.value;
+      let productName = editProductName.value;
+      let editData = {
+        productPrice : pPrice,
+        productName : productName
+      };
+      axios.put('/api/admin/editProductPrice', editData)
+      .then(()=>{
+        alert('수정 완료');
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    }
+
+    function editThumb() {
+      const formData1 = new FormData();
+      
+      formData1.append("api_key", "557214385787327");
+      formData1.append("upload_preset", "tgolshop");
+      formData1.append("timestamp", (Date.now() / 1000) | 0);
+      formData1.append(`file`, thumbnail.value);
+      
+      axios.post('https://api.cloudinary.com/v1_1/doiglts2y/image/upload', formData1, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then((res)=>{
+        let thumbnail = 'https' + res.data.url.substr(4);
+        let productName = editProductName.value;
+        let editData = {
+          thumbnail : thumbnail,
+          productName : productName
+        }
+        return axios.put('/api/admin/editThumb', editData);
+      })
+      .then(()=>{
+        alert('썸네일 수정 완료');
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    }
+
+    function editInfo() {
+      const formData1 = new FormData();
+      
+      formData1.append("api_key", "557214385787327");
+      formData1.append("upload_preset", "tgolshop");
+      formData1.append("timestamp", (Date.now() / 1000) | 0);
+      formData1.append(`file`, infoImage.value);
+      
+      axios.post('https://api.cloudinary.com/v1_1/doiglts2y/image/upload', formData1, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then((res)=>{
+        let infoImage = 'https' + res.data.url.substr(4);
+        let productName = editProductName.value;
+        let editData = {
+          productName : productName,
+          infoImage : infoImage
+        }
+        return axios.put('/api/admin/editInfo', editData);
+      })
+      .then(()=>{
+        alert('세부 정보 수정 완료');
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    }
+
+    function editDeliMethod() {
+      let editData = {
+        productName : editProductName.value,
+        deliverKor : deliverKor.value,
+        deliverOut : deliverOut.value,
+      }
+      axios.put('/api/admin/editDeliMethod', editData)
+      .then(()=>{
+        alert('수정 완료');
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    }
+
+    function optionDelete(e) {
+      let optionText = optionData.value[e.target.value].optionText;
+      let productName = editProductName.value;
+      let deleteData = {
+        optionText : optionText,
+        productName : productName
+      }
+      axios.put('/api/admin/optionDelete', deleteData)
+      .then(res=>{
+        alert('삭제 완료');
+        optionData.value = res.data.optionData;
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    }
+
+    function inputEditOptionText(e) {
+      addOptionText.value = e.target.value;
+    }
+
+    function inputEditOptionPrice(e) {
+      addOptionPrice.value = e.target.value;
+    }
+
+    function addOptionApi() {
+      let editOptionData = {
+        productName : editProductName.value,
+        optionText : addOptionText.value,
+        optionPrice : addOptionPrice.value
+      }
+
+      axios.put('/api/admin/addEditOption', editOptionData)
+      .then(res=>{
+        alert('추가 완료');
+        optionData.value = res.data.optionData;
+        addOptionText.value = '';
+        addOptionPrice.value = '';
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    }
+
+    function cancel(e) {
+      const nodes = [...e.target.parentElement.parentElement.parentElement.children];
+      let index = nodes.indexOf(e.target.parentElement.parentElement);
+      let payMethod = orderData.value[index].payMethod;
+      if(payMethod === '무통장입금') {
+        axios.put('/api/admin/cancel', {orderId : orderData.value[index].orderId})
+        .then(res=>{
+          orderData.value = res.data;
+          alert('결제 취소가 완료되었습니다.');
+        })
+        .catch(err=>{
+          console.log(err);
+        });
+      } else {
+        axios.get('/api/admin/paymentKey?orderId=' + orderData.value[index].orderId)
+        .then(res=>{
+          let encodedSecret = btoa(process.env.VUE_APP_SECRET_KEY + ':');
+          const headers = {
+            'Authorization': 'Basic ' + encodedSecret,
+            'Content-Type': 'application/json'
+          };
+          const data = {
+            cancelReason: '고객 변심'
+          };
+          return axios.post('https://api.tosspayments.com/v1/payments/' + res.data + '/cancel', data, { headers })
+        })
+        .then(()=>{
+          return axios.put('/api/admin/cancel', {orderId : orderData.value[index].orderId})
+        })
+        .then(res=>{
+          orderData.value = res.data;
+          alert('결제 취소가 완료되었습니다.');
+        })
+        .catch(err=>{
+          console.log(err);
+        });
+      }
+    }
+
     function inputReply(e) {
       const nodes = [...e.target.parentElement.parentElement.parentElement.children];
       let index = nodes.indexOf(e.target.parentElement.parentElement);
@@ -1196,13 +1415,20 @@ export default {
     searchedMember, productControl, orderControl, qna, personalQna, changePoint, clickMemberControl, clickOrderControl, clickPersonalQna, clickProductControl,
     clickQna, selectBrand, selectDivide, searchedProducts, clickProductSearch, deleteProduct, productsInfo, orderData, selectState, changeState,
     changeDeliNum, qnaData, personalQnaData, inputReply, submitReply, inputPersonalReply, submitPersonalReply, selectedDivide, clickProductEdit, productEdit,
-    allProducts, editModal, editProductModal, inputEditProductName, backEdit, editPosting, editProductName, fittingQna, fittingData, clickFitting,
-    inputFittingReply, submitFittingReply, nonMemberQna, nonMemberQnaData, clickNonMember, inputNonMemberReply, submitNonMemberReply};
+    allProducts, editModal, editProductModal, inputEditProductName, backEdit, editProductName, fittingQna, fittingData, clickFitting,
+    inputFittingReply, submitFittingReply, nonMemberQna, nonMemberQnaData, clickNonMember, inputNonMemberReply, submitNonMemberReply, cancel, optionData,
+    optionDelete, addOptionApi, addOptionPrice, addOptionText, inputEditOptionText, inputEditOptionPrice, editBeforeDiscount, editProductNameApi, editDeliMethod,
+    editThumb, editInfo, editProductPrice};
   }
 }
 </script>
 
 <style>
+
+div {
+  box-sizing : border-box;
+}
+
 #admin {
   position: fixed;
   left: 40%;

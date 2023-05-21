@@ -40,7 +40,7 @@
           
           <div class="mb-3" align="left">
             <div class="mb-1" style="font-size:19px">무료 배송</div>
-            <div v-if="product.deliverKor" style="font-size:19px">당일 배송 (16시 이전 주문 건)</div> 
+            <div v-if="product.deliverKor" style="font-size:19px">당일 배송 (15시 이전 주문 건)</div> 
             <div v-if="product.deliverOut" style="font-size:19px">배송 완료까지 최대 2주 소요</div>
           </div>
         
@@ -105,7 +105,7 @@
               <div class="col" v-for="item in relatedList" :key="item">
                 <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
                   <div id="img-border">
-                    <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+                    <img id="image" :src='`${item.thumbnail}`' alt="드라이버" class="img-fluid img-thumbnail">
                   </div>
                   <div class="d-flex">
                     <span class="ms-1" style="font-size:11px;">상품 코드: </span>
@@ -129,7 +129,7 @@
                     </div>
                     <div class="d-block d-lg-none">
                       <span style="font-weight:900; font-size:24px; color:red;"> {{discount(item.beforeDiscount, item.productPrice, 0)}}% </span>
-                      <span style="font-weight:900; font-size:18px;"> {{filter(item.productPrice)}} 원 </span>
+                      <span style="font-weight:900; font-size:21px;"> {{filter(item.productPrice)}} 원 </span>
                     </div>
                   </div>
                 </div>
@@ -734,13 +734,13 @@ export default {
         }
         let data = 'info=' + encodeURIComponent(JSON.stringify(purchaseInfo));
 
-        const redirectUrl = process.env.VUE_APP_LOCAL_URL + '/product/submit?' + data;
+        const redirectUrl = process.env.VUE_APP_TGOLSHOP + '/product/submit?' + data;
 
         paymentWidget.value.requestPayment({
           orderId: orderId,
           orderName: product.value.productName,
           successUrl: redirectUrl,
-          failUrl: process.env.VUE_APP_LOCAL_URL + '/product/submitFail',
+          failUrl: process.env.VUE_APP_TGOLSHOP + '/product/submitFail',
           customerName: name.value
         });
       

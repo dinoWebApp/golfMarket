@@ -1,0 +1,4 @@
+User-agent: *
+Allow:/
+Sitemap: https://www.tgolshop.co.kr/sitemap.xml
+#DaumWebMasterTool:e9aa333853812965a375d11032ffec58e44eae14303484a3918db7aaa19ae7b7:TVFDdE0sl0skuIgoR6bSHg==

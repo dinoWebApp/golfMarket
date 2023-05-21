@@ -5,7 +5,7 @@
         <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
           <div id="img-border">
             <!-- 사진사용 -->
-            <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+            <img id="image" :src='`${item.thumbnail}`' alt="골프클럽" class="img-fluid img-thumbnail">
           </div>
           <div class="d-flex">
             <span class="ms-1" style="font-size:11px;">상품 코드: </span>

@@ -45,8 +45,9 @@ export default {
     
     let info = new URLSearchParams(window.location.search).get('info');
     let purchaseInfo = JSON.parse(info);
+    let encodedSecret = btoa(process.env.VUE_APP_SECRET_KEY + ':');
     const headers = {
-      'Authorization': 'Basic dGVzdF9za196WExrS0V5cE5BcldtbzUwblgzbG1lYXhZRzVSOg==',
+      'Authorization': 'Basic ' + encodedSecret,
       'Content-Type': 'application/json'
     };
 

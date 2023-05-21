@@ -126,6 +126,16 @@ router.get('/nonMemberQna', (req, res)=>{
   .catch(err=>{
     console.log(err);
   })
+});
+
+router.get('/paymentKey', (req, res)=>{
+  db.collection('purchaseReport').findOne({orderId : req.query.orderId.toString()})
+  .then(result=>{
+    res.send(result.paymentKey);
+  })
+  .catch(err=>{
+    console.log(err);
+  });
 })
 
 router.put('/changePoint', (req, res)=>{
@@ -222,7 +232,120 @@ router.put('/nonMemberQna/submit', (req, res)=>{
   .catch(err=>{
     console.log(err);
   })
+});
+
+router.put('/cancel', (req, res)=>{
+  let orderId = req.body.orderId;
+  db.collection('purchaseData').updateOne({orderId : orderId}, {$set : {currentState : '결제취소'}})
+  .then(()=>{
+    return db.collection('purchaseData').find().sort({orderId : -1}).toArray();
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/optionDelete', (req, res)=>{
+  db.collection('products').updateOne({productName : req.body.productName}, {$pull : {optionData : {optionText : req.body.optionText}}})
+  .then(()=>{
+    return db.collection('products').findOne({productName : req.body.productName})
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/addEditOption', (req, res)=>{
+  db.collection('products').updateOne({productName : req.body.productName}, {$push : {optionData : {optionText : req.body.optionText, optionPrice : req.body.optionPrice}}})
+  .then(()=>{
+    return db.collection('products').findOne({productName : req.body.productName});
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+});
+
+router.put('/editProductName', (req, res)=>{
+  let productName = req.body.productName;
+  let editProductName = req.body.editProductName;
+  db.collection('products').updateOne({productName : productName}, {$set : {productName : editProductName}})
+  .then(()=>{
+    res.send('edit productName');
+  })
+  .catch(err=>{
+    console.log(err);
+  });
 })
+
+router.put('/editBeforeDiscount', (req, res)=>{
+  let productName = req.body.productName;
+  let beforeDiscount = req.body.beforeDiscount;
+  db.collection('products').updateOne({productName : productName}, {$set : {beforeDiscount : beforeDiscount}})
+  .then(()=>{
+    res.send('edit beforeDiscount');
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+});
+
+router.put('/editProductPrice', (req, res)=>{
+  let productName = req.body.productName;
+  let productPrice = req.body.productPrice;
+  db.collection('products').updateOne({productName : productName}, {$set : {productPrice : productPrice}})
+  .then(()=>{
+    res.send('edit price');
+  })
+  .catch(err=>{
+    console.log(err);
+  })
+});
+
+router.put('/editThumb', (req, res)=>{
+  let productName = req.body.productName;
+  let thumbnail = req.body.thumbnail;
+  db.collection('products').updateOne({productName : productName}, {$set : {thumbnail, thumbnail}})
+  .then(()=>{
+    res.send('edit thumbnail');
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+});
+
+router.put('/editInfo', (req, res)=>{
+  let productName = req.body.productName;
+  let infoImage = req.body.infoImage;
+  db.collection('products').updateOne({productName : productName}, {$set : {infoImage : infoImage}})
+  .then(()=>{
+    res.send('edit infoImage');
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+});
+
+router.put('/editDeliMethod', (req, res)=>{
+  let productName = req.body.productName;
+  let deliverKor = req.body.deliverKor;
+  let deliverOut = req.body.deliverOut;
+  db.collection('products').updateOne({productName : productName}, {$set : {deliverKor : deliverKor, deliverOut : deliverOut}})
+  .then(()=>{
+    res.send('edit deliMethod');
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+});
 
 router.delete('/deleteProduct', (req, res)=>{
   let id = parseInt(req.query.id);
@@ -238,7 +361,9 @@ router.delete('/deleteProduct', (req, res)=>{
   .catch(err=>{
     console.log(err);
   })
-})
+});
+
+
 
 
 passport.use(new LocalStrategy({

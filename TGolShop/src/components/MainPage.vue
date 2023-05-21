@@ -9,13 +9,13 @@
         </div> -->
         <div class="carousel-inner">
           <div @click="clickStealth" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/stealthDriver.png" class="d-block w-100" alt="...">
+            <img src="../assets/stealthDriver.png" class="d-block w-100" alt="골프클럽">
           </div>
           <div @click="clickMavrik" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/mavrik.png" class="d-block w-100" alt="...">
+            <img src="../assets/mavrik.png" class="d-block w-100" alt="드라이버">
           </div>
           <div @click="clickG410" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/g410Plus.png" class="d-block w-100" alt="...">
+            <img src="../assets/g410Plus.png" class="d-block w-100" alt="샤프트">
           </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -34,10 +34,10 @@
         </div> -->
         <div class="carousel-inner">
           <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/sign-up-event.jpg" class="d-block w-100" alt="...">
+            <img src="../assets/sign-up-event.jpg" class="d-block w-100" alt="회원가입 이벤트">
           </div>
           <div class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/review-event.png" class="d-block w-100" alt="...">
+            <img src="../assets/review-event.png" class="d-block w-100" alt="리뷰이벤트">
           </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#second" data-bs-slide="prev">
@@ -69,7 +69,7 @@
         <div class="col" v-for="item in productList" :key="item">
           <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
             <div id="img-border">
-              <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+              <img id="image" :src='`${item.thumbnail}`' alt="골프용품" class="img-fluid img-thumbnail">
             </div>
             <div class="d-flex">
               <span class="ms-1" style="font-size:11px;">상품 코드: </span>

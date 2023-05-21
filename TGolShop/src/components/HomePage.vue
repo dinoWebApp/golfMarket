@@ -71,7 +71,7 @@
             <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page">헤드</a>
           </li>
           <li class="nav-item">
-            <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page">샤프트</a>
+            <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page">샤프트/그립</a>
           </li>
           <li class="nav-item">
             <a class="menu nav-link active me-3 ms-3" href="/fitting" aria-current="page">피팅문의</a>
@@ -240,8 +240,8 @@ export default {
         case '헤드' :
           engDivide = 'head';
           break;
-        case '샤프트' :
-          engDivide = 'shaft';
+        case '샤프트/그립' :
+          engDivide = 'shaftGrip';
           break;
       }
       router.push({name : 'ProductsPage', query : {korDivide : korDivide, engDivide : engDivide}});

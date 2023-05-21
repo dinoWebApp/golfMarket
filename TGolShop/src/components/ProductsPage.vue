@@ -1,6 +1,17 @@
 <template>
   <div >
-    <div class="container" v-if="korDivide === '골프클럽'">
+    <div class="container d-block d-sm-none" v-if="korDivide === '골프클럽'">
+      <nav>
+        <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+          <button style="font-size: small;" @click="clickedTotal" class="nav-link check active" data-bs-toggle="tab" type="button" role="tab"  aria-selected="true">전체 보기</button>
+          <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">핑</button>
+          <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">캘러웨이</button>
+          <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">테일러메이드</button>
+          <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">PXG</button>
+        </div>
+      </nav>
+    </div>
+    <div class="container d-none d-sm-block" v-if="korDivide === '골프클럽'">
       <nav>
         <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
           <button @click="clickedTotal" class="nav-link check active" data-bs-toggle="tab" type="button" role="tab"  aria-selected="true">전체 보기</button>
@@ -23,7 +34,7 @@
         <div class="col" v-for="item in products" :key="item">
           <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
             <div id="img-border">
-              <img id="image" :src='`${item.thumbnail}`' alt="logo" class="img-fluid img-thumbnail">
+              <img id="image" :src='`${item.thumbnail}`' alt="골프용품" class="img-fluid img-thumbnail">
             </div>
             <div class="d-flex">
               <span class="ms-1" style="font-size:11px;">상품 코드: </span>
@@ -34,7 +45,7 @@
             <div class="card-body">
               
               <div id="text-border1" class="d-block d-sm-none">
-                <p id="product-text" class="card-text" style="font-weight:600; font-size: 13px;"> {{item.productName}} </p>
+                <p id="product-text" class="card-text" style="font-weight:600; font-size: 15px;"> {{item.productName}} </p>
               </div>
               <div id="text-border2" class="d-none d-sm-block">
                 <p id="product-text" class="card-text" style="font-weight:600; font-size: 17px;"> {{item.productName}} </p>
@@ -149,7 +160,6 @@ export default {
 
 .nav-link.check {
   color:darkgray ;
-  font-size: large;
 }
 
 
@@ -190,7 +200,7 @@ export default {
 #text-border1::after {
   display: block;
   content: '';
-  padding-bottom: 35%;
+  padding-bottom: 47%;
 }
 
 #text-border2 {
@@ -201,7 +211,7 @@ export default {
 #text-border2::after {
   display: block;
   content: '';
-  padding-bottom: 25%;
+  padding-bottom: 40%;
 }
 
 #product-text {
