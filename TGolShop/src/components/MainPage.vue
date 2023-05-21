@@ -1,12 +1,25 @@
 <template>
   <div>
     <div class="container mt-3 mb-3">
-      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-        <!-- <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div> -->
+      <div id="second" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/sign-up-event.jpg" class="d-block w-100" alt="회원가입 이벤트">
+          </div>
+          <div class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/review-event.png" class="d-block w-100" alt="리뷰이벤트">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#second" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#second" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <div id="carouselExampleIndicators" class="carousel slide mt-1" data-bs-ride="carousel">
         <div class="carousel-inner">
           <div @click="clickStealth" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/stealthDriver.png" class="d-block w-100" alt="골프클럽">
@@ -23,28 +36,6 @@
           <span class="visually-hidden">Previous</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      <div id="second" class="carousel slide mt-1" data-bs-ride="carousel">
-        <!-- <div class="carousel-indicators">
-          <button type="button" data-bs-target="#second" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#second" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        </div> -->
-        <div class="carousel-inner">
-          <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/sign-up-event.jpg" class="d-block w-100" alt="회원가입 이벤트">
-          </div>
-          <div class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/review-event.png" class="d-block w-100" alt="리뷰이벤트">
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#second" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#second" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
