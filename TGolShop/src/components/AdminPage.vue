@@ -120,7 +120,7 @@
   
     </div>
     <div class="col-10 mt-5" v-if="productEdit">
-      <div class="container mt-3 col-11 col-sm-11 col-md-11 col-lg-9 col-xxl-7 border ">
+      <div class="container mt-3 col-11 col-sm-11 col-md-11 col-lg-11 col-xxl-8 border ">
         <div class="mt-4 mb-3">
           <h3>상품 수정</h3>
         </div>
@@ -171,13 +171,16 @@
               <div v-for="(item, i) in optionData" :key="i">
                 <div class="d-flex">
                   <div class="col-8 mt-2">
-                    <input v-bind:value="item.optionText" type="text" class="form-control mb-2" placeholder="옵션 내용">
+                    <input v-bind:value="item.optionText" type="text" @input="inputOptionEditText" class="form-control mb-2" placeholder="옵션 내용">
                   </div>
                   <div class="col-2 mt-2">
-                    <input v-bind:value="item.optionPrice" type="text" class="form-control mb-2" placeholder="가격">
+                    <input v-bind:value="item.optionPrice" type="text" @change="inputOptionEditPrice" class="form-control mb-2" placeholder="가격">
                   </div>
-                  <div class="col-2 mt-2">
-                    <button @click="optionDelete" v-bind:value="i" class="btn btn-danger">삭제</button>
+                  <div class="col-1 mt-2 pt-1">
+                    <button @click="optionEdit" v-bind:value="i" class="btn btn-success btn-sm">수정</button>
+                  </div>
+                  <div class="col-1 mt-2 pt-1">
+                    <button @click="optionDelete" v-bind:value="i" class="btn btn-danger btn-sm">삭제</button>
                   </div>
                 </div>
               </div>
@@ -618,6 +621,8 @@ export default {
     let addOptionText = ref('');
     let addOptionPrice = ref('');
     let editProductNameCopy = ref('');
+    let optionEditText = ref('');
+    let optionEditPrice = ref('');
     
 
     const router = useRouter();
@@ -1225,6 +1230,39 @@ export default {
       });
     }
 
+    function inputOptionEditText(e) {
+      optionEditText.value = e.target.value;
+    }
+
+    function inputOptionEditPrice(e) {
+      optionEditPrice.value = e.target.value;
+    }
+
+    function optionEdit(e) {
+      let optionText = optionData.value[e.target.value].optionText;
+      let optionTextEdit = optionEditText.value;
+      let optionPriceEdit = optionEditPrice.value;
+      let productName = editProductName.value;
+
+      let editData = {
+        productName : productName,
+        optionText : optionText,
+        optionEditText : optionTextEdit,
+        optionEditPrice : optionPriceEdit
+      }
+
+      axios.put('/api/admin/optionEdit', editData)
+      .then(res=>{
+        alert('수정 완료');
+        optionData.value = res.data.optionData;
+        optionEditText.value = '';
+        optionEditPrice.value = '';
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    }
+
     function optionDelete(e) {
       let optionText = optionData.value[e.target.value].optionText;
       let productName = editProductName.value;
@@ -1418,7 +1456,7 @@ export default {
     allProducts, editModal, editProductModal, inputEditProductName, backEdit, editProductName, fittingQna, fittingData, clickFitting,
     inputFittingReply, submitFittingReply, nonMemberQna, nonMemberQnaData, clickNonMember, inputNonMemberReply, submitNonMemberReply, cancel, optionData,
     optionDelete, addOptionApi, addOptionPrice, addOptionText, inputEditOptionText, inputEditOptionPrice, editBeforeDiscount, editProductNameApi, editDeliMethod,
-    editThumb, editInfo, editProductPrice};
+    editThumb, editInfo, editProductPrice, inputOptionEditText, inputOptionEditPrice, optionEdit};
   }
 }
 </script>

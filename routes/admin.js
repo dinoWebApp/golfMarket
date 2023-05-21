@@ -248,6 +248,25 @@ router.put('/cancel', (req, res)=>{
   })
 });
 
+router.put('/optionEdit', (req, res)=>{
+  let productName = req.body.productName;
+  let optionText = req.body.optionText;
+  let optionEditText = req.body.optionEditText;
+  let optionEditPrice = req.body.optionEditPrice;
+  db.collection('products').updateOne({productName : productName},
+    {$set : {'optionData.$[elem].optionText' : optionEditText, 'optionData.$[elem].optionPrice' : optionEditPrice}},
+    {arrayFilters : [{'elem.optionText' : optionText}]})
+  .then(()=>{
+    return db.collection('products').findOne({productName : productName})
+  })
+  .then(result=>{
+    res.send(result);
+  })
+  .catch(err=>{
+    console.log(err);
+  });
+})
+
 router.put('/optionDelete', (req, res)=>{
   db.collection('products').updateOne({productName : req.body.productName}, {$pull : {optionData : {optionText : req.body.optionText}}})
   .then(()=>{
