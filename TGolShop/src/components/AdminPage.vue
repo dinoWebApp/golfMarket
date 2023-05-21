@@ -621,8 +621,7 @@ export default {
     let addOptionText = ref('');
     let addOptionPrice = ref('');
     let editProductNameCopy = ref('');
-    let optionEditText = ref('');
-    let optionEditPrice = ref('');
+    let optionDataCopy = ref([]);
     
 
     const router = useRouter();
@@ -787,6 +786,7 @@ export default {
       beforeDiscount.value = allProducts.value[index].beforeDiscount;
       productPrice.value = allProducts.value[index].productPrice;
       optionData.value = allProducts.value[index].optionData;
+      optionDataCopy.value = JSON.parse(JSON.stringify(optionData.value));
       editId.value = allProducts.value[index].id;
       editProductModal.value = true;
     }
@@ -1231,19 +1231,20 @@ export default {
     }
 
     function inputOptionEditText(e) {
-      optionEditText.value = e.target.value;
+      let idx = e.target.parentElement.nextElementSibling.nextElementSibling.querySelector('.btn').value;
+      optionDataCopy.value[idx].optionText = e.target.value;
     }
 
     function inputOptionEditPrice(e) {
-      optionEditPrice.value = e.target.value;
+      let idx = e.target.parentElement.nextElementSibling.querySelector('.btn').value;
+      optionDataCopy.value[idx].optionPrice = e.target.value;
     }
 
     function optionEdit(e) {
       let optionText = optionData.value[e.target.value].optionText;
-      let optionTextEdit = optionEditText.value;
-      let optionPriceEdit = optionEditPrice.value;
+      let optionTextEdit = optionDataCopy.value[e.target.value].optionText;
+      let optionPriceEdit = optionDataCopy.value[e.target.value].optionPrice;
       let productName = editProductName.value;
-
       let editData = {
         productName : productName,
         optionText : optionText,
@@ -1255,8 +1256,7 @@ export default {
       .then(res=>{
         alert('수정 완료');
         optionData.value = res.data.optionData;
-        optionEditText.value = '';
-        optionEditPrice.value = '';
+        optionDataCopy.value = JSON.parse(JSON.stringify(optionData.value));
       })
       .catch(err=>{
         console.log(err);
