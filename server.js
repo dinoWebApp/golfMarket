@@ -67,7 +67,7 @@ app.get('/robots.txt', (req, res)=>{
   res.sendFile(path.join(__dirname, './robots.txt'));
 });
 
-app.get('/tgolshop.jpg', (req, res)=>{
+app.get('/tgolshop.jpeg', (req, res)=>{
   res.sendFile(path.join(__dirname, './tgolshop.jpeg'));
 });
 
