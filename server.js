@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'TGolShop/dist')));
 app.use(express.static(path.join(__dirname, '.well-known/pki-validation')));
 app.use(express.static(path.join(__dirname, 'sitemap.xml')));
 app.use(express.static(path.join(__dirname, 'robots.txt')));
-app.use(express.static(path.join(__dirname, 'tgolshop.jpeg')));
+app.use(express.static(path.join(__dirname, 'tgolshop.png')));
 MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
@@ -67,8 +67,8 @@ app.get('/robots.txt', (req, res)=>{
   res.sendFile(path.join(__dirname, './robots.txt'));
 });
 
-app.get('/tgolshop.jpeg', (req, res)=>{
-  res.sendFile(path.join(__dirname, './tgolshop.jpeg'));
+app.get('/tgolshop.png', (req, res)=>{
+  res.sendFile(path.join(__dirname, './tgolshop.png'));
 });
 
 app.get('/', (req, res)=>{
