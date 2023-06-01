@@ -62,6 +62,9 @@
             <span style="font-size:25px; font-weight:900"> 원 </span>
             
           </div>  
+          <div v-if="loginCheck === false" class="mb-2">
+            <span style="font-weight: bold; color:red;">회원가입 시 3000 포인트 지급</span>
+          </div>
           
           <div class="d-flex mb-2">
             
