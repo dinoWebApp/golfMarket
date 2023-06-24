@@ -74,6 +74,9 @@
             <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page">샤프트/그립</a>
           </li>
           <li class="nav-item">
+            <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page">골프공/골프백</a>
+          </li>
+          <li class="nav-item">
             <a class="menu nav-link active me-3 ms-3" href="/fitting" aria-current="page">피팅문의</a>
           </li>
           <li class="nav-item">
@@ -242,6 +245,9 @@ export default {
           break;
         case '샤프트/그립' :
           engDivide = 'shaftGrip';
+          break;
+        case '골프공/골프백' :
+          engDivide = 'ballBag'
           break;
       }
       router.push({name : 'ProductsPage', query : {korDivide : korDivide, engDivide : engDivide}});

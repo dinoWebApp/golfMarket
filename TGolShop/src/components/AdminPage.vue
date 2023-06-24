@@ -41,6 +41,7 @@
                 <li><a @click="productDivide" class="dropdown-item" href="#">골프클럽</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">헤드</a></li>
                 <li><a @click="productDivide" class="dropdown-item" href="#">샤프트/그립</a></li>
+                <li><a @click="productDivide" class="dropdown-item" href="#">골프공/골프백</a></li>
               </ul>
             </div>
             
@@ -57,6 +58,7 @@
                 <li><a @click="brandChoice" class="dropdown-item" href="#">캘러웨이</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">테일러메이드</a></li>
                 <li><a @click="brandChoice" class="dropdown-item" href="#">PXG</a></li>
+                <li><a @click="brandChoice" class="dropdown-item" href="#">타이틀리스트</a></li>
               </ul>
             </div>
           </div>
@@ -671,6 +673,9 @@ export default {
           break;
         case 'PXG':
           brand.value = 'pxg';
+          break;
+        case '타이틀리스트':
+          brand.value = 'titleist';
           break;
       }
     }

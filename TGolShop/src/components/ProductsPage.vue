@@ -8,6 +8,7 @@
           <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">캘러웨이</button>
           <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">테일러메이드</button>
           <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">PXG</button>
+          <button style="font-size: small;" @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">타이틀리스트</button>
         </div>
       </nav>
     </div>
@@ -19,6 +20,8 @@
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">캘러웨이</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">테일러메이드</button>
           <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">PXG</button>
+          <button @click="clickedBrand" class="nav-link check" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">타이틀리스트</button>
+          
         </div>
       </nav>
     </div>
@@ -115,6 +118,9 @@ export default {
           break;
         case 'PXG':
           brandEng = 'pxg';
+          break;
+        case '타이틀리스트':
+          brandEng = 'titleist'
           break;
       }
       axios.get('/api/product/brand?brandName=' + brandEng + '&divide=' + korDivide.value)
