@@ -51,12 +51,12 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
 
 router.get('/', (req, res)=>{
   if(req.query.engDivide === 'totalProducts') {
-    db.collection('products').find().toArray((err, result)=>{
+    db.collection('products').find().sort({id : -1}).toArray((err, result)=>{
       console.log(result);
       res.send(result);
     });
   } else {
-    db.collection('products').find({divide : req.query.korDivide}).toArray((err, result)=>{
+    db.collection('products').find({divide : req.query.korDivide}).sort({id : -1}).toArray((err, result)=>{
       console.log(result);
       res.send(result);
     });
@@ -69,7 +69,7 @@ router.get('/brand', (req, res)=>{
   let brandName = req.query.brandName;
   console.log(divide);
   console.log(brandName);
-  db.collection('products').find({$and : [{divide : divide}, {brand : brandName}]}).toArray((err, result)=>{
+  db.collection('products').find({$and : [{divide : divide}, {brand : brandName}]}).sort({id : -1}).toArray((err, result)=>{
     console.log(result);
     res.send(result);
   })

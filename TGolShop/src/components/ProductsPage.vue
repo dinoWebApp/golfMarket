@@ -48,9 +48,13 @@
             <div class="card-body">
               
               <div id="text-border1" class="d-block d-sm-none">
+                <p id="product-text" class="card-text" style="font-weight:600; font-size: 13px;"> {{item.productName}} </p>
+              </div>
+              <div id="text-border1" class="d-none d-sm-block d-lg-none">
                 <p id="product-text" class="card-text" style="font-weight:600; font-size: 15px;"> {{item.productName}} </p>
               </div>
-              <div id="text-border2" class="d-none d-sm-block">
+             
+              <div id="text-border2" class="d-none d-lg-block">
                 <p id="product-text" class="card-text" style="font-weight:600; font-size: 17px;"> {{item.productName}} </p>
               </div>
               
@@ -206,7 +210,7 @@ export default {
 #text-border1::after {
   display: block;
   content: '';
-  padding-bottom: 47%;
+  padding-bottom: 70%;
 }
 
 #text-border2 {
@@ -217,7 +221,7 @@ export default {
 #text-border2::after {
   display: block;
   content: '';
-  padding-bottom: 40%;
+  padding-bottom: 47%;
 }
 
 #product-text {

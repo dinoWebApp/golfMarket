@@ -21,8 +21,17 @@
       </div>
       <div id="carouselExampleIndicators" class="carousel slide mt-1" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <div @click="clickStealth" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/stealthDriver.png" class="d-block w-100" alt="골프클럽">
+          <!-- <div @click="clickG430" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/G430.jpg" class="d-block w-100" alt="골프클럽">
+          </div> -->
+          <div @click="clickParadaim" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/패러다임.png" class="d-block w-100" alt="골프클럽">
+          </div>
+          <div @click="clickPeruga" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/페루가샤프트.png" class="d-block w-100" alt="골프클럽">
+          </div>
+          <div @click="clickStealth2" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/stealth2Driver.png" class="d-block w-100" alt="골프클럽">
           </div>
           <div @click="clickMavrik" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/mavrik.png" class="d-block w-100" alt="드라이버">
@@ -116,7 +125,7 @@ export default {
     });
 
     function clickG430() {
-      router.push({path:'/product/purchase/15'});
+      router.push({path:'/product/purchase/28'});
     }
 
     function clickG410() {
@@ -127,8 +136,16 @@ export default {
       router.push({path : '/product/purchase/20'});
     }
 
-    function clickStealth() {
-      router.push({path : '/product/purchase/23'})
+    function clickStealth2() {
+      router.push({path : '/product/purchase/25'})
+    }
+
+    function clickParadaim() {
+      router.push({path : '/product/purchase/41'})
+    }
+
+    function clickPeruga() {
+      router.push({path : '/product/purchase/49'});
     }
 
     function clickCard(e) {
@@ -145,7 +162,7 @@ export default {
       let answer = 100 * (1 - (after*1 + optionPrice*1) / (before*1 + optionPrice*1));
       return Math.round(answer);
     }
-    return {clickG430, productList, clickCard, filter, discount, clickG410, clickMavrik, clickStealth};
+    return {clickG430, productList, clickCard, filter, discount, clickG410, clickMavrik, clickStealth2, clickParadaim, clickPeruga};
   }
 }
 </script>
