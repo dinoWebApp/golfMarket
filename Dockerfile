@@ -6,6 +6,6 @@ COPY package.json package-lock.json ./
 
 RUN npm ci
 
-COPY TGolShop/dist server.js ./
+COPY TGolShop/dist routes server.js ./
 
 ENTRYPOINT [ "node", "server.js" ]
