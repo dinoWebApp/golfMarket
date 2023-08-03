@@ -309,7 +309,7 @@ export default {
 .nav-item .menu {
   color:white;
   font-weight:bold;
-  font-size:19px;
+  font-size:17px;
 }
 
 .nav-item:hover a{

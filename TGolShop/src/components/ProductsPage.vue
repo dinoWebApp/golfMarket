@@ -210,7 +210,7 @@ export default {
 #text-border1::after {
   display: block;
   content: '';
-  padding-bottom: 70%;
+  padding-bottom: 65%;
 }
 
 #text-border2 {

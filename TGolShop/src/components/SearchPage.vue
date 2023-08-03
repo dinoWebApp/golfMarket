@@ -15,11 +15,15 @@
           
           <div class="card-body">
             
-            <div id="text-border1" class="d-lg-none">
-              <p id="product-text" class="card-text" style="font-weight: 600;"> {{item.productName}} </p>
+            <div id="text-border1" class="d-block d-sm-none">
+              <p id="product-text" class="card-text" style="font-weight:600; font-size: 13px;"> {{item.productName}} </p>
             </div>
+            <div id="text-border1" class="d-none d-sm-block d-lg-none">
+              <p id="product-text" class="card-text" style="font-weight:600; font-size: 15px;"> {{item.productName}} </p>
+            </div>
+            
             <div id="text-border2" class="d-none d-lg-block">
-              <p id="product-text" class="card-text" style="font-weight:600; font-size:20px"> {{item.productName}} </p>
+              <p id="product-text" class="card-text" style="font-weight:600; font-size: 17px;"> {{item.productName}} </p>
             </div>
             
             <span class="text-decoration-line-through" style="font-weight:bold; color:gray">{{filter(item.beforeDiscount)}} 원</span>
@@ -79,5 +83,56 @@ export default {
 </script>
 
 <style>
+  #image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    
+  }
 
+  #img-border {
+    position: relative;
+    width: 100%;
+  }
+
+  #img-border::after {
+    display: block;
+    content: '';
+    padding-bottom: 100%;
+  }
+
+  #text-border1 {
+    position: relative;
+    width: 100%;
+  }
+
+  #text-border1::after {
+    display: block;
+    content: '';
+    padding-bottom: 65%;
+  }
+
+  #text-border2 {
+    position: relative;
+    width: 100%;
+  }
+
+  #text-border2::after {
+    display: block;
+    content: '';
+    padding-bottom: 47%;
+  }
+
+  #product-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    
+  }
 </style>
