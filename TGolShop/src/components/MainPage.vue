@@ -24,9 +24,9 @@
           <!-- <div @click="clickG430" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/G430.jpg" class="d-block w-100" alt="골프클럽">
           </div> -->
-          <div @click="clickParadaim" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
+          <!-- <div @click="clickParadaim" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/패러다임.png" class="d-block w-100" alt="골프클럽">
-          </div>
+          </div> -->
           <div @click="clickPeruga" class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/페루가샤프트.png" class="d-block w-100" alt="골프클럽">
           </div>
