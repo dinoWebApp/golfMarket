@@ -33,11 +33,8 @@
           <div @click="clickStealth2" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
             <img src="../assets/stealth2Driver.png" class="d-block w-100" alt="골프클럽">
           </div>
-          <div @click="clickMavrik" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/mavrik.png" class="d-block w-100" alt="드라이버">
-          </div>
-          <div @click="clickG410" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
-            <img src="../assets/g410Plus.png" class="d-block w-100" alt="샤프트">
+          <div @click="clickVentus" class="carousel-item" data-bs-interval="3000" style="cursor:pointer;">
+            <img src="../assets/ventus.png" class="d-block w-100" alt="골프클럽">
           </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -128,8 +125,8 @@ export default {
       router.push({path:'/product/purchase/28'});
     }
 
-    function clickG410() {
-      router.push({path : '/product/purchase/18'});
+    function clickVentus() {
+      router.push({path : '/product/purchase/22'});
     }
 
     function clickMavrik() {
@@ -162,7 +159,7 @@ export default {
       let answer = 100 * (1 - (after*1 + optionPrice*1) / (before*1 + optionPrice*1));
       return Math.round(answer);
     }
-    return {clickG430, productList, clickCard, filter, discount, clickG410, clickMavrik, clickStealth2, clickParadaim, clickPeruga};
+    return {clickG430, productList, clickCard, filter, discount, clickMavrik, clickStealth2, clickParadaim, clickPeruga, clickVentus};
   }
 }
 </script>
