@@ -1,5 +1,6 @@
 <template>
   <div >
+    <!-- 브랜드 선택 -->
     <div class="container d-block d-sm-none" v-if="korDivide === '골프클럽'">
       <nav>
         <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
@@ -31,7 +32,7 @@
       <hr/>
     </div>
   
-    
+    <!-- 상품목록 -->
     <div class="container">
       <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-4">
         <div class="col" v-for="item in products" :key="item">
@@ -136,6 +137,7 @@ export default {
       })
     }
 
+    // 전체보기
     function clickedTotal() {
       axios.get('/api/product/?korDivide=' + korDivide.value).then(res=>{
         

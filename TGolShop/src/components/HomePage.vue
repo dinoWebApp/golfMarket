@@ -1,4 +1,6 @@
 <template>
+
+  <!-- 프로필창 -->
   <div v-if="profileModal" id="profile-xs" class="list-group d-block d-sm-none">
     <a @click="mypage" class="list-group-item list-group-item-action">마이페이지</a>
     <a @click="cart" class="list-group-item list-group-item-action">장바구니</a>
@@ -14,21 +16,22 @@
   <header class="p-3 text-bg-white">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+
+        <!-- 사이트 로고 -->
         <a href="/" class="col-lg-3 col-md-3 col-sm-4 col-5 col-xl-2 me-lg-4">
           <div>
             <img src="../assets/tgolshop1.jpeg" class="img-fluid" alt="logo">
           </div>
-          
         </a>
 
-
+        <!-- 사이트 검색창 -->
         <div class="col-8 col-lg-5 col-xl-6 col-sm-4 col-md-4">
           <input @keyup.enter="clickSearch" type="text" name="keyword" v-bind:value="searchText" @input="inputSearch" placeholder="쇼핑몰 검색창입니다." class="col-5 form-control border-success" maxlength="30">
         </div>
         <button @click="clickSearch" style="font-weight: bold;" class="btn btn-light col-1 d-block d-sm-none border btn-sm ms-1"><i class="bi bi-search"></i></button>
         <button @click="clickSearch" style="font-weight: bold;" class="btn btn-light col-sm-1 d-none d-sm-block col-md-1 ms-1 me-lg-3 border"><i class="bi bi-search"></i></button>
         
-
+        <!-- 로그인, 회원가입, 회원 정보 -->
         <div v-if="loginInfo === false && myInfo === false" class="text-end col-md-3 col-lg-auto d-none d-md-block ms-xl-5" >
           <button @click="login" type="button" class="btn btn-out-secondary me-2" style="color:white; font-weight:bold; background-color:white;">로그인</button>
           <button @click="signUp" type="button" id="sign-up" class="btn " style="background-color:#009300; color:white; font-weight:bold; background-color:white;">회원가입</button>
@@ -46,8 +49,6 @@
           <i @click="profileClick" id="mypage" class="bi bi-person ms-4" style=""></i>
         </div>
         
-        
-        
       </div>
     </div>
   </header>
@@ -59,11 +60,12 @@
       </button>
 
       <div class="collapse navbar-collapse justify-content-center" id="navbarsExample07">
+
+        <!-- navbar -->
         <ul class="navbar-nav mb-2 mb-lg-0 " style="align-items : center;">
           <li class="nav-item">
             <a @click="clickDivide" class="menu nav-link active me-3 ms-3" aria-current="page" >전체 상품</a>
           </li>
-          <!-- <div class="updown d-none d-lg-block"></div> -->
           <li class="nav-item">
             <a @click="clickDivide"  class="menu nav-link active me-3 ms-3" aria-current="page">골프클럽</a>
           </li>
@@ -91,6 +93,8 @@
       </div>
     </div>
   </nav>
+
+  <!-- 로그인 정보 수신 -->
   <router-view :key="$route.fullPath" @loginData='loginUpdate'></router-view>
  
 </template>
@@ -120,7 +124,7 @@ export default {
       navbarContent.value = document.querySelector('#navbarsExample07');
     })
 
-    
+    // 로그인 여부
     axios.get('/api/customer/login-check')
     .then(res=>{
       
@@ -227,6 +231,7 @@ export default {
       router.push({name : 'SearchPage', query : {searchText : searchText.value}});
     }
 
+    // 카테고리 클릭
     function clickDivide(e) {
       let korDivide = e.target.innerText;
       let engDivide = '';
@@ -254,6 +259,7 @@ export default {
 
     }
 
+    // 비회원 주문 조회
     function nonMemberOrder() {
       navbarToggler.value.setAttribute('aria-expanded', 'false');
       navbarToggler.value.classList.remove('show');

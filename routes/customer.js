@@ -26,7 +26,7 @@ router.use(bodyParser.urlencoded({extended : true}));
 router.use(express.json());
 router.use(cors());
 router.use(session({
-  secret : 'secretcode',
+  secret : process.env.SECRET_CODE,
   resave : true,
   saveUninitialized : false,
   store : new MongoStore({mongoUrl : process.env.DB_URL}),
@@ -43,6 +43,8 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
   db = client.db('tgolshop');
 });
 
+
+//회원가입
 router.post('/sign-up', (req, res)=>{
   console.log(req.body);
   db.collection('customers').findOne({phoneNum : req.body.phoneNum}, (err, result)=>{
@@ -86,6 +88,8 @@ router.get('/loginFail', (req, res)=>{
   res.send('login fail');
 });
 
+
+//닉네임 중복체크
 router.get('/sign-up/nick-check', (req, res)=>{
   console.log(req.query.nick);
   db.collection('customers').findOne({nickName : req.query.nick}, (err, result)=>{
@@ -95,7 +99,7 @@ router.get('/sign-up/nick-check', (req, res)=>{
     } else res.send('success');
   });
 });
-
+// id 중복체크
 router.get('/sign-up/id-check', (req, res)=>{
   console.log(req.query.id);
   db.collection('customers').findOne({id : req.query.id}, (err, result)=>{
@@ -106,6 +110,8 @@ router.get('/sign-up/id-check', (req, res)=>{
   });
 });
 
+
+//로그인 여부
 router.get('/login-check', loginCheck, (req, res)=>{
   console.log(req.user.nickName);
   res.send(req.user.nickName);
@@ -116,6 +122,8 @@ router.get('/logout', (req, res)=>{
   res.send('logout success');
 });
 
+
+// 마이페이지 데이터 로드
 router.get('/mypage', loginCheck, (req, res)=>{
   console.log(req.query.nickName);
   let customer = req.query.nickName;
@@ -163,6 +171,8 @@ router.get('/mypage', loginCheck, (req, res)=>{
 
 });
 
+
+// 닉네임 로드
 router.get('/mypage/getNick', (req, res)=>{
   if(!req.user) res.send('need login');
   else {
@@ -170,6 +180,8 @@ router.get('/mypage/getNick', (req, res)=>{
   }
 });
 
+
+// 아이디 찾기
 router.get('/findId', (req, res)=>{
   let nickName = req.query.nickName;
   let phoneNum = req.query.phoneNum;
@@ -190,6 +202,8 @@ router.get('/findId', (req, res)=>{
   })
 });
 
+
+// 비밀번호 변경 전 정보확인
 router.get('/findPw', (req, res)=>{
   let nickName = req.query.nickName;
   let phoneNum = req.query.phoneNum;
@@ -214,7 +228,7 @@ router.get('/findPw', (req, res)=>{
 });
 
 
-
+// 장바구니 삭제
 router.delete('/mypage/deleteCart', (req, res)=>{
   let cartId = parseInt(req.query.cartId);
   db.collection('customers').updateOne({nickName : req.query.nickName}, {$pull : {cart : {cartId : cartId}}})
@@ -230,6 +244,8 @@ router.delete('/mypage/deleteCart', (req, res)=>{
   })
 });
 
+
+// 리뷰 쓰기
 router.put('/mypage/reviewSubmit', (req, res)=>{
   let curr = new Date();
   let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
@@ -268,6 +284,8 @@ router.put('/mypage/reviewSubmit', (req, res)=>{
   })
 });
 
+
+// 개인 문의 등록
 router.post('/mypage/personalQna', (req, res)=>{
   let curr = new Date();
   let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
@@ -307,6 +325,7 @@ router.post('/mypage/personalQna', (req, res)=>{
   
 });
 
+// 개인 정보 변경
 router.put('/mypage/changeData', (req, res)=>{
   let data = req.body
   db.collection('customers').updateOne({nickName : req.user.nickName}, {$set : {
@@ -325,6 +344,7 @@ router.put('/mypage/changeData', (req, res)=>{
   })
 });
 
+// 비밀번호 변경
 router.put('/changePw', (req, res)=>{
   bcrypt.hash(req.body.pw, saltRounds)
   .then(hash=>{
@@ -338,6 +358,8 @@ router.put('/changePw', (req, res)=>{
   })
 });
 
+
+// 회원 탈퇴
 router.delete('/out', (req, res)=>{
   let nickName = req.query.nickName;
   db.collection('personalQna').deleteMany({nickName : nickName})

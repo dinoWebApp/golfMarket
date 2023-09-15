@@ -1,5 +1,7 @@
 <template>
   <div class="container d-flex">
+
+    <!-- 관리자 비밀번호 입력 -->
     <div id="admin" v-if="adminData === false">
       <div class="form-floating">
         <input type="password" class="form-control" id="floatingPassword" placeholder="패스워드" autocomplete="off" @keyup.enter="login" v-model="pw">
@@ -8,6 +10,7 @@
       <button @click="submit" class="w-100 btn btn-lg btn-danger mt-2 mb-3" style="font-weight:bold;">승인</button>
     </div>
 
+    <!-- 관리자 메뉴 -->
     <div class="col-3 col-md-2" id="sidebar" v-if="adminData === true">
       <img src="../assets/tgolshop.png" class="img-fluid" alt="">
       <div class="list-group">
@@ -23,16 +26,16 @@
       </div>
     </div>
 
-
+    <!-- 상품 등록 -->
     <div class="col-10 mt-5" v-if="productEnroll === true">
       <div class="container mt-3 col-11 col-sm-11 col-md-11 col-lg-9 col-xxl-7 border ">
         <div class="mt-4 mb-3">
           <h3>상품 등록 하기</h3>
         </div>
+
         <div class="row justify-content-center">
           <div class="col-9 ">
             분류
-          
             <div class="dropdown">
               <button id="divide" class="btn btn-light border dropdown-toggle col-12" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 선택
@@ -44,7 +47,6 @@
                 <li><a @click="productDivide" class="dropdown-item" href="#">골프공/골프백</a></li>
               </ul>
             </div>
-            
           </div>
 
           <div class="col-9 mt-2" v-if="divide === '골프클럽'">
@@ -62,7 +64,7 @@
               </ul>
             </div>
           </div>
-          
+
           <div class="col-9 mt-2">
             상품명
             <input v-bind:value="productName" @input="inputProductName" type="text" class="form-control mb-2" id="productName" placeholder="브랜드와 모델명 모두 입력해주세요.">
@@ -85,12 +87,9 @@
               </div>
             </div>
             
-            
           </div>
-          <div class="col-9 mt-2">
-            
-          </div>
-          
+          <div class="col-9 mt-2"></div>
+
           <div class="col-9 mt-2">
             배송 방법
             <div class="border mb-3">
@@ -103,24 +102,29 @@
                 <label class="form-check-label" for="inlineRadio2">해외 배송</label>
               </div>
             </div>
-
+        
             제품 사진
+
+            <!-- 썸네일 -->
             <div class="input-group mb-3">           
               <input type="file" class="form-control" id="inputGroupFile01" accept="image/*" @change="selectThum">
               <label class="input-group-text" for="inputGroupFile01">썸네일</label>
             </div>
+            
+            <!-- 상세 정보 -->
             <div class="input-group mb-3">
               <input type="file" class="form-control" id="inputGroupFile02" accept="image/*" @change="selectInfo">
               <label class="input-group-text" for="inputGroupFile02">상품 정보</label>
             </div>
-            
+      
             <button @click="posting" type="button" class="btn btn-danger col-12 mt-3 mb-3" style="font-weight:bold;">상품 등록 하기</button>
           </div>
-          
         </div>
       </div>
-  
     </div>
+
+
+    <!-- 상품 수정 -->
     <div class="col-10 mt-5" v-if="productEdit">
       <div class="container mt-3 col-11 col-sm-11 col-md-11 col-lg-11 col-xxl-8 border ">
         <div class="mt-4 mb-3">
@@ -137,6 +141,7 @@
             </div>
           </div>
         </div>
+
         <div v-if="editProductModal">
           <div class="row justify-content-center">
             <div class="col-9 mt-2">
@@ -149,6 +154,7 @@
                   <button @click="editProductNameApi" class="btn btn-danger">수정</button>
                 </div>
               </div>
+
               원가
               <div class="d-flex">
                 <div class="col-10">
@@ -158,6 +164,7 @@
                   <button @click="editBeforeDiscount" class="btn btn-danger">수정</button>
                 </div>
               </div>
+
               할인가
               <div class="d-flex">
                 <div class="col-10">
@@ -167,6 +174,7 @@
                   <button @click="editProductPrice" class="btn btn-danger">수정</button>
                 </div>
               </div>
+
               <div class="d-flex mt-4">
                 옵션
               </div>
@@ -186,6 +194,7 @@
                   </div>
                 </div>
               </div>
+            
               <div class="d-flex">
                 <div class="col-8 mt-2">
                   <input v-bind:value="addOptionText" @input="inputEditOptionText" type="text" class="form-control mb-2" placeholder="옵션 내용">
@@ -198,10 +207,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-9 mt-2">
-              
-            </div>
-            
+
+            <div class="col-9 mt-2"></div>
+
             <div class="col-9 mt-2">
               배송 방법
               <div class="d-flex">
@@ -219,6 +227,7 @@
                   <button @click="editDeliMethod" class="btn btn-danger mb-3">수정</button>
                 </div>
               </div>
+
               제품 사진
               <div class="d-flex">
                 <div class="input-group mb-3 col-10">           
@@ -242,12 +251,11 @@
               <button @click="backEdit" style="font-weight:bold;" class="btn btn-success col-5 mt-3 mb-3">목록으로</button>
             </div>
           </div>
-          
         </div>
-        
       </div>
-  
     </div>
+
+    <!-- 회원 관리 -->
     <div v-if="memberControl" class="col-10 ms-1">
       <div class="container mt-5">
         <h2>회원관리</h2>
@@ -260,12 +268,15 @@
               <option value="phoneNum">휴대폰번호</option>
             </select>
           </div>
+
+          <!-- 회원 검색 -->
           <div class="col-6">
             <input v-bind:value="searchMemberText" @input="inputMember" type="text" class="form-control">
           </div>
           
           <button @click="clickSearch" class="btn btn-danger col-auto">검색</button>
           
+          <!-- 회원 정보 -->
           <div v-if="memberInfo">
             <div class="container mt-3 col-12  border mb-3">
               <hr/>
@@ -303,10 +314,13 @@
         </div>
       </div>
     </div>
+
+    <!-- 상품 관리 -->
     <div v-if="productControl" class="ms-1 col-9">
       <div class=" container mt-5">
         <h2>상품 관리</h2>
         <div class="row mt-4">
+          <!-- 카테고리 -->
           <div class="col-5">
             <select id="selectedDivide" @change="selectDivide" class="form-select" aria-label="Default select example">
               <option selected value="0">종류</option>
@@ -315,6 +329,8 @@
               <option value="샤프트/그립">샤프트/그립</option>
             </select>
           </div>
+
+          <!-- 브랜드 -->
           <div class="col-5" v-if="selectedDivide === '골프클럽'">
             <select id="selectedBrand" @change="selectBrand" class="form-select" aria-label="Default select example">
               <option selected value="0">브랜드</option>
@@ -325,7 +341,7 @@
             </select>
           </div>
           
-          
+          <!-- 상품 검색 -->
           <button @click="clickProductSearch" class="btn btn-danger col-auto">검색</button>
           
           <div v-if="productsInfo" class="border">
@@ -346,6 +362,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 주문 관리 -->
     <div class="col-9" v-if="orderControl">
       <div class="mt-5 border">
         <div class="mt-3" v-for="item in orderData" :key="item">
@@ -452,6 +470,8 @@
         </div>
       </div>
     </div>
+
+    <!-- qna -->
     <div class="col-9" v-if="qna">
       <div class="mt-5 border">
         <div class="mt-3" v-for="item in qnaData" :key="item">
@@ -481,6 +501,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 개인 문의 -->
     <div class="col-9" v-if="personalQna">
       <div class="mt-5 border">
         <div class="mt-3" v-for="item in personalQnaData" :key="item">
@@ -507,6 +529,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 피팅 문의 -->
     <div class="col-9" v-if="fittingQna">
       <div class="mt-5 border">
         <div class="mt-3" v-for="item in fittingData" :key="item">
@@ -533,6 +557,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 비회원 문의 -->
     <div class="col-9" v-if="nonMemberQna">
       <div class="mt-5 border">
         <div class="mt-3" v-for="item in nonMemberQnaData" :key="item">
@@ -627,6 +653,8 @@ export default {
     
 
     const router = useRouter();
+
+    // 권한 확인
     axios.get('/api/admin-check').then(res=>{
       if(res.data === 'not login') {
         router.push({path:'/'});
@@ -641,6 +669,7 @@ export default {
       console.log(err);
     });
 
+    // 관리자 비밀번호 확인
     function submit() {
       axios.post('/api/admin-pw', checkData.value)
       .then(res=>{
@@ -753,6 +782,8 @@ export default {
       formData1.append("timestamp", (Date.now() / 1000) | 0);
       formData1.append(`file`, thumbnail.value);
       
+
+      // 이미지 호스팅 사이트에 사진 업로드
       axios.post('https://api.cloudinary.com/v1_1/doiglts2y/image/upload', formData1, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -821,6 +852,8 @@ export default {
       searchMemberText.value = e.target.value;
     }
 
+
+    // 회원 검색
     function clickSearch() {
       if(selectedSearch.value === '' || selectedSearch.value === '0') alert('검색 분류를 선택해 주십시오');
       else {
@@ -838,6 +871,7 @@ export default {
       }
     }
 
+    // 상품 검색
     function clickProductSearch() {
       if(selectedDivide.value === '' || selectedDivide.value === '0') {
         alert('종류를 선택하세요');
@@ -871,6 +905,8 @@ export default {
         productPrice.value = oldValue;
       }
     });
+
+    // 메뉴 클릭 함수들
 
     function clickProductEnroll() {
       nonMemberQna.value = false;
@@ -1033,6 +1069,7 @@ export default {
       })
     }
 
+    // 고객 포인트 수정
     function changePoint() {
       let data = {
         nickName : searchedMember.value.nickName,
@@ -1093,6 +1130,7 @@ export default {
       }
     }
 
+    // 운송장 번호 변경
     function changeDeliNum(e) {
       const nodes = [...e.target.parentElement.parentElement.parentElement.parentElement.children];
       let index = nodes.indexOf(e.target.parentElement.parentElement.parentElement);
@@ -1160,6 +1198,7 @@ export default {
       });
     }
 
+    //썸네일 변경
     function editThumb() {
       const formData1 = new FormData();
       
@@ -1190,6 +1229,7 @@ export default {
       });
     }
 
+    // 상세 설명 이미지 변경
     function editInfo() {
       const formData1 = new FormData();
       
@@ -1312,6 +1352,8 @@ export default {
       })
     }
 
+
+    // 결제 취소
     function cancel(e) {
       const nodes = [...e.target.parentElement.parentElement.parentElement.children];
       let index = nodes.indexOf(e.target.parentElement.parentElement);

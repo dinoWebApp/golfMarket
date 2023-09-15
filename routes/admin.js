@@ -1,3 +1,4 @@
+// 관리자 페이지 api
 const router = require('express').Router();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -26,7 +27,7 @@ router.use(bodyParser.urlencoded({extended : true}));
 router.use(express.json());
 router.use(cors());
 router.use(session({
-  secret : 'secretcode',
+  secret : process.env.SECRET_CODE,
   resave : true,
   saveUninitialized : false,
   store : new MongoStore({mongoUrl : process.env.DB_URL}),
@@ -43,6 +44,8 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
   db = client.db('tgolshop');
 });
 
+
+//회원찾기
 router.get('/search', (req, res)=>{
   let type = req.query.type;
   let searchMemberText = req.query.searchMemberText;
@@ -57,6 +60,8 @@ router.get('/search', (req, res)=>{
   })
 });
 
+
+
 router.get('/searchProduct', (req, res)=>{
   db.collection('products').find({$and : [{brand : req.query.brand}, {divide : req.query.divide}]}).toArray()
   .then(result=>{
@@ -67,6 +72,8 @@ router.get('/searchProduct', (req, res)=>{
   })
 });
 
+
+// 주문 목록 불러오기
 router.get('/orderData', (req, res)=>{
   db.collection('purchaseData').find().sort({orderId : -1}).toArray()
   .then(result=>{
@@ -77,6 +84,7 @@ router.get('/orderData', (req, res)=>{
   })
 });
 
+// 문의 내역 불러오기
 router.get('/qna', (req, res)=>{
   db.collection('qna').find().sort({id : -1}).toArray()
   .then(result=>{
@@ -87,6 +95,7 @@ router.get('/qna', (req, res)=>{
   })
 });
 
+// 개인 문의 내역 불러오기
 router.get('/personalQna', (req, res)=>{
   db.collection('personalQna').find().sort({id : -1}).toArray()
   .then(result=>{
@@ -97,6 +106,8 @@ router.get('/personalQna', (req, res)=>{
   })
 });
 
+
+// 전체 상품 불러오기
 router.get('/allProducts', (req, res)=>{
   
   db.collection('products').find().toArray()
@@ -108,6 +119,8 @@ router.get('/allProducts', (req, res)=>{
   })
 });
 
+
+// 피팅 문의 불러오기
 router.get('/fittingQna', (req, res)=>{
   db.collection('fitting').find().sort({id : -1}).toArray()
   .then(result=>{
@@ -118,6 +131,8 @@ router.get('/fittingQna', (req, res)=>{
   })
 });
 
+
+// 비회원 문의 불러오기
 router.get('/nonMemberQna', (req, res)=>{
   db.collection('nonMemberQna').find().sort({id : -1}).toArray()
   .then(result=>{
@@ -127,6 +142,7 @@ router.get('/nonMemberQna', (req, res)=>{
     console.log(err);
   })
 });
+
 
 router.get('/paymentKey', (req, res)=>{
   db.collection('purchaseReport').findOne({orderId : req.query.orderId.toString()})
@@ -138,6 +154,8 @@ router.get('/paymentKey', (req, res)=>{
   });
 })
 
+
+// 포인트 변경
 router.put('/changePoint', (req, res)=>{
   let point = parseInt(req.body.point);
   
@@ -153,6 +171,8 @@ router.put('/changePoint', (req, res)=>{
   })
 });
 
+
+// 주문 상태 변경
 router.put('/changeState', (req, res)=>{
   let orderId = req.body.orderId;
   let currentState = req.body.currentState;
@@ -169,6 +189,8 @@ router.put('/changeState', (req, res)=>{
   })
 });
 
+
+// 운송장 번호 수정
 router.put('/changeDeliNum', (req, res)=>{
   let orderId = parseInt(req.body.orderId);
   let deliNum = req.body.deliNum;
@@ -185,6 +207,7 @@ router.put('/changeDeliNum', (req, res)=>{
   })
 });
 
+// 문의 답변
 router.put('/submitReply', (req, res)=>{
   let id = req.body.id;
   let adminText = req.body.adminText;
@@ -210,6 +233,8 @@ router.put('/submitPersonalReply', (req, res)=>{
   })
 });
 
+
+//피팅 문의 답변
 router.put('/fitting/submit', (req, res)=>{
   let id = req.body.id;
   let adminText = req.body.adminText;
@@ -222,6 +247,8 @@ router.put('/fitting/submit', (req, res)=>{
   })
 });
 
+
+// 비회원 문의 답변
 router.put('/nonMemberQna/submit', (req, res)=>{
   let id = req.body.id;
   let adminText = req.body.adminText;
@@ -234,6 +261,8 @@ router.put('/nonMemberQna/submit', (req, res)=>{
   })
 });
 
+
+//결제 취소 처리
 router.put('/cancel', (req, res)=>{
   let orderId = req.body.orderId;
   db.collection('purchaseData').updateOne({orderId : orderId}, {$set : {currentState : '결제취소'}})
@@ -248,6 +277,8 @@ router.put('/cancel', (req, res)=>{
   })
 });
 
+
+// 상품 옵션 수정
 router.put('/optionEdit', (req, res)=>{
   let productName = req.body.productName;
   let optionText = req.body.optionText;
@@ -267,6 +298,8 @@ router.put('/optionEdit', (req, res)=>{
   });
 })
 
+
+// 옵션 삭제
 router.put('/optionDelete', (req, res)=>{
   db.collection('products').updateOne({productName : req.body.productName}, {$pull : {optionData : {optionText : req.body.optionText}}})
   .then(()=>{
@@ -280,6 +313,9 @@ router.put('/optionDelete', (req, res)=>{
   })
 });
 
+
+
+// 옵션 추가
 router.put('/addEditOption', (req, res)=>{
   db.collection('products').updateOne({productName : req.body.productName}, {$push : {optionData : {optionText : req.body.optionText, optionPrice : req.body.optionPrice}}})
   .then(()=>{
@@ -305,6 +341,7 @@ router.put('/editProductName', (req, res)=>{
   });
 })
 
+
 router.put('/editBeforeDiscount', (req, res)=>{
   let productName = req.body.productName;
   let beforeDiscount = req.body.beforeDiscount;
@@ -329,6 +366,8 @@ router.put('/editProductPrice', (req, res)=>{
   })
 });
 
+
+// 썸네일 변경
 router.put('/editThumb', (req, res)=>{
   let productName = req.body.productName;
   let thumbnail = req.body.thumbnail;
@@ -341,6 +380,8 @@ router.put('/editThumb', (req, res)=>{
   });
 });
 
+
+// 상세 설명 정보 변경
 router.put('/editInfo', (req, res)=>{
   let productName = req.body.productName;
   let infoImage = req.body.infoImage;
@@ -353,6 +394,8 @@ router.put('/editInfo', (req, res)=>{
   });
 });
 
+
+// 배송 방식 변경
 router.put('/editDeliMethod', (req, res)=>{
   let productName = req.body.productName;
   let deliverKor = req.body.deliverKor;
@@ -365,6 +408,7 @@ router.put('/editDeliMethod', (req, res)=>{
     console.log(err);
   });
 });
+
 
 router.delete('/deleteProduct', (req, res)=>{
   let id = parseInt(req.query.id);

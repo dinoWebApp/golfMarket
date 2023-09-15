@@ -1,6 +1,8 @@
 <template>
   <div>
     <div class="container mt-3 mb-3">
+
+      <!-- 광고배너 -->
       <div id="second" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active" data-bs-interval="3000" style="cursor:pointer;">
@@ -49,8 +51,10 @@
     </div>
     
     
-  <!-- Blog preview section-->
+
   
+
+    <!-- 추천 상품 -->
     <div class="container px-5 my-5">
       <hr/>
       <div class="row gx-5 justify-content-center">
@@ -113,6 +117,7 @@ export default {
     let productList = ref([]);
     const router = useRouter();
 
+    // 추천 상품 리스트
     axios.get('/api')
     .then(result=>{
       productList.value = result.data;

@@ -1,4 +1,6 @@
 <template>
+
+  <!-- 로그인창 -->
   <div v-if="loginModal" class="container mt-3 col-9 col-sm-7 col-md-6 col-lg-5 col-xxl-4 border">
     <div class="mt-5">
       <img class="mb-4 col-6 col-md-6" src="../assets/tgolshop.png" alt="dd">
@@ -19,6 +21,7 @@
     <button class="w-100 btn btn-lg mb-3" @click="signUp" id="naver" style="color:white; font-weight:bold; background-color:#12D308;">간편 회원가입</button>
   </div>
 
+  <!-- 아이디 찾기 -->
   <div v-if="findIdModal">
     <div class="container mt-3 col-9 col-sm-7 col-md-6 col-lg-5 col-xxl-4 border">
       <div class="mt-3 mb-3">
@@ -49,6 +52,8 @@
       </div>
     </div>
   </div>
+
+  <!-- 비밀번호 재설정 -->
   <div v-if="changePwModal">
     <div class="container mt-3 col-9 col-sm-7 col-md-6 col-lg-5 col-xxl-4 border">
       <div class="mt-3 mb-3">

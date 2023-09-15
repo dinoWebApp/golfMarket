@@ -21,6 +21,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 상품 구매 상세 정보 -->
     <div v-if="purchaseDetail === false" class="container px-4 px-lg-5 my-5">
       <div class="row gx-4 gx-lg-5 align-items-center">
         <div class="col-md-6 col-xl-5">
@@ -77,6 +79,8 @@
           </div>
         </div>
         
+
+        <!-- 상품 상세 정보 -->
         <div class="border mt-3">
           <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
@@ -93,6 +97,8 @@
             </li>
           </ul>
         </div>
+
+        <!-- 상세 정보 -->
         <div class="col-12 border">
           <div v-if="productInfo" class="col-12 d-flex">
             <div class="d-none d-md-block col-md-1 col-xl-2"></div>
@@ -102,7 +108,7 @@
             <div class="d-none d-md-block col-md-1 col-xl-2"></div>
           </div>
 
-          <!-- 사진사용 -->
+          <!-- 관련 상품 -->
           <div v-if="relatedProduct" class="container mt-5">
             <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-4">
               <div class="col" v-for="item in relatedList" :key="item">
@@ -140,6 +146,8 @@
               
             </div>
           </div>
+
+          <!-- 상품 리뷰 -->
           <div class="mb-3" v-if="review" >
             <div class="row p-5 bg-light rounded-3 mt-3">
               <div class="row col-6">
@@ -199,6 +207,8 @@
                 </div>
               </div>
             </div>
+            
+            <!-- 리뷰 목록 -->
             <div v-for="item in reviews" :key="item" align='left'>
               <hr/>
               <div>
@@ -213,6 +223,8 @@
               </div>
             </div>
           </div>
+
+          <!-- 상품 문의 -->
           <div class="mb-3" v-if="qna">
             <div class="row p-5 bg-light rounded-3 mt-3">
               <div class="row d-block d-sm-none" align="left" style="font-weight:30; font-size:17px;">
@@ -241,6 +253,8 @@
                 <span>{{ qnaText.length }}/100</span>
               </div>
             </div>
+
+            <!-- 문의 목록 -->
             <div v-for="item in qnaList" :key="item" align='left'>
               <hr/>
               <div>
@@ -262,6 +276,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 결제 상세 정보 -->
     <div v-if="purchaseDetail" class="container">
       <div class="mt-4 mb-4">
         <h1 align='left'>주문/결제</h1>
@@ -308,6 +324,8 @@
           </div>
         </div>
       </div>
+
+      <!-- 주문 정보 -->
       <div class="mt-4 mb-3">
         <h4 style="font-weight:bold;" align='left'>주문상품</h4>
       </div>
@@ -333,6 +351,8 @@
           </div>
         </div>
       </div>
+
+      <!-- 포인트 사용 -->
       <div v-if="tossModal === false">
         <div class="mt-4" align="left">
           <span>보유 중인 포인트 : {{ leavedPoint }} P</span>
@@ -343,6 +363,8 @@
         </div>
       </div>
 
+
+      <!-- 결제 방식 선택 -->
       <div class="mt-2 d-flex" v-if="payMethodModal">
         <div align="left" class="me-2">
           <span>결제 방식 : </span> 
@@ -356,7 +378,7 @@
         </div>
       </div>
       
-      
+      <!-- 결제 모달창 -->
       <div class="d-flex mt-4" v-if="tossModal === false">
         <h3 class="d-none d-sm-block" style="color:red; font-weight:bold;">결제 금액:</h3>
         <h5 class="d-block d-sm-none" style="color:red; font-weight:bold;">결제 금액:</h5>
@@ -485,6 +507,7 @@ export default {
       }
     }
 
+    // 주문 개수
     function selectNum() {
       let numberSelect = document.getElementById('orderNum');
       orderNum.value = numberSelect.options[document.getElementById('orderNum').selectedIndex].value;
@@ -603,10 +626,14 @@ export default {
 
   
 
+
+    // 결제 방식 선택
     function selectPay() {
       let numberSelect = document.getElementById('payMethod');
       payMethod.value = numberSelect.options[document.getElementById('payMethod').selectedIndex].value;
     }
+
+    // 결제 입력
     function clickToss() {
       if(payMethod.value === '선택') {
         alert('결제 방식을 선택해 주십시오.');
@@ -690,6 +717,8 @@ export default {
       }
     }
 
+
+    // 최종 결제
     function clickFinal() {
       if(
         name.value === '' ||
@@ -750,6 +779,7 @@ export default {
       }
     }
 
+    // 총 금액
     function calTotal(productPrice, optionPrice, optionSelected, orderNum) {
       totalPrice.value = (productPrice * 1 + optionPrice * 1)*optionSelected*orderNum;
       leavedPrice.value = (productPrice * 1 + optionPrice * 1)*optionSelected*orderNum;
@@ -764,6 +794,7 @@ export default {
       cartModal.value = false;
     }
 
+    // 장바구니 담기
     function addCart() {
       if(loginCheck.value === false) {
         alert('로그인이 필요합니다.');
@@ -796,6 +827,8 @@ export default {
       router.push({path:'/customer/mypage'});
     }
 
+
+    // 장바구니로 이동
     function moveCart() {
       axios.get('/api/customer/mypage/getNick')
       .then(result=>{

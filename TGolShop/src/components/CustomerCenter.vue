@@ -4,6 +4,8 @@
       <h2 class="mt-3 mb-3" style="text-align:left;">고객센터</h2>
       <hr/>
     </div>
+
+    <!-- 고객 센터 메뉴 -->
     <div class="border mt-3 container d-none d-sm-block">
       <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -21,6 +23,8 @@
       </ul>
     </div>
 
+
+    <!-- 고객 센터 메뉴 모바일 -->
     <div class="border mt-3 container d-block d-sm-none">
       <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -38,6 +42,7 @@
       </ul>
     </div>
 
+    <!-- 매장 소개 -->
     <div class="container border" align="left" v-if="about">
       <div class="mt-4">
         저희 TGOLSHOP은 고객님의 만족을 최우선으로 생각하는 쇼핑몰입니다.
@@ -68,12 +73,14 @@
   
     </div>
 
+    <!-- 배송 정책 -->
     <div v-if="rule" class="container border">
       <div class="col-12">
         <img src="../assets/edittedRule.png" alt="rule" class="img-fluid mt-2">
       </div>
     </div>
 
+    <!-- 무통장 입금 계좌 -->
     <div v-if="credit" class="container border">
       <div class="mt-5 mb-5">
         <div class="mb-2">무통장 입금 계좌: 대구은행 508-10-844784-5 티골프 피팅(김수환)</div>
@@ -84,6 +91,7 @@
     </div>
 
 
+    <!-- 문의 사항 -->
     <div class="mb-3 container" v-if="qna">
       <div class="row p-5 bg-light rounded-3 mt-3">
         <div class="row d-block d-sm-none" align="left" style="font-weight:30; font-size:17px;">

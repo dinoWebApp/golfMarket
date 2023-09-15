@@ -1,10 +1,10 @@
 <template>
+  <!-- 사이트 검색창 검색 결과 -->
   <div class="container mt-5">
     <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 g-4">
       <div class="col" v-for="item in searchedList" :key="item">
         <div @click="clickCard" style="cursor:pointer;" class="card shadow-sm">
           <div id="img-border">
-            <!-- 사진사용 -->
             <img id="image" :src='`${item.thumbnail}`' alt="골프클럽" class="img-fluid img-thumbnail">
           </div>
           <div class="d-flex">
@@ -49,6 +49,8 @@ export default {
     let searchedList = ref([]);
     const route = useRoute();
     const router = useRouter();
+
+    // 검색 관련 상품 불러오기
     axios.get('/api/search?searchText=' + route.query.searchText)
     .then(result=>{
       if(result.data.length === 0) {
@@ -62,6 +64,7 @@ export default {
       console.log(err);
     })
 
+    // 상품 클릭
     function clickCard(e) {
       let productId = e.currentTarget.children[1].children[1].innerText;
       

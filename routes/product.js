@@ -49,6 +49,8 @@ MongoClient.connect(process.env.DB_URL, (err, client)=>{
 });
 
 
+
+// 전체 상품 로드
 router.get('/', (req, res)=>{
   if(req.query.engDivide === 'totalProducts') {
     db.collection('products').find().sort({id : -1}).toArray((err, result)=>{
@@ -63,7 +65,7 @@ router.get('/', (req, res)=>{
   }
 });
 
-
+// 브랜드별 상품
 router.get('/brand', (req, res)=>{
   let divide = req.query.divide;
   let brandName = req.query.brandName;
@@ -75,6 +77,8 @@ router.get('/brand', (req, res)=>{
   })
 });
 
+
+// 상품 상세 정보 로드
 router.get('/purchase/:id', (req, res)=>{
   console.log(req.params.id);
   let userInfo = 'not login'
@@ -135,6 +139,8 @@ router.get('/purchase/:id', (req, res)=>{
   })
 });
 
+
+// 결제전 주문 정보 확인
 router.get('/purchase-detail', loginCheck, (req, res)=>{
   let userData = {
     id : req.user.id,
@@ -150,12 +156,14 @@ router.get('/purchase-detail', loginCheck, (req, res)=>{
   res.send(userData)
 });
 
+
 router.get('/submit', loginCheck, (req, res)=>{
   res.send(req.user.nickName);
 })
 
 
 
+// 상품 등록
 router.post('/upload', (req, res)=>{
   let data = req.body
   db.collection('productNum').findOne({name : 'productId'}, (err, result)=>{
@@ -183,7 +191,7 @@ router.post('/upload', (req, res)=>{
   });
 });
 
-
+// 결제 프로세스
 router.post('/purchase', (req, res)=>{
   let data = req.body;
   console.log(data);
@@ -237,6 +245,7 @@ router.post('/purchase', (req, res)=>{
   });
 });
 
+// 결제 리포트 저장
 router.post('/submitReport', (req, res)=>{
   let data = req.body;
   db.collection('purchaseReport').insertOne(data)
@@ -247,6 +256,8 @@ router.post('/submitReport', (req, res)=>{
     console.log(err)
   });
 })
+
+// 장바구니 상품 결제
 router.post('/cartPurchase', (req, res)=>{
   let data = req.body;
   let curr = new Date();
@@ -302,6 +313,8 @@ router.post('/cartPurchase', (req, res)=>{
   
 });
 
+
+// 장바구니 추가
 router.put('/addCart', (req, res)=>{
   console.log(req.user.id);
   db.collection('cartId').findOne({name : 'cartId'})
@@ -331,6 +344,8 @@ router.put('/addCart', (req, res)=>{
   });
 });
 
+
+// 상품 정보 수정
 router.put('/edit', (req, res)=>{
   let data = req.body
   db.collection('products').updateOne({id : parseInt(data.id)}, {$set : {
@@ -351,6 +366,8 @@ router.put('/edit', (req, res)=>{
   })
 });
 
+
+// 문의 등록
 router.post('/qnaSubmit',loginCheck, (req, res)=>{
   let nickName = req.user.nickName;
   let curr = new Date();

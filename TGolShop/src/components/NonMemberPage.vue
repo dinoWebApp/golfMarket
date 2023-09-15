@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 주문번호로 주문조회 -->
     <div v-if="inputInfo">
       <div class="container mt-3 col-9 col-sm-7 col-md-6 col-lg-5 col-xxl-4 border">
         <div class="mt-3 mb-3">
@@ -18,6 +19,7 @@
       </div>
     </div>
 
+    <!-- 주문 내역 -->
     <div v-if="orderInfo">
       <div class="container mt-3 col-9 col-sm-7 col-md-6 col-lg-5 col-xxl-4 border mb-3">
         <h3 class="mt-3 mb-3">비회원 주문조회</h3>
@@ -88,6 +90,8 @@ export default {
       name.value = e.target.value;
     }
 
+
+    // 주문번호 입력
     function submit() {
       if(orderId.value === '' || name.value === '') {
         alert('정보를 모두 입력하여 주십시오');

@@ -1,5 +1,5 @@
 <template>
-  
+  <!-- 구매 완료 페이지 -->
   <div class="container d-flex justify-content-center">
     <div style="width:80%;" class="border mt-5">
       <div class="ms-1 me-1">
@@ -71,6 +71,8 @@ export default {
       console.error(error);
     });
 
+
+    // 결제 내역 저장
     if (paymentKey) {
       axios.post('https://api.tosspayments.com/v1/payments/confirm', data, { headers })
       .then(response => {

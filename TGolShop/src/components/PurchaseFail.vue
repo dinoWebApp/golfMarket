@@ -1,4 +1,6 @@
 <template>
+
+  <!-- 결제 실패 페이지 -->
   <div class="container d-flex justify-content-center">
     <div style="width:80%;" class="border mt-5">
       

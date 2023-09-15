@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+
+    <!-- 회원 탈퇴창 -->
     <div v-if="outModal" align="center" class="black-bg d-none d-sm-block">
       <div class="white-bg border">
         <h4>회원탈퇴를 하시겠습니까?</h4>
@@ -28,6 +30,8 @@
     <hr/>
 
     <div class="border mt-3" v-if="updateKey === 0">
+
+      <!-- 마이페이지 메뉴바 -->
       <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
           <button @click="clickPurchaseData" class="nav-link mypage-option active" id="purchase-data" data-bs-toggle="pill" type="button" role="tab" aria-selected="true">주문목록</button>
@@ -71,6 +75,8 @@
         </li>
       </ul>
     </div>
+
+    <!-- 구매 목록 -->
     <div v-if="purchaseList">
       <div class="mt-3" align="left">
         <span style="font-size: large;">결제취소, 반품은 1:1문의로 문의 부탁드립니다.</span>
@@ -118,6 +124,8 @@
         
       </div>
     </div>
+
+    <!-- 장바구나 -->
     <div v-if="cart">
       <div>
         <div>
@@ -156,7 +164,7 @@
       </div>
     </div>
 
-    <!-- purchase detail -->
+    <!-- 장바구니 상품 구매창 -->
     <div v-if="purchaseDetail" class="container">
       <div class="mt-4 mb-4">
         <h1 align='left'>주문/결제</h1>
@@ -347,6 +355,8 @@
         
       </div>
     </div>
+
+    <!-- 개인 상품 문의 -->
     <div class="mb-3 container" v-if="qnaWrite">
       <div class="row p-5 bg-light rounded-3 mt-3">
         <div align="left" class="row" style="font-weight:30; font-size:17px;">
@@ -370,7 +380,7 @@
         
       </div>
       
-      
+      <!-- 문의 리스트  -->
       <div v-for="item in qnaList" :key="item" align='left'>
         <hr/>
         <div>
@@ -388,11 +398,15 @@
         </div>
       </div>
     </div>
+
+    <!-- 보유 포인트 -->
     <div class="mb-3" v-if="point">
       <div class="row p-5 bg-light rounded-3 mt-3">
         <span><h3>보유 중인 포인트 : <span style="color:red">{{ mypageData.point }}</span> P</h3></span>
       </div>
     </div>
+
+    <!-- 회원 정보 -->
     <div v-if="info" class="border">
       <div class="col-5 col-lg-3 ms-1 me-1 mt-3 mb-3">
         <div align='left' class="ms-1 mb-1">성명</div>
@@ -490,6 +504,7 @@ export default {
    
 
 
+    // 마이페이지 정보 불러오기
     axios.get('/api/customer/mypage?nickName=' + route.query.nickName)
     .then(res=>{
       if(res.data === 'not login') {
@@ -702,6 +717,7 @@ export default {
       })
     }
 
+    // 사용할 포인트
     function inputPoint(e) {
       usePoint.value = e.target.value;
       leavedPoint.value = mypageData.value.point - e.target.value;
@@ -720,6 +736,8 @@ export default {
         leavedPrice.value = totalPrice.value - oldValue;
       }
     });
+
+    // 결제 방법
     function selectPay() {
       let numberSelect = document.getElementById('payMethod');
       payMethod.value = numberSelect.options[document.getElementById('payMethod').selectedIndex].value;
@@ -804,6 +822,8 @@ export default {
       }
     }
 
+
+    // 최종 결제
     function clickFinal() {
       if(
         mypageData.value.name === '' ||
@@ -934,6 +954,7 @@ export default {
       }
     }
 
+    // 별점 주기
     function selectGrade(e) {
       reviewGrade.value = e.target.value;
       
@@ -1041,6 +1062,7 @@ export default {
       }
     }
 
+    // 회원 탈퇴
     function clickOut() {
      outModal.value = true;
     }

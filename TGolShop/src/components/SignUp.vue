@@ -1,4 +1,6 @@
 <template>
+
+  <!-- 회원가입창 -->
   <div class="container mt-3 col-10 col-sm-8 col-md-7 col-lg-5 col-xxl-4 border ">
     <div class="mt-4 mb-3">
       <h3>간편 회원가입</h3>
@@ -130,6 +132,7 @@ export default {
       detailAddress : detailAddress
     });
 
+    // 주소 입력
     function inputAddress() {
       new window.daum.Postcode({
         oncomplete: function(data) {
@@ -166,6 +169,7 @@ export default {
       }).open();
     }
 
+    // 회원 정보 업로드
     function sendInf() {
       if (nickName.value === '' || id.value === '' || pw.value === '' || name.value === '' ||
       phoneNum.value === null || address.value === '') {
@@ -197,6 +201,7 @@ export default {
       
     }
 
+    // 중복 체크
     function checkNick() {
       if (nickName.value === '') {
         alert('닉네임이 입력되지 않았습니다.');

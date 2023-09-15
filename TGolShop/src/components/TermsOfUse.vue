@@ -1,4 +1,6 @@
 <template>
+
+  <!-- 이용약관 -->
   <div class="container">
     <img src="../assets/서비스이용약관.jpg" alt="service" class="img-fluid">
   </div>

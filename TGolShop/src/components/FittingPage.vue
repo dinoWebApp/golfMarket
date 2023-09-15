@@ -19,6 +19,7 @@
           피팅 내용에 따라 상세한 피팅 견적 전달을 위해 개별 연락을 드릴 수도 있습니다.
         </li>
 
+        <!-- 피팅 문의 내용 -->
         <div class="row">
           <textarea v-bind:value="fittingText" @input="inputText" class="col-12 d-block d-sm-none"  cols="30" rows="3"></textarea>
           <textarea v-bind:value="fittingText" @input="inputText" class="col-10 d-none d-sm-block"  cols="30" rows="3"></textarea>
@@ -32,6 +33,8 @@
           <span>{{ fittingText.length }}/100</span>
         </div>
       </div>
+
+      <!-- 문의 목록 -->
       <div v-for="item in fittingList" :key="item" align='left'>
         <hr/>
         <div>
@@ -67,6 +70,7 @@ export default {
     let fittingList = ref([]);
     
 
+    // 권한 확인
     axios.get('/api/fitting')
     .then(res=>{
       if(res.data === 'not login') {
