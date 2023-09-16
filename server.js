@@ -75,6 +75,8 @@ app.get('/', (req, res)=>{
   res.sendFile(path.join(__dirname, 'TGolShop/dist/index.html'));
 })
 
+
+// 추천 상품
 app.get('/api/', (req, res)=>{
   db.collection('products').find().limit(6).sort({reviews : -1}).toArray()
   .then(result=>{
@@ -83,6 +85,8 @@ app.get('/api/', (req, res)=>{
   })
 });
 
+
+// 상품 검색
 app.get('/api/search', (req, res)=>{
   db.collection('products').find({$text : {$search : req.query.searchText}}).toArray()
   .then(result=>{
@@ -94,12 +98,13 @@ app.get('/api/search', (req, res)=>{
 })
 
 
-
+// 관리자 권한 체크
 app.get('/api/admin-check', loginCheck, (req, res)=>{
   let adminData = [req.user.nickName, req.user.id];
   res.send(adminData);
 });
 
+// 비회원 주문
 app.get('/api/nonMemberOrder', (req, res)=>{
   let orderId = parseInt(req.query.orderId);
   let name = req.query.name;
@@ -114,6 +119,8 @@ app.get('/api/nonMemberOrder', (req, res)=>{
   })
 });
 
+
+// 피팅 문의 목록
 app.get('/api/fitting', loginCheck, (req, res)=>{
   db.collection('fitting').find().sort({id : -1}).toArray()
   .then(result=>{
@@ -124,6 +131,7 @@ app.get('/api/fitting', loginCheck, (req, res)=>{
   })
 });
 
+// 비회원 문의 목록
 app.get('/api/customerCenter/nonMemberQna', (req, res)=>{
   db.collection('nonMemberQna').find().sort({id : -1}).toArray()
   .then(result=>{
@@ -134,6 +142,8 @@ app.get('/api/customerCenter/nonMemberQna', (req, res)=>{
   })
 })
 
+
+// 피팅 문의 등록
 app.post('/api/fitting/submit', (req, res)=>{
   let nickName = req.user.nickName;
   let curr = new Date();
@@ -172,6 +182,8 @@ app.post('/api/fitting/submit', (req, res)=>{
   })
 });
 
+
+// 문의 등록
 app.post('/api/customerCenter/qnaSubmit', (req, res)=>{
   let curr = new Date();
   let utc = curr.getTime() + (curr.getTimezoneOffset()*60*1000);
@@ -209,7 +221,7 @@ app.post('/api/customerCenter/qnaSubmit', (req, res)=>{
   })
 })
 
-
+// 관리자 비밀번호 확인
 app.post('/api/admin-pw', (req, res)=>{
   db.collection('admin').findOne({id : 'admin'}, (err, result)=>{
     bcrypt.compare(req.body.pw, result.pw, (err, isMatch)=>{
