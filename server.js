@@ -50,8 +50,8 @@ app.use(express.static(path.join(__dirname, 'tgolshop.png')));
 MongoClient.connect(process.env.DB_URL, (err, client)=>{
   if (err) return console.log(err);
   db = client.db('tgolshop');
-  app.listen(8080, ()=>{
-    console.log('listening on 8080');
+  app.listen(3000, ()=>{
+    console.log('listening on 3000');
   });
 });
 
