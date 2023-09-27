@@ -37,6 +37,7 @@ Continuous Deployment: <https://github.com/dinoWebApp/continuous-deploy-docker>
 
 ## 메인 화면
 
+- 쇼핑몰 내 상품을 검색할 수 있습니다.
 - 카테고리별, 브랜드별 상품 목록을 최신 상품 순으로 나열합니다.
 - 회원에 한에서 피팅 문의 작성이 가능합니다.
 - 고객센터에서 매장 정보, 배송, 환불, 수리 규정, 무통장 입금 계좌, 비회원 문의 확인이 가능합니다.
