@@ -74,4 +74,7 @@ Continuous Deployment: <https://github.com/dinoWebApp/continuous-deploy-docker>
 - 주문 관리를 통해 주문 취소, 배송 상태 수정, 운송장 번호 등록이 가능합니다.
 - 상품 문의, 개인 문의, 피팅 문의, 비회원 문의에 대한 응답, 관리가 가능합니다.
 
+## Contact
+Email : <kgjsmart1559@gmail.com>
+
 
