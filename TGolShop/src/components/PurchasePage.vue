@@ -53,8 +53,8 @@
             </option>
           </select>
           <select id="orderNum" @change="selectNum" class="form-select mb-4" aria-label="Default select example">
-            <option selected value="0">상품 수량</option>
-            <option value="1">1개</option>
+            <option value="0">상품 수량</option>
+            <option selected value="1">1개</option>
             <option value="2">2개</option>
             <option value="3">3개</option>
           </select>
