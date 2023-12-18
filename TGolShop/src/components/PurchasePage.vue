@@ -432,7 +432,7 @@ export default {
     let productId = ref(0);
     let optionText = ref('');
     let optionPrice = ref(0);
-    let orderNum = ref('1');
+    let orderNum = ref(1);
     let optionSelected = ref(1);
     let productInfo = ref(true);
     let relatedProduct = ref(false);
