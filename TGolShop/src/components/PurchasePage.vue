@@ -432,8 +432,8 @@ export default {
     let productId = ref(0);
     let optionText = ref('');
     let optionPrice = ref(0);
-    let orderNum = ref('0');
-    let optionSelected = ref(0);
+    let orderNum = ref('1');
+    let optionSelected = ref(1);
     let productInfo = ref(true);
     let relatedProduct = ref(false);
     let review = ref(false);
@@ -477,7 +477,9 @@ export default {
       reviews.value = res.data.reviews
       totalReview.value = res.data.totalReview;
       qnaList.value = res.data.qna;
-
+      let optionSelect = document.getElementById('optionText');
+      optionText.value = optionSelect.options[document.getElementById('optionText').selectedIndex].text;
+      optionPrice.value = optionSelect.options[document.getElementById('optionText').selectedIndex].value;
     })
     .catch(err=>{
       console.log(err);
