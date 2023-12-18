@@ -47,8 +47,8 @@
           </div>
         
           <select id="optionText" @change="selectOption" class="form-select mb-2" aria-label="Default select example">
-            <option selected>옵션 선택</option>
-            <option v-for="(item, index) in product.optionData" :key="index" :value="item.optionPrice"> 
+            <option>옵션 선택</option>
+            <option v-for="(item, index) in product.optionData" :key="index" :value="item.optionPrice" :selected="index === 0"> 
               {{item.optionText}}({{item.optionPrice}}원 추가)
             </option>
           </select>
@@ -476,12 +476,14 @@ export default {
       relatedList.value = res.data.relatedList;
       reviews.value = res.data.reviews
       totalReview.value = res.data.totalReview;
-      qnaList.value = res.data.qna
+      qnaList.value = res.data.qna;
+
     })
     .catch(err=>{
       console.log(err);
     });
 
+  
     
 
 
